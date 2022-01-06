@@ -1,0 +1,60 @@
+General Idea
+
+##########################################################################################
+
+Dataset
+
+The main dataset used for the project is the Movie Dataset from kaggle
+(https://www.kaggle.com/rounakbanik/the-movies-dataset?select=movies_metadata.csv).
+It's a collection of movies taken from the website IMDB containing more than 45000 entries, 
+with 24 different attributes. We select only some of them:
+
+imdb_id
+title
+release_date
+budget
+revenue
+runtime
+vote_average
+vote_count
+popularity
+
+This dataset has been joined with another one, the MovieLens 25M Dataset
+(https://grouplens.org/datasets/movielens/), to retrieve the movies' genres.
+
+Again, this dataset has been joined with another one, the Kaggle "credits.csv" file, 
+to retrieve the movies' director.
+
+Finally, we added 2 (or 3?) more columns by doing a web scraping of IMDB to obtain the
+movies' connections, incoming and outcoming (and the total?).
+
+The final columns are:
+
+imdb_id
+title
+release_date
+budget
+revenue
+runtime
+vote_average
+vote_count
+popularity
+movielens_id
+tmdb_id
+genres
+director
+
+We are not sure how much is the AS index, but we have 13 columns and more than 5000 movies,
+so we are ok with the constraint.
+
+##########################################################################################
+
+MDS
+
+##########################################################################################
+
+Visual Project
+
+##########################################################################################
+
+User Interaction
