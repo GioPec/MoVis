@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import re
 
-id_info = pd.read_csv('../movies_metadata.csv')
+from utils import path_constants
+
+id_info = pd.read_csv(path_constants.MOVIES_METADATA)
 
 df = id_info[['imdb_id', 'title', 'release_date',
        'budget',  'revenue', 'runtime',
@@ -33,4 +35,4 @@ df['imdb_id'] = df['imdb_id'].apply(lambda x: x[2:])
 # uncomment to delete months and days
 # df['release_date'] = df['release_date'].apply(lambda x: x[:4])
 
-df.to_csv('dataset_imdb.csv', index=False)
+#df.to_csv(path_constants.DATASET, index=False)

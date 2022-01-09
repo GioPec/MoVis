@@ -1,7 +1,9 @@
-from numpy.core.einsumfunc import _compute_size_by_dict
 import pandas as pd
+from utils import path_constants
+#import sys
+#sys.path.append(path_constants.REPO_ROOT)
 
-id_info = pd.read_csv('movielens/genres.csv')
+id_info = pd.read_csv(path_constants.GENRES)
 df = id_info[['genres']]
 
 categories = df.values.tolist()

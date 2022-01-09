@@ -3,7 +3,9 @@ import numpy as np
 import re
 from functools import reduce
 
-ds = pd.read_csv('./movielens/genres.csv')
+from utils import path_constants
+
+ds = pd.read_csv(path_constants.GENRES)
 
 def sum(a, b):
     return a + "|" + b
@@ -19,4 +21,4 @@ ds['genres'] = ds['genres'].apply(lambda g:
 )
 
 print(ds.head)
-ds.to_csv('genres_rewritten.csv', index=False)
+#ds.to_csv(path_constants.GENRES_REWRITTEN, index=False)

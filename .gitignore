@@ -1,0 +1,8 @@
+//*.csv
+datasets/kaggle
+datasets/movielens
+trash/
+utils/
+docs/
+.vscode
+__pycache__
