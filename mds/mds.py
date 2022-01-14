@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import manifold
+from sklearn.preprocessing import StandardScaler
 import time
 from tqdm import tqdm
 
@@ -14,7 +15,7 @@ def sameDirector(s1,s2):
     return 0
 
 def jaccard(s1,s2):
-    if (s1=="N" or s2=="N"): return 0
+    if (len(s1)<8 or len(s2)<8): return 0
     u=set(s1.split("|")).union(set(s2.split("|")))
     i=set(s1.split("|")).intersection(set(s2.split("|")))
     return(len(i)/len(u))
@@ -45,6 +46,21 @@ director = df['director'].values
 dfn['release_date'] = dfn['release_date'].apply(lambda g:
     g[:4]
 )
+
+###################
+
+"""
+dfn_normalized = scaler.fit_transform(dfn)
+print(dfn_normalized)
+scaler = StandardScaler(copy=False)
+scaler.fit_transform(dfn)
+"""
+scaler = StandardScaler()
+dfn.iloc[:,0:-1] = scaler.fit_transform(dfn.iloc[:,0:-1].to_numpy())
+
+###################
+
+
 release_date = dfn['release_date'].values
 budget = dfn['budget'].values
 revenue = dfn['revenue'].values
@@ -75,7 +91,7 @@ dissM_out_connections = np.zeros((len(imdb_id),len(imdb_id)))
 dissM_tot_connections = np.zeros((len(imdb_id),len(imdb_id)))
 
 for i in tqdm(range(len(imdb_id))):
-    for j in range (len(imdb_id)):
+    for j in range(len(imdb_id)):
         dissM_genres[i][j] = 1-jaccard(genres[i],genres[j])
         dissM_connectedmovies[i][j] = 1-jaccard(connected_movies[i],connected_movies[j])
         dissM_titles[i][j] = 1-samePosition(titles[i],titles[j])
@@ -92,14 +108,28 @@ for i in tqdm(range(len(imdb_id))):
         dissM_out_connections[i][j] = euclideanDistance(out_connections[i], out_connections[j])
         dissM_tot_connections[i][j] = euclideanDistance(tot_connections[i], tot_connections[j])
 
-#dissM = dissM_directors#0.1*dissM_genres + 0.3*dissM_connectedmovies + 0.01*dissM_titles
-dissM = 0.00001*dissM_popularity
+
+#dissM = 0.1*dissM_genres + 0.3*dissM_connectedmovies + 0.01*dissM_titles
+
+dissM = 20*dissM_genres+500*dissM_connectedmovies+5*dissM_titles+10*dissM_directors
+dissM += dissM_release_date+dissM_budget+dissM_revenue
+dissM += dissM_runtime+dissM_vote_average+dissM_vote_count+0*dissM_popularity+dissM_in_connections+dissM_out_connections+0*dissM_tot_connections #TODO
+dissM *= 0.000001
+
 
 print("Finished matrix")
 print("--- %s seconds ---" % (time.time() - start_time))
 
-mds = manifold.MDS(n_components=2, max_iter=100, eps=1e-3, dissimilarity="precomputed", random_state=0)
+mds = manifold.MDS(n_components=2, max_iter=1000, eps=1e-9, dissimilarity="precomputed", random_state=0)
 pos = mds.fit(dissM).embedding_
+
+pos_forprint = pos.tolist()
+i=0
+for c in pos_forprint:
+    c.append(imdb_id[i])
+    i+=1
+pd.DataFrame(pos_forprint).to_csv(path_constants.MDS_RESULTS, index=False)
+#np.savetxt("test.csv", pos_forprint, delimiter=",")
 
 print("Finished MDS")
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -113,7 +143,7 @@ for label, x, y in zip(titles, pos[:,0], pos[:,1]):
         label,
         xy = (x, y), xytext = (7, -5),
         textcoords = 'offset points', ha = 'right', va = 'bottom',
-        bbox = dict(boxstyle = 'round,pad=0.1', fc = 'blue', alpha = 0.2)) 
+        bbox = dict(boxstyle = 'round,pad=0.1', fc = 'blue', alpha = 0.2))
 plt.show()
 
 print("Finished plot")

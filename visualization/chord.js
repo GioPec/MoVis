@@ -1,11 +1,18 @@
 // create the svg area
-const svg = d3.select("#my_dataviz")
+const svg = d3v6.select("#area_5")
 .append("svg")
-.attr("width", 440)
-.attr("height", 440)
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 300 175")
+  .classed("svg-content", true)
+  //.style("border", "1px solid")
+  //.style("background-color","violet")
+//.attr("width", 440)
+//.attr("height", 440)
+/*
 .append("g")
-.attr("transform", "translate(220,220)")
-
+.attr("transform", "translate(20,180)")
+.attr("transform", "scale(0.5)")
+*/
 const colors = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
   "#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"]
 
@@ -74,7 +81,7 @@ var matrix3 = [
 ]
   
 function load_genres() {
-  d3.csv("../datasets/dataset.csv", function(row) {
+  d3v6.csv("../datasets/dataset.csv", function(row) {
     genres_num = row.genres.split("|").length
     //if (genres_num<1) console.log("Error! Genres<1")
     if (genres_num==1) {
@@ -104,39 +111,41 @@ function load_genres() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 function createD3Chord() {
-  // give this matrix to d3.chord(): it will calculates all the info we need to draw arc and ribbon
-  const res = d3.chord()
-  .padAngle(0.05)     // padding between entities (black arc)
-  .sortSubgroups(d3.descending)
+  // give this matrix to d3v6.chord(): it will calculates all the info we need to draw arc and ribbon
+  const res = d3v6.chord()
+  .padAngle(0.1)     // padding between entities (black arc)
+  .sortSubgroups(d3v6.descending)
   (matrix2)
 
   // add the groups on the inner part of the circle
   svg
   .datum(res)
   .append("g")
+  .attr("transform", "scale(0.38) translate(250,240)")
   .selectAll("g")
   .data(d => d.groups)
   .join("g")
   .append("path")
     .style("fill", (d,i) => colors_light[i])
-    .style("stroke", "black")
-    .attr("d", d3.arc()
+    //.style("stroke", "black") //selected
+    .attr("d", d3v6.arc()
       .innerRadius(200)
-      .outerRadius(210)
+      .outerRadius(220)
     )
 
   // Add the links between groups
   svg
   .datum(res)
   .append("g")
+  .attr("transform", "scale(0.38) translate(250,240)")
   .selectAll("path")
   .data(d => d)
   .join("path")
-    .attr("d", d3.ribbon()
+    .attr("d", d3v6.ribbon()
       .radius(200)
     )
-    .style("fill", d => colors_light[d.source.index]) // colors depend on the source group. Change to target otherwise.
-    //.style("stroke", "black"); // TODO
+    .style("fill", d => colors_light[d.source.index])
+    //.style("stroke", "black"); // maybe?
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
