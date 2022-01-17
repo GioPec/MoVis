@@ -35,6 +35,17 @@ ds = ds.join(ds_connections.set_index('imdb_id'), on='imdb_id')
 ds = ds.dropna()
 ds = ds.drop_duplicates(subset=["imdb_id"])
 
+ds = ds.drop(ds[
+    (ds.vote_count == 0)
+    | (ds.vote_average == 0.0)
+    | (ds.budget == 0)
+    | (ds.revenue == 0)
+    ].index)
+
+# df['release_date'] = df['release_date'].apply(lambda x: x[:4])
+# df['budget'] = df['budget'].apply(lambda x: x/1000000)
+# df['revenue'] = df['revenue'].apply(lambda x: x/1000000)
+
 print(ds.head)
 #ds.to_csv(path_constants.DATASET, index=False)
 

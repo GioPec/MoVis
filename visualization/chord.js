@@ -1,6 +1,7 @@
 // create the svg area
 const svg = d3v6.select("#area_5")
 .append("svg")
+  .attr("id", "svg_5")
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr("viewBox", "0 0 300 175")
   .classed("svg-content", true)
@@ -47,6 +48,8 @@ const dict = {
   "Thriller": 10,
   "Western": 1,
 }
+
+createLabel(dict)
 
 var matrix2 = [
   [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -104,6 +107,7 @@ function load_genres() {
     filtro(0)
 
     createD3Chord()
+    
 
   })
 }
@@ -146,6 +150,19 @@ function createD3Chord() {
     )
     .style("fill", d => colors_light[d.source.index])
     //.style("stroke", "black"); // maybe?
+}
+
+function createLabel(generi){
+  console.log(generi)
+  var svg_5 = d3.select("#svg_5")
+          .selectAll('div')
+          .data(generi)
+          .enter()
+          .append('div')
+            //.attr('class','key_line')
+            //.attr('id',function(d){return d.line_id+"_key"})
+            //.style("opacity",".3")
+  return
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
