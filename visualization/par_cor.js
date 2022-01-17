@@ -166,7 +166,7 @@
             }) ? null : "none";
         });  
         
-       console.log(ids)
+       
 
         var area_1 = d3.select("#area_1")
         area_1.selectAll(".dot").style("opacity", function(d) {  
@@ -180,7 +180,7 @@
     }
 }
 
-d3.csv("../datasets/dataset_500.csv", function(error, data) {
+d3.csv("../datasets/dataset.csv", function(error, data) {
 
     chiavi= d3.keys(data[0])
     if (error) throw error;
@@ -241,7 +241,7 @@ d3.csv("../datasets/dataset_500.csv", function(error, data) {
         {
             focus.selectAll(".dot")
                 .style("fill",function(d) {return color(d[chiavi[2]]); })
-                .style("opacity",".3")
+                .style("opacity",".5")
             //console.log("reset");
         }
         

@@ -13,9 +13,6 @@ svg {
   fill: none;
   stroke: rgb(66, 172, 66);
   stroke-width: 0.1px;
-
-  
-  
 }
 
 .brush .extent {
@@ -44,4 +41,14 @@ svg {
 
 .tick text {
   font-size: 4px;
+}
+
+.genere_square{
+  height:10px;
+  width:10px;
+  outline:solid 1px black;
+  float:left;
+  margin-right:10px;
+  margin-top:6px;
+  margin-left:10px;
 }
