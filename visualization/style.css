@@ -11,13 +11,12 @@ svg {
 
 .foreground path {
   fill: none;
-  stroke: rgb(66, 172, 66);
   stroke-width: 0.1px;
 }
 
 .brush .extent {
   fill-opacity: .3;
-  stroke: #fff;
+  stroke: #fff; 
   shape-rendering: crispEdges;
 }
 
@@ -43,7 +42,7 @@ svg {
   font-size: 4px;
 }
 
-.genere_square{
+.genere_square {
   height:10px;
   width:10px;
   outline:solid 1px black;
@@ -51,4 +50,18 @@ svg {
   margin-right:10px;
   margin-top:6px;
   margin-left:10px;
+}
+
+.genere_info {
+  cursor: pointer;
+}
+
+
+/*****************************************/
+.active {
+  stroke: red;
+}
+
+.normal {
+  stroke: rgb(66, 172, 66);
 }

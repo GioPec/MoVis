@@ -61,7 +61,8 @@
         .selectAll("path")
         .data(data)
         .enter().append("path")
-        .attr("class","forepath")
+        .attr("id", function (d) { return d.imdb_id } )
+        .attr("class","normal")
         .attr("d", path);
 
     // Add a group element for each dimension.
@@ -148,8 +149,8 @@
             }
         }
         ids = []
-        foreground.style("display", function(d) {
-            //ids.push(d.id)
+        foreground.classed("active", function(d) {
+            ids.push(d.id)
             eliminato = false
             return dimensions.every(function(p, i) {
                 
@@ -160,27 +161,44 @@
             
             if(!check_1 && !(eliminato)){
                 eliminato = true
-                ids.push(d.id)
+                ids.pop()
             }
             return check_1
-            }) ? null : "none";
-        });  
-        
-       
+            }) ? true : false;
+        });
+        foreground.classed("normal", function(d) {
+            ids.push(d.id)
+            eliminato = false
+            return dimensions.every(function(p, i) {
+                
+                check_2 = extents[i][0]==0 && extents[i][1]==0
+                if(check_2) return true;
+                
+            check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            
+            if(!check_1 && !(eliminato)){
+                eliminato = true
+                ids.pop()
+            }
+            return check_1
+            }) ? false : true;
+        });
+        //foreground.raise()
+
 
         var area_1 = d3.select("#area_1")
-        area_1.selectAll(".dot").style("opacity", function(d) {  
+        area_1.selectAll(".dot").style("fill", function(d) {  
             for(t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
-                    return "0.1"
+                    return "red"
                 }
             }
-            return "1"
-        })
+            return "rgb(66, 172, 66)"
+        });
     }
 }
 
-d3.csv("../datasets/dataset.csv", function(error, data) {
+d3.csv("../datasets/dataset_500.csv", function(error, data) {
 
     chiavi= d3.keys(data[0])
     if (error) throw error;
@@ -189,66 +207,6 @@ d3.csv("../datasets/dataset.csv", function(error, data) {
         data[i].id=i
       }
       drawParallel(data)
-    })
+})
     
-    //create brush function redraw scatterplot with selection
-    function brushed() {
-      var selection = d3.event.selection;
-      x.domain(selection.map(x2.invert, x2));
-      /*
-      focus.selectAll(".dot")
-            .attr("cx", function(d) { return x(d[chiavi[0]]); })
-            .attr("cy", function(d) { return y(d[chiavi[1]]); });
-      focus.select(".axis--x").call(xAxis);
-      */
-    }
     
-    function selected() {
-        dataSelection=[]
-        //console.log(selection[0][0]);
-        /*focus.selectAll(".dot").filter(function(d){
-        if ((x(d.sepalLength) > selection[0][0]) && (x(d.sepalLength) < selection[1][0]) && (y(d.sepalWidth) > selection[0][1]) && (y(d.sepalWidth) < selection[1][1])) {
-            dataSelection.push(d)
-            return true
-        }
-        })
-        .attr("fill","red")*/
-        var selection= d3.event.selection;
-        
-        if (selection != null) {
-            focus.selectAll(".dot")
-               /*  .style("fill",function(d){
-                if ((x(d[chiavi[0]]) > selection[0][0]) && (x(d[chiavi[0]]) < selection[1][0]) && (y(d[chiavi[1]]) > selection[0][1]) && (y(d[chiavi[1]]) < selection[1][1])) {
-                    dataSelection.push(d.id)
-                    return "red"
-                }
-                else
-                {
-                    return color(d[chiavi[2]])
-                }
-            })*/
-                .style("opacity",function(d){
-                if ((x(d[chiavi[0]]) > selection[0][0]) && (x(d[chiavi[0]]) < selection[1][0]) && (y(d[chiavi[1]]) > selection[0][1]) && (y(d[chiavi[1]]) < selection[1][1])) {
-                    dataSelection.push(d.id)
-                    return "1.0"
-                }
-                else return "0.3"
-            })
-            
-            
-        }
-        else
-        {
-            focus.selectAll(".dot")
-                .style("fill",function(d) {return color(d[chiavi[2]]); })
-                .style("opacity",".5")
-            //console.log("reset");
-        }
-        
-        d3.select("#parallelArea").selectAll(".forepath")
-            .style("stroke","red")
-        
-        var c=d3.select("#parallelArea").selectAll(".forepath")
-            .style("stroke",red)
-       
-    }

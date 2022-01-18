@@ -89,37 +89,6 @@ function reset_matrix() {
   ];
 }
 
-var matrix3 = [
-  [41, 0, 6, 1, 0, 0, 0, 0, 8, 9, 1, 2],
-  [0, 18, 4, 3, 19, 2, 2, 4, 17, 40, 11, 34],
-  [6, 4, 12, 40, 26, 33, 3, 6, 78, 77, 1, 8],
-  [1, 3, 40, 13, 155, 96, 1, 35, 153, 33, 4, 43],
-  [0, 19, 26, 155, 12, 230, 18, 223, 263, 196, 165, 460],
-  [0, 2, 33, 96, 230, 6, 62, 53, 154, 106, 67, 146],
-  [0, 2, 3, 1, 18, 62, 92, 108, 85, 84, 327, 94],
-  [0, 4, 6, 35, 223, 53, 108, 15, 95, 120, 230, 333],
-  [8, 17, 78, 153, 263, 154, 85, 95, 665, 511, 118, 278],
-  [9, 40, 77, 33, 196, 106, 84, 120, 511, 943, 574, 407],
-  [1, 11, 1, 4, 165, 67, 327, 230, 118, 574, 140, 536],
-  [2, 34, 8, 43, 460, 146, 94, 333, 278, 407, 536, 81]
-]
-
-
-var matrix4 = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 18, 4, 3, 19, 2, 2, 4, 17, 40, 11, 34],
-  [0, 4, 12, 40, 26, 33, 3, 6, 78, 77, 1, 8],
-  [0, 3, 40, 13, 155, 96, 1, 35, 153, 33, 4, 43],
-  [0, 19, 26, 155, 12, 230, 18, 223, 263, 196, 165, 460],
-  [0, 2, 33, 96, 230, 6, 62, 53, 154, 106, 67, 146],
-  [0, 2, 3, 1, 18, 62, 92, 108, 85, 84, 327, 94],
-  [0, 4, 6, 35, 223, 53, 108, 15, 95, 120, 230, 333],
-  [0, 17, 78, 153, 263, 154, 85, 95, 665, 511, 118, 278],
-  [0, 40, 77, 33, 196, 106, 84, 120, 511, 943, 574, 407],
-  [0, 11, 1, 4, 165, 67, 327, 230, 118, 574, 140, 536],
-  [0, 34, 8, 43, 460, 146, 94, 333, 278, 407, 536, 81]
-]
-
 var excluded_genres = []
 
 function compute_matrix_row(row, genres_num) {
@@ -141,6 +110,7 @@ function compute_matrix_row(row, genres_num) {
 
 function load_genres(excluded_genres) {
   reset_matrix()
+  var deselected_ids = []
   d3v6.csv("../datasets/dataset.csv", function(row) {
     genres_num = row.genres.split("|").length
     genres = row.genres.split("|")
@@ -148,6 +118,7 @@ function load_genres(excluded_genres) {
     var compute_row = true
     for (let g=0; g<excluded_genres.length; g++) {
       if (genres.includes(excluded_genres[g])) {
+        if (!deselected_ids.includes(row.imdb_id)) deselected_ids.push(row.imdb_id)
         compute_row = false
         break
       }
@@ -160,6 +131,11 @@ function load_genres(excluded_genres) {
     d3.select("#chord_arcs").remove()
     d3.select("#chord_ribbons").remove()
     createD3Chord()
+
+    //update MDS
+    update_PC(deselected_ids)
+    //update par_cor
+    update_MDS(deselected_ids)
   })
 }
 
@@ -268,6 +244,37 @@ function createLabel(generi) {
         */
 
   return
+}
+
+function update_PC(deselected_ids) {
+  var paths = d3.select(".foreground").selectAll("path")
+
+  paths.filter(function(d) {
+    return deselected_ids.includes(this['id'])
+  }).style("display", "none")
+
+  paths.filter(function(d) {
+    return !deselected_ids.includes(this['id'])
+  }).style("display", null)
+}
+
+function update_MDS(deselected_ids) {
+  var cerchi = d3.select("#area_1").selectAll(".dot")
+  
+  cerchi.filter(function(d) {
+    return deselected_ids.includes(this['id'])
+  }).style("opacity", "0.1")
+  
+  cerchi.filter(function(d) {
+    var color = this["style"]["fill"]
+    return !deselected_ids.includes(this['id'])
+  }).style("opacity", "1")
+
+  cerchi.style("fill",function(d) {
+    var color = this["style"]["fill"]
+    return color == "red"
+  }) ? "red" : "rgb(66, 172, 66)"
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
