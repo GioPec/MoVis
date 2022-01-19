@@ -34,8 +34,12 @@
         //different than "name" it creates and y axis in a dictionary by variable name
     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
         //if ((d == "a1") || (d == "a2") || (d == "a3")  || (d == "a4")  || (d == "a5")  || (d == "a6")  || (d == "a7")  || (d == "a8")) {
-        if ((d == "budget") || (d == "revenue") || (d == "runtime")  || 
-        (d == "vote_average")  || (d == "vote_count")  || (d == "popularity")  || (d == "in_connections")  || (d == "out_connections")) {
+        if (
+            (d == "year") 
+        || (d == "budget") || (d == "revenue") || (d == "runtime")
+        || (d == "vote_average")  || (d == "vote_count")  //|| (d == "popularity")  
+        || (d == "in_connections")  || (d == "out_connections")
+        ) {
             return y[d] = d3.scaleLinear()
             .domain(d3.extent(data, function(p) { 
                 return +p[d]; }))
@@ -64,6 +68,7 @@
         .attr("id", function (d) { return d.imdb_id } )
         .attr("class","normal")
         .attr("d", path);
+    
 
     // Add a group element for each dimension.
     var g = svg.selectAll(".dimension")
@@ -183,7 +188,7 @@
             return check_1
             }) ? false : true;
         });
-        //foreground.raise()
+        d3.selectAll(".active").raise()
 
 
         var area_1 = d3.select("#area_1")
@@ -198,7 +203,7 @@
     }
 }
 
-d3.csv("../datasets/dataset_500.csv", function(error, data) {
+d3.csv("../datasets/dataset_mds.csv", function(error, data) {
 
     chiavi= d3.keys(data[0])
     if (error) throw error;

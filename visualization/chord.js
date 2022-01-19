@@ -111,7 +111,7 @@ function compute_matrix_row(row, genres_num) {
 function load_genres(excluded_genres) {
   reset_matrix()
   var deselected_ids = []
-  d3v6.csv("../datasets/dataset.csv", function(row) {
+  d3v6.csv("../datasets/dataset_mds.csv", function(row) {
     genres_num = row.genres.split("|").length
     genres = row.genres.split("|")
     //if (genres_num<1) console.log("Error! Genres<1")
@@ -144,7 +144,7 @@ function load_genres(excluded_genres) {
 function createD3Chord() {
   // give this matrix to d3v6.chord(): it will calculates all the info we need to draw arc and ribbon
   const res = d3v6.chord()
-  .padAngle(0.1)     // padding between entities (black arc)
+  .padAngle(0.05)     // padding between entities (black arc)
   .sortSubgroups(d3v6.descending)
   (matrix2)
 

@@ -42,10 +42,10 @@ ds = ds.drop(ds[
     | (ds.revenue == 0)
     ].index)
 
-# df['release_date'] = df['release_date'].apply(lambda x: x[:4])
-# df['budget'] = df['budget'].apply(lambda x: x/1000000)
-# df['revenue'] = df['revenue'].apply(lambda x: x/1000000)
+ds['release_date'] = ds['release_date'].apply(lambda x: x[:4])
+ds['budget'] = ds['budget'].apply(lambda x: x/1000000)
+ds['revenue'] = ds['revenue'].apply(lambda x: x/1000000)
 
 print(ds.head)
-#ds.to_csv(path_constants.DATASET, index=False)
+ds.to_csv(path_constants.DATASET, index=False)
 

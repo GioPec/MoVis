@@ -79,14 +79,15 @@ function draw_MDS(data){
       .attr("cx", function (d) { return x(d[chiavi[0]]) } )
       .attr("cy", function (d) { return y(d[chiavi[1]]) } )
       .attr("r", 1)
-      .attr("id", function (d) { return ('0'*(7 - d[chiavi[2]].length)) + d[chiavi[2]]} )
+      .attr("id", function (d) { return d[chiavi[2]] })
+      .attr("name", function (d) { return d["title"] } )
       .style("fill", "rgb(66, 172, 66)") // #ff0099
       .style("stroke", "black")
       .style("stroke-width", "0.2") 
       .style("opacity", 0.8)
       .style("pointer-events", "all")
       .on("mouseover", function(d) {
-      tooltip.text(this.id);
+      tooltip.text(d.title);
      return tooltip.style("visibility", "visible");
    })
    .on("mousemove", function() {
@@ -128,7 +129,7 @@ function draw_MDS(data){
   }
 }
 
-d3.csv("../datasets/mds_first_attempt.csv", function(error, data) {
+d3.csv("../datasets/dataset_mds.csv", function(error, data) {
   chiavi = d3.keys(data[0])
   if (error) throw error;
     var l=data.length;
