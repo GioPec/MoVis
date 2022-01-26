@@ -111,7 +111,7 @@ function compute_matrix_row(row, genres_num) {
 function load_genres(excluded_genres) {
   reset_matrix()
   var deselected_ids = []
-  d3v6.csv("../datasets/dataset_mds.csv", function(row) {
+  d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
     genres_num = row.genres.split("|").length
     genres = row.genres.split("|")
     //if (genres_num<1) console.log("Error! Genres<1")
@@ -182,43 +182,73 @@ function createD3Chord() {
     //.delay(function(d, i) { return i / data.length * enter_duration; })
     .style("fill", d => colors_light[d.source.index])
     //.style("stroke", "black"); // maybe?
+
+
+
+    
 }
 
 function createLabel(generi) {
 
-  var labels = d3.select('#area_5')
-    .append("div")
-      //.style("background", "rgb(225, 213, 168)")
-      .style("position", "absolute")
+  d3.select('#svg_5')
+    .append("g")
+    //.style("background", "rgb(225, 213, 168)")
+      //.style("position", "absolute")
       .style("top", "5%")
       .style("right", "3.5%")
       .style("width", "35%")
       .style("height", "90%")
+  
+    .selectAll('g')
+    .data(generi)
+    .enter()
+    .append('text').text(function(d){return d.genere})
+    .attr("transform", function(d){
+      ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
+      return ret
+    }).on('click', function(d){
+      
+      console.log(d.genere)
+      var t = d3.select(this)
+      if (t.style("opacity") == 1) {
+        t.style("opacity", "0.3")
+      }
+      else t.style("opacity", "1")
+      
+      const index = excluded_genres.indexOf(d.genere);
+      if (index > -1) {
+        excluded_genres.splice(index, 1);
+      }
+      else excluded_genres.push(d.genere)
 
-  .selectAll('div')
-  .data(generi)
-  .enter()
-  .append('div')
-    .attr('id',function(d){return d.genere})
-    .attr('class','genere_info')
-    .attr('for',function(d){return d.genere})
-    .attr('id', function(d){return 'genere_info_' + d.id})
-    .style("opacity","1")
-    .style("height", "8.33%")
-   
-    labels.append('div')
+      console.log(excluded_genres)
+      load_genres(excluded_genres)
+    })
+
+
+    
+    
+
+  
+ 
+    
+   /*
+    labels
+    .selectAll("div")
+    .data(generi)
+    .enter()
+    .append("div")
         .attr('class','genere_square')
         .attr('id', function(d){return 'genere_square_' + d.id})
         .style("background-color", function(d){return d.colore})
-
-    labels.append('div')
-        .attr('class','genere_label')
-        .style("font-size", "100%")
-        .attr('id', function(d){return 'genere_label_' + d.id})
-        .text(function(d){return d.genere})
-
-    
-      d3.selectAll('.genere_info')
+        .style("width", "5%")
+        .style("position", "absolute")
+        .style("margin-left",function(d){return "20%"})
+        .style("margin-bottom",function(d){return "20%"})
+        
+        
+    /*
+      d3.select('.genere_info')
       .on('click', function(d){
         //d3.event.target.style("opacity", ".3")
         var t = d3.select(this)
@@ -234,7 +264,8 @@ function createLabel(generi) {
         else excluded_genres.push(t.attr("for"))
        
         load_genres(excluded_genres)
-      })
+      })*/
+      
 
 /* TODO
     labels.append('div')

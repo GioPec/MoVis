@@ -1,7 +1,4 @@
-svg {
-    font: 10px sans-serif;
-}
-  
+
 .background path {
   fill: none;
   stroke: #ddd;
@@ -31,30 +28,20 @@ svg {
   shape-rendering: crispEdges;
 }
 
-.axis text {
-  font-size: 5px;
-  fill: black;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
-  cursor: move;
-}
-
-.tick text {
-  font-size: 4px;
-}
 
 .genere_square {
-  height:10px;
-  width:10px;
-  outline:solid 1px black;
-  float:left;
-  margin-right:10px;
-  margin-top:6px;
-  margin-left:10px;
+  height: 3.8%;
+  border :solid 1px black;
 }
-
 .genere_info {
   cursor: pointer;
 }
+
+.area_3_g {
+  font-size: 9px;
+}
+
+
 
 
 /*****************************************/

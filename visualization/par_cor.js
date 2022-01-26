@@ -32,21 +32,45 @@
     // Extract the list of dimensions and create a scale for eac/cars[0] contains the header elements,h.
         // then for all elements in the header
         //different than "name" it creates and y axis in a dictionary by variable name
-    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
-        //if ((d == "a1") || (d == "a2") || (d == "a3")  || (d == "a4")  || (d == "a5")  || (d == "a6")  || (d == "a7")  || (d == "a8")) {
+
+
+     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
         if (
             (d == "year") 
         || (d == "budget") || (d == "revenue") || (d == "runtime")
         || (d == "vote_average")  || (d == "vote_count")  //|| (d == "popularity")  
         || (d == "in_connections")  || (d == "out_connections")
         ) {
+            
             return y[d] = d3.scaleLinear()
-            .domain(d3.extent(data, function(p) { 
-                return +p[d]; }))
+            .domain(d3.extent(data, function(p) { return +p[d]; }))
             .range([104, 6]);
         }
         return false
     }));
+
+/*  TENTATIVO DI USARE ANCHE SCALE LOG
+
+    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+        if (
+        (d == "year") || //(d == "budget") || (d == "revenue") || 
+        (d == "runtime") || 
+        (d == "vote_average")  || (d == "vote_count") ||  //|| (d == "popularity")  
+        (d == "in_connections")  || (d == "out_connections")
+        ) {
+            return y[d] = d3.scaleLinear()
+            .domain(d3.extent(data, function(p) { return +p[d]; }))
+            .range([104, 6]);
+        }
+        else if (
+            (d == "budget") || (d == "revenue")
+        ) {
+            return y[d] = d3.scaleLog()
+            .domain(d3.extent(data, function(p) { return +p[d]; }))
+            .range([104, 6]);
+        }
+        return false
+    })); */
 
     extents = dimensions.map(function(p) { return [0,0]; });
 
@@ -105,15 +129,21 @@
     g.append("g")
         .attr("class", "axis")
         .style("font-family", "sans-serif")
-        .each(function(d) {  d3.select(this).call(d3.axisLeft(y[d]));})
+        .each(function(d) {  
+            d3.select(this)
+            .call(d3.axisLeft(y[d]))
+            .attr("font-size", "4px")
+   
+        
         //text does not show up because previous line breaks somehow
         .append("text")
         
         //.style("text-anchor", "big")
         .attr("y", 4)
-        .style("font-size", "4px")
+        .attr("font-size", "4px")
+        .style("fill", "#000")
         .text(function(d) { return d; });
-            
+    })
     // Add and store a brush for each axis.
     g.append("g")
         .attr("class", "brush")
@@ -203,7 +233,7 @@
     }
 }
 
-d3.csv("../datasets/dataset_mds.csv", function(error, data) {
+d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
 
     chiavi= d3.keys(data[0])
     if (error) throw error;

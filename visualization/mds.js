@@ -45,12 +45,13 @@ function draw_MDS(data){
     .attr("class", "axis axis--x")
     .attr("transform", "translate(30," + 156 + ")")
     .call(d3.axisBottom(x))
+    .attr("font-size", "6px")
     
   var yAxis = svg_1.append("g")
     .attr("class", "axis axis--y")
     .attr("transform", "translate(30," + 2 + ")")
     .call(d3.axisLeft(y))
-  
+    .attr("font-size", "6px")
   x.domain(d3.extent(data, function(d) { return +d[chiavi[0]]; }));
   y.domain(d3.extent(data, function(d) { return +d[chiavi[1]]; }));
   
@@ -129,7 +130,7 @@ function draw_MDS(data){
   }
 }
 
-d3.csv("../datasets/dataset_mds.csv", function(error, data) {
+d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
   chiavi = d3.keys(data[0])
   if (error) throw error;
     var l=data.length;
