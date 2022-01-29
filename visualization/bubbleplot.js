@@ -13,10 +13,43 @@ var height = 300 - margin_top - margin_bottom
 
 var x
 var y
+
+
+var tooltip = d3.select("body")
+.append("div")
+.style("background", "rgb(225, 213, 168)")
+.style("position", "absolute")
+.style("z-index", "10")
+.style("visibility", "hidden")
+.style("font-size", "20px")
+.text("a simple tooltip");
   
 
 
 function draw_bubbleplot_2(data, bubble_flag){   
+
+  function sort_bubble(bubble){
+    ret = []
+
+    for (let i=0; i<bubble.length; i++) {
+
+      if(ret.length == 0 ){ ret.push(bubble[i])}
+
+      else{
+        for (let j=0; j<ret.length; j++) {
+          if(bubble[i]['n'] > ret[j]['n']){
+            ret.splice(j,0,bubble[i])
+            break
+          }
+          else{
+            if(j == ret.length-1){ret.push(bubble[i])}
+          }
+        }
+      }
+    }
+
+    return ret
+  }
 
   function update_bubble_x(x_col, bubble_flag){
     
@@ -41,7 +74,7 @@ function draw_bubbleplot_2(data, bubble_flag){
         end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
 
         dict_bubbles = {}
-        for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "n":0} }
+        for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "n":0, "decade":i }}
 
         //console.log("x_col", chiavi[x_col])
         
@@ -69,7 +102,9 @@ function draw_bubbleplot_2(data, bubble_flag){
         x.domain(range_x);
         xAxis.call(d3.axisBottom(x))
 
-        cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(bubbles);
+        sorted_bubbles = sort_bubble(bubbles)
+
+        cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
         cerchi.transition().duration(1000).attr("cx", function (d) {  return x(d.x) } )
 
 
@@ -104,7 +139,7 @@ function draw_bubbleplot_2(data, bubble_flag){
       end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
 
       dict_bubbles = {}
-      for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"y":[], "n":0} }
+      for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"y":[], "n":0, "decade":i } }
 
       //console.log("x_col", chiavi[x_col])
       
@@ -121,10 +156,10 @@ function draw_bubbleplot_2(data, bubble_flag){
         bubbles[i].y = bubbles[i].y.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].y.length
       }
 
-      
+      sorted_bubbles = sort_bubble(bubbles)
 
       /// change range for bubbles
-      console.log("bubbles", bubbles)
+      
       range_y = d3.extent(bubbles, function(d) {return +d.y; })
      
       range_y[0]=range_y[0]-10
@@ -132,7 +167,7 @@ function draw_bubbleplot_2(data, bubble_flag){
       y.domain(range_y);
       yAxis.call(d3.axisLeft(y))
 
-      cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(bubbles);
+      cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
 
 
@@ -198,7 +233,7 @@ function draw_bubbleplot_2(data, bubble_flag){
     end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
 
     dict_bubbles = {}
-    for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0} }
+    for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0, "decade": i} }
 
  
     for (let i=0; i<data.length; i++) { 
@@ -234,22 +269,37 @@ function draw_bubbleplot_2(data, bubble_flag){
     range_y[1]=range_y[1]+10
     y.domain(range_y);
     yAxis.call(d3.axisLeft(y))
+
+ 
+   sorted_bubbles = sort_bubble(bubbles)
     
     
 
     /// add bubbles
     bolle =d3.select("#area_2_circles").selectAll(".bubble")
-    .data(bubbles)
+    .data(sorted_bubbles)
     .enter().append("circle")
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/100})
+    .attr("r",function (d) {  return d.n/10})
     .style("fill", "rgb(66, 172, 66)") // #ff0099
     .style("stroke", "black")
     .style("stroke-width", "1") 
     .style("opacity", "0")
     .style("pointer-events", "all")
+    .on("mouseover", function(d) {
+      tooltip.text("decade : "+d.decade+", n°_film: "+d.n);
+     return tooltip.style("visibility", "visible");
+    })
+    .on("mousemove", function() {
+      return tooltip.style("top",
+        (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+    })
+    .on("mouseout", function() {
+      return tooltip.style("visibility", "hidden");
+      
+    });
 
     bolle.transition().duration(800).style("opacity", "0.6")
 
@@ -395,7 +445,7 @@ scatter
     .style("pointer-events", "all")
 }
 
-d3.csv("../datasets/dataset_mds.csv", function(error, data) {
+d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
   chiavi = d3.keys(data[0])
   console.log(chiavi)
   if (error) throw error;
