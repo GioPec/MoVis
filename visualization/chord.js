@@ -203,76 +203,67 @@ function createLabel(generi) {
     .data(generi)
     .enter()
     .append('text').text(function(d){return d.genere})
+    .attr("id", function(d){return d.genere+"_chord"})
     .attr("transform", function(d){
       ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
     }).on('click', function(d){
       
-      console.log(d.genere)
+    
       var t = d3.select(this)
+   
+      
       if (t.style("opacity") == 1) {
-        t.style("opacity", "0.3")
+        d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
       }
-      else t.style("opacity", "1")
+      else d3.selectAll("#"+d.genere+"_chord").style("opacity", "1")
       
       const index = excluded_genres.indexOf(d.genere);
       if (index > -1) {
         excluded_genres.splice(index, 1);
       }
       else excluded_genres.push(d.genere)
-
-      console.log(excluded_genres)
+  
+      
       load_genres(excluded_genres)
     })
-
-
     
     
-
-  
+    var tooltip = d3.select("#area_5")
+    .selectAll('div')
+          .data( generi_info)
+          .enter()
+          .append('div')
+    .attr("id", function(d){return d.genere+"_chord"})
+   .style("position", "absolute")
+   .style("top", function(d){return (3 +d.id*8.1)+"%"})
+   .style("left", "70%")
+   .style("background", function(d){return d.colore})
+   .style("position", "absolute")
+   .style("border", "1px solid black")
+   .style("font-size", "20px")
+   .style("width", "3%")
+   .style("height", "5%")
+   .on('click', function(d){
+      
+    
+    var t = d3.select(this)
  
     
-   /*
-    labels
-    .selectAll("div")
-    .data(generi)
-    .enter()
-    .append("div")
-        .attr('class','genere_square')
-        .attr('id', function(d){return 'genere_square_' + d.id})
-        .style("background-color", function(d){return d.colore})
-        .style("width", "5%")
-        .style("position", "absolute")
-        .style("margin-left",function(d){return "20%"})
-        .style("margin-bottom",function(d){return "20%"})
-        
-        
-    /*
-      d3.select('.genere_info')
-      .on('click', function(d){
-        //d3.event.target.style("opacity", ".3")
-        var t = d3.select(this)
-        if (t.style("opacity") == 1) {
-          t.style("opacity", "0.3")
-        }
-        else t.style("opacity", "1")
-       
-        const index = excluded_genres.indexOf(t.attr("for"));
-        if (index > -1) {
-          excluded_genres.splice(index, 1);
-        }
-        else excluded_genres.push(t.attr("for"))
-       
-        load_genres(excluded_genres)
-      })*/
-      
+    if (t.style("opacity") == 1) {
+      d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
+    }
+    else d3.selectAll("#"+d.genere+"_chord").style("opacity", "1")
+    
+    const index = excluded_genres.indexOf(d.genere);
+    if (index > -1) {
+      excluded_genres.splice(index, 1);
+    }
+    else excluded_genres.push(d.genere)
 
-/* TODO
-    labels.append('div')
-        .attr('class','number')
-        .style("font-size", "100%")
-        .text(function(d){return d.numerodifilm?})
-        */
+    
+    load_genres(excluded_genres)
+  })
 
   return
 }
