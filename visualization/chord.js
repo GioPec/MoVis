@@ -89,7 +89,9 @@ function reset_matrix() {
   ];
 }
 
-var excluded_genres = []
+//var included_genres = Object.keys(dict)
+
+var included_genres = []
 
 function compute_matrix_row(row, genres_num) {
   if (genres_num==1) {
@@ -108,18 +110,19 @@ function compute_matrix_row(row, genres_num) {
   } 
 }
 
-function load_genres(excluded_genres) {
+function load_genres(included_genres) {
+  if(included_genres.length == 0){included_genres = Object.keys(dict)}
   reset_matrix()
-  var deselected_ids = []
+  var selected_ids = []
   d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
     genres_num = row.genres.split("|").length
     genres = row.genres.split("|")
     //if (genres_num<1) console.log("Error! Genres<1")
-    var compute_row = true
-    for (let g=0; g<excluded_genres.length; g++) {
-      if (genres.includes(excluded_genres[g])) {
-        if (!deselected_ids.includes(row.imdb_id)) deselected_ids.push(row.imdb_id)
-        compute_row = false
+    var compute_row = false
+    for (let g=0; g<included_genres.length; g++) {
+      if (genres.includes(included_genres[g])) {
+        if (!selected_ids.includes(row.imdb_id)) selected_ids.push(row.imdb_id)
+        compute_row = true
         break
       }
     }
@@ -133,9 +136,9 @@ function load_genres(excluded_genres) {
     createD3Chord()
 
     //update MDS
-    update_PC(deselected_ids)
+    update_PC(selected_ids)
     //update par_cor
-    update_MDS(deselected_ids)
+    update_MDS(selected_ids)
   })
 }
 
@@ -204,93 +207,96 @@ function createLabel(generi) {
     .enter()
     .append('text').text(function(d){return d.genere})
     .attr("id", function(d){return d.genere+"_chord"})
+    .style("background-color", "green")
     .attr("transform", function(d){
       ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
     }).on('click', function(d){
       
-    
-      var t = d3.select(this)
+      
+      //var t = d3.select(this)
+      var t = d3.select("#"+d.genere+"_chord_back").style("background-color")
    
       
-      if (t.style("opacity") == 1) {
-        d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
+      if (t != "white") {
+        //d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
+        d3.select("#"+d.genere+"_chord_back").style("background-color", "white")
       }
-      else d3.selectAll("#"+d.genere+"_chord").style("opacity", "1")
+      else d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")
       
-      const index = excluded_genres.indexOf(d.genere);
+      const index = included_genres.indexOf(d.genere);
       if (index > -1) {
-        excluded_genres.splice(index, 1);
+        included_genres.splice(index, 1);
       }
-      else excluded_genres.push(d.genere)
+      else included_genres.push(d.genere)
   
       
-      load_genres(excluded_genres)
+      load_genres(included_genres)
     })
     
-    
-    var tooltip = d3.select("#area_5")
-    .selectAll('div')
-          .data( generi_info)
-          .enter()
-          .append('div')
-    .attr("id", function(d){return d.genere+"_chord"})
-   .style("position", "absolute")
-   .style("top", function(d){return (3 +d.id*8.1)+"%"})
-   .style("left", "70%")
-   .style("background", function(d){return d.colore})
-   .style("position", "absolute")
-   .style("border", "1px solid black")
-   .style("font-size", "20px")
-   .style("width", "3%")
-   .style("height", "5%")
-   .on('click', function(d){
-      
-    
-    var t = d3.select(this)
+  
+  var tooltip = d3.select("#area_5")
+  .selectAll('div')
+        .data( generi_info)
+        .enter()
+ .append('div')
+.attr("id", function(d){return d.genere+"_chord_back"})
+ .style("position", "absolute")
+ .style("top", function(d){return (3 +d.id*8.1)+"%"})
+ .style("left", "70%")
+ .style("background-color", function(d){return "white"})
+ .style("z-index", "-1")
+ .style("position", "absolute")
+ .style("font-size", "20px")
+ .style("width", "20%")
+ .style("height", "5%")
  
-    
-    if (t.style("opacity") == 1) {
-      d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
-    }
-    else d3.selectAll("#"+d.genere+"_chord").style("opacity", "1")
-    
-    const index = excluded_genres.indexOf(d.genere);
-    if (index > -1) {
-      excluded_genres.splice(index, 1);
-    }
-    else excluded_genres.push(d.genere)
+ 
+.append('div')
+.attr("id", function(d){return d.genere+"_chord"})
+ .style("position", "absolute")
+ .style("top", function(d){return (0)+"%"})
+ .style("left", "0%")
+ .style("background", function(d){return d.colore})
+ .style("position", "absolute")
+ .style("border", "1px solid black")
+ .style("font-size", "20px")
+ .style("width", "15%")
+ .style("height", "90%")
+ .style("opacity", "1")
+ .style("z-index", "0")
+ 
+ 
 
-    
-    load_genres(excluded_genres)
-  })
+
+  
 
   return
 }
 
-function update_PC(deselected_ids) {
+function update_PC(selected_ids) {
   var paths = d3.select(".foreground").selectAll("path")
 
   paths.filter(function(d) {
-    return deselected_ids.includes(this['id'])
-  }).style("display", "none")
+    return selected_ids.includes(this['id'])
+  }).style("display", null)
 
   paths.filter(function(d) {
-    return !deselected_ids.includes(this['id'])
-  }).style("display", null)
+    return !selected_ids.includes(this['id'])
+  }).style("display", "none")
 }
 
-function update_MDS(deselected_ids) {
+function update_MDS(selected_ids) {
   var cerchi = d3.select("#area_1").selectAll(".dot")
   
   cerchi.filter(function(d) {
-    return deselected_ids.includes(this['id'])
-  }).style("opacity", "0.1")
+    return selected_ids.includes(this['id'])
+  }).style("display", null)
   
   cerchi.filter(function(d) {
     var color = this["style"]["fill"]
-    return !deselected_ids.includes(this['id'])
-  }).style("opacity", "1")
+    return !selected_ids.includes(this['id'])
+  }).style("display", "none")
 
   cerchi.style("fill",function(d) {
     var color = this["style"]["fill"]
@@ -301,7 +307,7 @@ function update_MDS(deselected_ids) {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-load_genres(excluded_genres)
+load_genres(included_genres)
 
 
 
