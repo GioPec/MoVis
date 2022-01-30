@@ -1,4 +1,6 @@
 
+    import{test} from "./chord.js"
+    
     //////////DISEGNO PARALLEL////////////
 
     function drawParallel(data){
@@ -14,7 +16,7 @@
 
     var line = d3.line(),
         //axis = d3.axisLeft(x),
-        background,
+       // background,
         foreground,
         extents;
 
@@ -33,6 +35,7 @@
         // then for all elements in the header
         //different than "name" it creates and y axis in a dictionary by variable name
 
+    var dimensions;
 
      x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
         if (
@@ -75,6 +78,7 @@
     extents = dimensions.map(function(p) { return [0,0]; });
 
     // Add grey background lines for context.
+    /*
     background = svg.append("g")
         .attr("class", "background")
         .selectAll("path")
@@ -82,7 +86,7 @@
         .enter().append("path")
         .attr("class","backpath")
         .attr("d", path);
-
+*/
     // Add red foreground lines for focus.
     foreground = svg.append("g")
         .attr("class", "foreground")
@@ -183,33 +187,39 @@
                 //console.log(extents[i])
             }
         }
-        ids = []
+        var ids = []
+        var imdb_ids = []
         foreground.classed("active", function(d) {
             ids.push(d.id)
-            eliminato = false
+            imdb_ids.push(d.imdb_id)
+            var eliminato = false
             return dimensions.every(function(p, i) {
                 
-                check_2 = extents[i][0]==0 && extents[i][1]==0
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
                 if(check_2) return true;
                 
-            check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
             
             if(!check_1 && !(eliminato)){
                 eliminato = true
                 ids.pop()
+                imdb_ids.pop()
             }
             return check_1
             }) ? true : false;
+
         });
+       
+       
         foreground.classed("normal", function(d) {
             ids.push(d.id)
-            eliminato = false
+            var eliminato = false
             return dimensions.every(function(p, i) {
                 
-                check_2 = extents[i][0]==0 && extents[i][1]==0
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
                 if(check_2) return true;
                 
-            check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
             
             if(!check_1 && !(eliminato)){
                 eliminato = true
@@ -220,28 +230,33 @@
         });
         d3.selectAll(".active").raise()
 
+        //update chord
+        test(imdb_ids)
 
+        //update mds
         var area_1 = d3.select("#area_1")
         area_1.selectAll(".dot").style("fill", function(d) {  
-            for(t=0;t<ids.length;t++){
+            for(var t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
                     return "red"
                 }
             }
             return "rgb(66, 172, 66)"
         });
+
     }
 }
 
 d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
 
-    chiavi= d3.keys(data[0])
+    var chiavi= d3.keys(data[0])
     if (error) throw error;
       var l=data.length;
-      for (i=0;i<l;i++) {
+      for (var i=0;i<l;i++) {
         data[i].id=i
       }
       drawParallel(data)
+      
 })
     
     

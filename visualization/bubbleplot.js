@@ -447,7 +447,7 @@ scatter
 
 d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
   chiavi = d3.keys(data[0])
-  console.log(chiavi)
+  
   if (error) throw error;
     var l=data.length;
     for (i=0;i<l;i++) data[i].id=i

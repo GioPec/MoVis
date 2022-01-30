@@ -93,16 +93,18 @@ function reset_matrix() {
 
 var included_genres = []
 
+var brushed_ids = []
+
 function compute_matrix_row(row, genres_num) {
   if (genres_num==1) {
-    gen = row.genres.split("|")
+    var gen = row.genres.split("|")
     matrix2[dict[gen]][dict[gen]] += 1
   }
   else {
     for (let i=0; i<genres_num-1; i++) {
       for (let j=i+1; j<genres_num; j++) {
-        gen1 = row.genres.split("|")[i]
-        gen2 = row.genres.split("|")[j]
+        var gen1 = row.genres.split("|")[i]
+        var gen2 = row.genres.split("|")[j]
         matrix2[dict[gen1]][dict[gen2]] += 1
         matrix2[dict[gen2]][dict[gen1]] += 1
       }
@@ -110,15 +112,22 @@ function compute_matrix_row(row, genres_num) {
   } 
 }
 
-function load_genres(included_genres) {
+function load_genres(included_genres, update_brushed_ids, highlighting) {
+
+  
+
+  brushed_ids = update_brushed_ids
+
   if(included_genres.length == 0){included_genres = Object.keys(dict)}
   reset_matrix()
   var selected_ids = []
   d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
-    genres_num = row.genres.split("|").length
-    genres = row.genres.split("|")
+    var genres_num = row.genres.split("|").length
+    var genres = row.genres.split("|")
     //if (genres_num<1) console.log("Error! Genres<1")
     var compute_row = false
+    
+    
     for (let g=0; g<included_genres.length; g++) {
       if (genres.includes(included_genres[g])) {
         if (!selected_ids.includes(row.imdb_id)) selected_ids.push(row.imdb_id)
@@ -126,7 +135,10 @@ function load_genres(included_genres) {
         break
       }
     }
-    if (compute_row) compute_matrix_row(row, genres_num)
+
+    if( (brushed_ids.length == 0) || (brushed_ids.includes(row.imdb_id))){
+      if (compute_row) compute_matrix_row(row, genres_num)
+    }
 
   }).then(function() {
     
@@ -135,10 +147,10 @@ function load_genres(included_genres) {
     d3.select("#chord_ribbons").remove()
     createD3Chord()
 
-    //update MDS
-    update_PC(selected_ids)
     //update par_cor
-    update_MDS(selected_ids)
+    if(!highlighting) {update_PC(selected_ids)} 
+    //update mds
+    if(!highlighting) {update_MDS(selected_ids)}
   })
 }
 
@@ -209,7 +221,7 @@ function createLabel(generi) {
     .attr("id", function(d){return d.genere+"_chord"})
     .style("background-color", "green")
     .attr("transform", function(d){
-      ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
+      var ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
     }).on('click', function(d){
       
@@ -231,7 +243,7 @@ function createLabel(generi) {
       else included_genres.push(d.genere)
   
       
-      load_genres(included_genres)
+      load_genres(included_genres, brushed_ids, false)
     })
     
   
@@ -305,9 +317,14 @@ function update_MDS(selected_ids) {
 
 }
 
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 
-load_genres(included_genres)
+load_genres(included_genres, brushed_ids, false)
 
-
+export function test(brushed_ids){
+  
+  load_genres(included_genres, brushed_ids, true)
+}
 
