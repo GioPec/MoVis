@@ -69,7 +69,7 @@ var y_box = d3v6.scaleLinear()
   .range([220, 0]);
 svg_area_3.call(d3v6.axisLeft(y_box));
 
-console.log("y_box",y_box(0))
+//console.log("y_box",y_box(0))
 
 // a few features for the box
 

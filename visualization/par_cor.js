@@ -1,5 +1,5 @@
 
-    import{test} from "./chord.js"
+    import{parCor_to_chord} from "./chord.js"
     
     //////////DISEGNO PARALLEL////////////
 
@@ -152,7 +152,13 @@
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-            d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,height]]).on("brush start", brushstart).on("brush", brush_parallel_chart));
+            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,height]])
+            .on("brush.uno start.uno ", brushstart)
+            .on("brush.due", brush_parallel_chart_2)
+            .on("end.tre", brush_parallel_chart)
+            
+            );
+            
         })
         .selectAll("rect")
         .attr("x", -8)
@@ -173,12 +179,19 @@
     }
 
     function brushstart() {
+        console.log("START")
     d3.event.sourceEvent.stopPropagation();
+    }
+
+    function brushend() {
+        console.log("END")
+    
     }
 
 
     // Handles a brush event, toggling the display of foreground lines.
-    function brush_parallel_chart() {    
+    function brush_parallel_chart() {   
+        
         var index = -1
         for(var i=0;i<dimensions.length;++i) {
             if(d3.event.target==y[dimensions[i]].brush) {
@@ -231,7 +244,76 @@
         d3.selectAll(".active").raise()
 
         //update chord
-        test(imdb_ids)
+        parCor_to_chord(imdb_ids)
+
+        //update mds
+        var area_1 = d3.select("#area_1")
+        area_1.selectAll(".dot").style("fill", function(d) {  
+            for(var t=0;t<ids.length;t++){
+                if(ids[t] == d.id){
+                    return "red"
+                }
+            }
+            return "rgb(66, 172, 66)"
+        });
+
+    }
+
+    function brush_parallel_chart_2() {   
+        
+        var index = -1
+        for(var i=0;i<dimensions.length;++i) {
+            if(d3.event.target==y[dimensions[i]].brush) {
+                index = i
+                extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]);
+                //console.log(extents[i])
+            }
+        }
+        var ids = []
+        var imdb_ids = []
+        foreground.classed("active", function(d) {
+            ids.push(d.id)
+            imdb_ids.push(d.imdb_id)
+            var eliminato = false
+            return dimensions.every(function(p, i) {
+                
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
+                if(check_2) return true;
+                
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            
+            if(!check_1 && !(eliminato)){
+                eliminato = true
+                ids.pop()
+                imdb_ids.pop()
+            }
+            return check_1
+            }) ? true : false;
+
+        });
+       
+       
+        foreground.classed("normal", function(d) {
+            ids.push(d.id)
+            var eliminato = false
+            return dimensions.every(function(p, i) {
+                
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
+                if(check_2) return true;
+                
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            
+            if(!check_1 && !(eliminato)){
+                eliminato = true
+                ids.pop()
+            }
+            return check_1
+            }) ? false : true;
+        });
+        d3.selectAll(".active").raise()
+
+        //update chord
+        //parCor_to_chord(imdb_ids)
 
         //update mds
         var area_1 = d3.select("#area_1")
