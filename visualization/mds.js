@@ -10,7 +10,7 @@ function draw_MDS(data){
 
   var tooltip = d3.select("body")
    .append("div")
-   .style("background", "rgb(225, 213, 168)")
+   .style("background", "rgba(225, 213, 168,0.8)")
    .style("position", "absolute")
    .style("z-index", "10")
    .style("visibility", "hidden")

@@ -21,7 +21,6 @@ var tooltip = d3.select("body")
 .style("z-index", "10")
 .style("visibility", "hidden")
 .style("font-size", "20px")
-//.style("opacity", "0.9");
 
 tooltip.html("")
 //tooltip.append("li").text("tooltip");
@@ -194,17 +193,7 @@ function load_genres(included_genres, update_brushed_ids, highlighting, chord_fi
     d3.select("#chord_arcs").remove()
     d3.select("#chord_ribbons").remove()
 
-/*
-    var toto = 0
-    for (let i=0; i<matrix2.length; i++) {
-      for (let j=0; j<matrix2.length; j++) {
-          if(i>=j){
-            
-            toto +=  matrix2[i][j]
-          }
-      }
-    }
-    console.log("toto: ", toto)*/
+
 
     createD3Chord()
    
@@ -217,7 +206,7 @@ function load_genres(included_genres, update_brushed_ids, highlighting, chord_fi
     if((chord_filtering) || (highlighting)){
 
      
-      
+        
         chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
         //brushed_ids = []
         
@@ -263,21 +252,14 @@ function createD3Chord() {
   .attr("transform", "scale(0.38) translate(250,240)")
   .selectAll("path")
   .data(d => d)
-  
   .join("path")
     .attr("d", d3v6.ribbon()
       .radius(200)
     )
-    //.transition()
-    //.duration(2000)
-    //.delay(function(d, i) { return i / data.length * enter_duration; })
     .style("fill", function(d){ return colors_light[d.source.index]})
-    
-
+    .attr("id", function(d){return d.target.index+"_"+d.source.index})
     .style("display", function(d){ 
 
-      
-     
       if(included_genres.length == 0){return null}
       
       else{
@@ -293,23 +275,16 @@ function createD3Chord() {
         if(!to_display){
           return "none"
         }
-        
       }
-      
     })
     .on("mouseover", function(d) {
-      console.log(matrix2)
         var s = generi_info[d.target.__data__.source.index].genere
         var t = generi_info[d.target.__data__.target.index].genere
-       
         this["style"]["stroke"] = "black";
-        //tooltip.text("<p>source : "+s+", target: "+t + ",</p> n°_film: " + d.target.__data__.source.value);
+        d3.select(this).raise()
         tooltip.html("<b>source :</b> "+s+",<br><b>target: </b>"+t + ",<br><b>n°_film: </b>" + d.target.__data__.source.value)
-       
-        return tooltip.style("visibility", "visible");
-        
+        return tooltip.style("visibility", "visible") 
       })
-      
       .on("mousemove", function() {
         return tooltip.style("top",(event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
       })
@@ -326,8 +301,6 @@ function createLabel(generi) {
 
   d3.select('#svg_5')
     .append("g")
-    //.style("background", "rgb(225, 213, 168)")
-      //.style("position", "absolute")
       .style("top", "5%")
       .style("right", "3.5%")
       .style("width", "35%")
@@ -344,29 +317,22 @@ function createLabel(generi) {
       return ret
     }).on('click', function(d){
 
-     
-      
-      
-      //var t = d3.select(this)
       var t = d3.select("#"+d.genere+"_chord_back").style("background-color")
-   
-      
       if (t != "white") {
         //d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
         d3.select("#"+d.genere+"_chord_back").style("background-color", "white")
       }
       else d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")
-      
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
         included_genres.splice(index, 1);
       }
       else included_genres.push(d.genere)
+
+      console.log("bids: ",brushed_ids)
   
-      
       load_genres(included_genres, brushed_ids, false, true)
 
- 
     })
     
   
@@ -386,7 +352,6 @@ function createLabel(generi) {
  .style("width", "20%")
  .style("height", "5%")
  
- 
 .append('div')
 .attr("id", function(d){return d.genere+"_chord"})
  .style("position", "absolute")
@@ -400,11 +365,7 @@ function createLabel(generi) {
  .style("height", "90%")
  .style("opacity", "1")
  .style("z-index", "0")
- 
- 
 
-
-  
 
   return
 }
