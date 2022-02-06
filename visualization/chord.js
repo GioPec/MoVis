@@ -1,3 +1,4 @@
+import{chord_to_bubble} from "./bubbleplot.js"
 // create the svg area
 const svg = d3v6.select("#area_5")
 .append("svg")
@@ -12,6 +13,19 @@ const colors = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c",
 
 const colors_light = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462",
   "#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
+
+var tooltip = d3.select("body")
+.append("div")
+.style("background", "rgba(225, 213, 168,0.8)")
+.style("position", "absolute")
+.style("z-index", "10")
+.style("visibility", "hidden")
+.style("font-size", "20px")
+
+tooltip.html("")
+//tooltip.append("li").text("tooltip");
+//.style("width", "10%")
+//.style("height", "10%")
 
 function filtro(f) {
   if (f==0) return
@@ -95,7 +109,13 @@ var included_genres = []
 
 var brushed_ids = []
 
+var bubble_ids = []
+
+
 function compute_matrix_row(row, genres_num) {
+
+  
+  
   if (genres_num==1) {
     var gen = row.genres.split("|")
     matrix2[dict[gen]][dict[gen]] += 1
@@ -110,21 +130,41 @@ function compute_matrix_row(row, genres_num) {
       }
     }
   } 
+ 
+
+
+
 }
 
-function load_genres(included_genres, update_brushed_ids, highlighting) {
+function load_genres(included_genres, update_brushed_ids, highlighting, chord_filtering) {
 
   
 
   brushed_ids = update_brushed_ids
+  var chord_ids = []
+  matrix2 = [
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+  
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0]
+  ];
 
   if(included_genres.length == 0){included_genres = Object.keys(dict)}
-  reset_matrix()
+  
   var selected_ids = []
   d3v6.csv("../datasets/DATASET_MDS_NEW.csv", function(row) {
     var genres_num = row.genres.split("|").length
     var genres = row.genres.split("|")
-    //if (genres_num<1) console.log("Error! Genres<1")
     var compute_row = false
     
     
@@ -132,12 +172,19 @@ function load_genres(included_genres, update_brushed_ids, highlighting) {
       if (genres.includes(included_genres[g])) {
         if (!selected_ids.includes(row.imdb_id)) selected_ids.push(row.imdb_id)
         compute_row = true
+        chord_ids.push(row.imdb_id)
+        
         break
       }
     }
 
     if( (brushed_ids.length == 0) || (brushed_ids.includes(row.imdb_id))){
-      if (compute_row) compute_matrix_row(row, genres_num)
+      if (compute_row) {
+        // row in included_generes and in brushed_ids
+        compute_matrix_row(row, genres_num)
+        bubble_ids.push(row.imdb_id)
+        
+      }
     }
 
   }).then(function() {
@@ -145,12 +192,29 @@ function load_genres(included_genres, update_brushed_ids, highlighting) {
     filtro(0)
     d3.select("#chord_arcs").remove()
     d3.select("#chord_ribbons").remove()
-    createD3Chord()
 
+
+
+    createD3Chord()
+   
     //update par_cor
-    if(!highlighting) {update_PC(selected_ids)} 
-    //update mds
-    if(!highlighting) {update_MDS(selected_ids)}
+    if(!highlighting) {
+      update_PC(selected_ids)
+      update_MDS(selected_ids)
+      
+    } 
+    if((chord_filtering) || (highlighting)){
+
+     
+        
+        chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+        //brushed_ids = []
+        
+       
+    
+    }
+    bubble_ids = []
+    
   })
 }
 
@@ -192,13 +256,43 @@ function createD3Chord() {
     .attr("d", d3v6.ribbon()
       .radius(200)
     )
-    //.transition()
-    //.duration(2000)
-    //.delay(function(d, i) { return i / data.length * enter_duration; })
-    .style("fill", d => colors_light[d.source.index])
-    //.style("stroke", "black"); // maybe?
+    .style("fill", function(d){ return colors_light[d.source.index]})
+    .attr("id", function(d){return d.target.index+"_"+d.source.index})
+    .style("display", function(d){ 
 
-
+      if(included_genres.length == 0){return null}
+      
+      else{
+        var to_display = false
+        for (let i=0; i<included_genres.length; i=i+1) {
+          console.log("dict: ",dict[included_genres[i]])
+          if((d.source.index == dict[included_genres[i]]) || (d.target.index == dict[included_genres[i]])){ 
+            
+            to_display = true
+            return null 
+          }
+        }
+        if(!to_display){
+          return "none"
+        }
+      }
+    })
+    .on("mouseover", function(d) {
+        var s = generi_info[d.target.__data__.source.index].genere
+        var t = generi_info[d.target.__data__.target.index].genere
+        this["style"]["stroke"] = "black";
+        d3.select(this).raise()
+        tooltip.html("<b>source :</b> "+s+",<br><b>target: </b>"+t + ",<br><b>n°_film: </b>" + d.target.__data__.source.value)
+        return tooltip.style("visibility", "visible") 
+      })
+      .on("mousemove", function() {
+        return tooltip.style("top",(event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px");
+      })
+      
+      .on("mouseout", function(d) {
+        this["style"]["stroke"] = null
+        return tooltip.style("visibility", "hidden");
+      });
 
     
 }
@@ -207,8 +301,6 @@ function createLabel(generi) {
 
   d3.select('#svg_5')
     .append("g")
-    //.style("background", "rgb(225, 213, 168)")
-      //.style("position", "absolute")
       .style("top", "5%")
       .style("right", "3.5%")
       .style("width", "35%")
@@ -224,30 +316,27 @@ function createLabel(generi) {
       var ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
     }).on('click', function(d){
-      
-      
-      //var t = d3.select(this)
+
       var t = d3.select("#"+d.genere+"_chord_back").style("background-color")
-   
-      
       if (t != "white") {
         //d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
         d3.select("#"+d.genere+"_chord_back").style("background-color", "white")
       }
       else d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")
-      
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
         included_genres.splice(index, 1);
       }
       else included_genres.push(d.genere)
+
+      console.log("bids: ",brushed_ids)
   
-      
-      load_genres(included_genres, brushed_ids, false)
+      load_genres(included_genres, brushed_ids, false, true)
+
     })
     
   
-  var tooltip = d3.select("#area_5")
+  d3.select("#area_5")
   .selectAll('div')
         .data( generi_info)
         .enter()
@@ -263,7 +352,6 @@ function createLabel(generi) {
  .style("width", "20%")
  .style("height", "5%")
  
- 
 .append('div')
 .attr("id", function(d){return d.genere+"_chord"})
  .style("position", "absolute")
@@ -277,11 +365,7 @@ function createLabel(generi) {
  .style("height", "90%")
  .style("opacity", "1")
  .style("z-index", "0")
- 
- 
 
-
-  
 
   return
 }
@@ -321,10 +405,11 @@ function update_MDS(selected_ids) {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-load_genres(included_genres, brushed_ids, false)
+load_genres(included_genres, brushed_ids, false, false)
 
-export function test(brushed_ids){
+export function parCor_to_chord(brushed_ids){
   
-  load_genres(included_genres, brushed_ids, true)
+  load_genres(included_genres, brushed_ids, true, false)
+  
 }
 
