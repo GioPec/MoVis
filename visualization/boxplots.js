@@ -5,7 +5,7 @@ function compute_array(){
 
   
  
-  d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
+  d3v6.csv("../datasets/dataset_mds.csv", function(row) {
     
     //console.log(row.budget)
     data_used.push(parseInt(row.runtime))
@@ -82,7 +82,8 @@ svg_area_3
   .attr("x2", 200)
   .attr("y1", y_box(min) )
   .attr("y2", y_box(max) )
-  .attr("stroke", "black")
+  .attr("class", "darkstroke")
+  //.attr("stroke", "black")
   //.attr("transform", "scale(0.6) translate(0,0)")
   .attr("transform", "translate(-100,0)")
   
@@ -94,7 +95,8 @@ svg_area_3
   .attr("y", y_box(q3) )
   .attr("height", (y_box(q1)-y_box(q3)) )
   .attr("width", 100 )
-  .attr("stroke", "black")
+  .attr("class", "darkstroke")
+  //.attr("stroke", "black")
   .style("fill", "#69b3a2")
   .attr("transform", "translate(-100,0)")
 
@@ -108,7 +110,8 @@ svg_area_3
   .attr("x2", 200+100/2)
   .attr("y1", function(d){ return(y_box(d))} )
   .attr("y2", function(d){ return(y_box(d))} )
-  .attr("stroke", "black")
+  .attr("class", "darkstroke")
+  //.attr("stroke", "black")
   .attr("transform", "translate(-100,0)")
 }
 

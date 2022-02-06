@@ -305,10 +305,6 @@ function draw_bubbleplot_2(data, bubble_flag){
 
   }
 
- 
-
-  
-
   menu = d3.select("#area_2").append("div")
 
   menu.style("width", "100%")
@@ -322,29 +318,33 @@ function draw_bubbleplot_2(data, bubble_flag){
  })
   select_opt.append("option").attr("value","4").attr("id", "year").text("Year")
   select_opt.append("option").attr("value","5").attr("id", "budget").attr("selected","true").text("Budget")
-  select_opt.append("option").attr("value","6").attr("id", "revenue").text("Revenue")
-  select_opt.append("option").attr("value","7").attr("id", "runtime").text("Runtime")
-  select_opt.append("option").attr("value","8").attr("id", "vote_average").text("Average vote")
-  select_opt.append("option").attr("value","9").attr("id", "vote_count").text("Votes count")
-  select_opt.append("option").attr("value","10").attr("id", "popularity").text("Popularity")
-  select_opt.append("option").attr("value","15").attr("id", "in_connections").text("In connections")
-  select_opt.append("option").attr("value","16").attr("id", "out_connections").text("Out connections")
-  select_opt.append("option").attr("value","17").attr("id", "tot_connections").text("Total connections")
+  select_opt.append("option").attr("value","6").attr("id", "actual_budget").text("Actual budget")
+  select_opt.append("option").attr("value","7").attr("id", "revenue").text("Revenue")
+  select_opt.append("option").attr("value","8").attr("id", "actual_revenue").text("Actual revenue")
+  select_opt.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
+  select_opt.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
+  select_opt.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
+  select_opt.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+  select_opt.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
+  select_opt.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
+  select_opt.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
   menu.append("label").text("Y: ")
   select_opt_Y = menu.append("select").attr("id", "opt_y").on("change", function() {
-    update_bubble_y(this.value, document.getElementById('opt_groupby').selectedOptions[0].value != 18);
+    update_bubble_y(this.value, document.getElementById('opt_groupby').selectedOptions[0].value != 19);
  })
-  select_opt_Y.append("option").attr("value","4").attr("id", "year").text("Year")
-  select_opt_Y.append("option").attr("value","5").attr("id", "budget").text("Budget")
-  select_opt_Y.append("option").attr("value","6").attr("id", "revenue").attr("selected","true").text("Revenue")
-  select_opt_Y.append("option").attr("value","7").attr("id", "runtime").text("Runtime")
-  select_opt_Y.append("option").attr("value","8").attr("id", "vote_average").text("Average vote")
-  select_opt_Y.append("option").attr("value","9").attr("id", "vote_count").text("Votes count")
-  select_opt_Y.append("option").attr("value","10").attr("id", "popularity").text("Popularity")
-  select_opt_Y.append("option").attr("value","15").attr("id", "in_connections").text("In connections")
-  select_opt_Y.append("option").attr("value","16").attr("id", "out_connections").text("Out connections")
-  select_opt_Y.append("option").attr("value","17").attr("id", "tot_connections").text("Total connections")
+ select_opt_Y.append("option").attr("value","4").attr("id", "year").text("Year")
+ select_opt_Y.append("option").attr("value","5").attr("id", "budget").text("Budget")
+ select_opt_Y.append("option").attr("value","6").attr("id", "actual_budget").text("Actual budget")
+ select_opt_Y.append("option").attr("value","7").attr("id", "revenue").attr("selected","true").text("Revenue")
+ select_opt_Y.append("option").attr("value","8").attr("id", "actual_revenue").text("Actual revenue")
+ select_opt_Y.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
+ select_opt_Y.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
+ select_opt_Y.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
+ select_opt_Y.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+ select_opt_Y.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
+ select_opt_Y.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
+ select_opt_Y.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
 
   menu.append("label").text("G: ")
@@ -356,15 +356,17 @@ function draw_bubbleplot_2(data, bubble_flag){
  })
   select_opt_GroupBy.append("option").attr("value","4").text("Year")
   select_opt_GroupBy.append("option").attr("value","5").text("Budget")
-  select_opt_GroupBy.append("option").attr("value","6").text("Revenue")
-  select_opt_GroupBy.append("option").attr("value","7").text("Runtime")
-  select_opt_GroupBy.append("option").attr("value","8").text("Average vote")
-  select_opt_GroupBy.append("option").attr("value","9").text("Votes count")
-  select_opt_GroupBy.append("option").attr("value","10").text("Popularity")
-  select_opt_GroupBy.append("option").attr("value","15").text("In connections")
-  select_opt_GroupBy.append("option").attr("value","16").text("Out connections")
-  select_opt_GroupBy.append("option").attr("value","17").text("Total connections")
-  select_opt_GroupBy.append("option").attr("value","18").attr("selected","true").text("Nessuno")
+  select_opt_GroupBy.append("option").attr("value","6").text("Actual budget")
+  select_opt_GroupBy.append("option").attr("value","7").text("Revenue")
+  select_opt_GroupBy.append("option").attr("value","8").text("Actual revenue")
+  select_opt_GroupBy.append("option").attr("value","9").text("Runtime")
+  select_opt_GroupBy.append("option").attr("value","10").text("Average vote")
+  select_opt_GroupBy.append("option").attr("value","11").text("Votes count")
+  select_opt_GroupBy.append("option").attr("value","12").text("Popularity")
+  select_opt_GroupBy.append("option").attr("value","17").text("In connections")
+  select_opt_GroupBy.append("option").attr("value","18").text("Out connections")
+  select_opt_GroupBy.append("option").attr("value","19").text("Total connections")
+  select_opt_GroupBy.append("option").attr("value","20").attr("selected","true").text("Nessuno")
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -445,7 +447,7 @@ scatter
     .style("pointer-events", "all")
 }
 
-d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
+d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
   chiavi = d3.keys(data[0])
   
   if (error) throw error;

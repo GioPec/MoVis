@@ -9,7 +9,7 @@ ds = ds[['imdb_id', 'title', 'release_date',
        'movielens_id','tmdb_id','genres','director','in_connections',
        'out_connections','tot_connections','connected_movies']]
 
-ds_mds = pd.read_csv('./datasets/mds.csv')
+ds_mds = pd.read_csv('./datasets/mds_results_new.csv')
 ds_mds = ds_mds[['0','1', '2']]
 
 ds = ds.join(ds_mds.set_index('2'), on='imdb_id')

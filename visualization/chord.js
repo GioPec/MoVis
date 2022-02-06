@@ -121,7 +121,7 @@ function load_genres(included_genres, update_brushed_ids, highlighting) {
   if(included_genres.length == 0){included_genres = Object.keys(dict)}
   reset_matrix()
   var selected_ids = []
-  d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
+  d3v6.csv("../datasets/DATASET_MDS_NEW.csv", function(row) {
     var genres_num = row.genres.split("|").length
     var genres = row.genres.split("|")
     //if (genres_num<1) console.log("Error! Genres<1")

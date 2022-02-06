@@ -1,9 +1,22 @@
 
-    import{test} from "./chord.js"
-    
-    //////////DISEGNO PARALLEL////////////
+import{test} from "./chord.js"
+import{MDSreadCSV} from "./mds.js"
 
-    function drawParallel(data){
+var actual = false
+
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+
+function changeDataset() {
+    DATASET_PATH = (DATASET_PATH=="../datasets/DATASET_MDS_NEW.csv") ? ("../datasets/DATASET_MDS_NEW_500.csv") : ("../datasets/DATASET_MDS_NEW.csv")
+    parCorReadCSV()
+    MDSreadCSV(DATASET_PATH)
+}
+
+//////////DISEGNO PARALLEL////////////
+
+function drawParallel(data) {
+
+    d3.select("#svg4").remove()
 
     var margin = {top: 30, right: 10, bottom: 10, left: 10},
         width = 200 - margin.left - margin.right,
@@ -24,6 +37,7 @@
     var svg = d3.select("#area_4").append("svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 270 110")
+    .attr("id", "svg4")
     //.append("g")
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     .attr("transform", "scale(0.95) translate(-2,0)")
@@ -37,12 +51,26 @@
 
     var dimensions;
 
-     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+    var whichBudget = (actual) ? ("actual_budget") : ("budget")
+    var whichRevenue = (actual) ? ("actual_revenue") : ("revenue")
+
+    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
         if (
             (d == "year") 
-        || (d == "budget") || (d == "revenue") || (d == "runtime")
-        || (d == "vote_average")  || (d == "vote_count")  //|| (d == "popularity")  
-        || (d == "in_connections")  || (d == "out_connections")
+
+            //|| (d == "budget") 
+            //|| (d == "revenue") 
+            //|| (d == "actual_budget") 
+            //|| (d == "actual_revenue") 
+            || (d == whichBudget)
+            || (d == whichRevenue)
+
+            || (d == "runtime")
+            || (d == "vote_average")  
+            || (d == "vote_count")  
+            //|| (d == "popularity")  
+            || (d == "in_connections")  
+            || (d == "out_connections")
         ) {
             
             return y[d] = d3.scaleLinear()
@@ -145,7 +173,7 @@
         //.style("text-anchor", "big")
         .attr("y", 4)
         .attr("font-size", "4px")
-        .style("fill", "#000")
+        //.style("fill", "#000")
         .text(function(d) { return d; });
     })
     // Add and store a brush for each axis.
@@ -243,20 +271,49 @@
             }
             return "rgb(66, 172, 66)"
         });
-
     }
+
+
 }
 
-d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
+function parCorReadCSV() {
 
-    var chiavi= d3.keys(data[0])
-    if (error) throw error;
-      var l=data.length;
-      for (var i=0;i<l;i++) {
-        data[i].id=i
-      }
-      drawParallel(data)
-      
-})
+    d3.select("#actual").remove()
+
+    d3.csv(DATASET_PATH, function(error, data) {
+
+        var chiavi= d3.keys(data[0])
+        if (error) throw error;
+        var l=data.length;
+        for (var i=0;i<l;i++) {
+            data[i].id=i
+        }
+        drawParallel(data, false)
+
+        /////
+
+        var checkbox = d3.select("#area_4").append("div").attr("id", "actual")
+
+        checkbox.style("width", "100%")
+            .style("height", "10%")
+            .style("background", "rgb(225, 213, 168)")
+            .style("font-size", "20px")
+        
+        checkbox.append("label").text("Adjust dollar value for inflaction")
+        checkbox.append("input").attr("type", "checkbox").on("click", adjustForInflaction)
+
+        checkbox.append("label").text("Dataset 500")
+        checkbox.append("input").attr("type", "checkbox").on("click", changeDataset)
+
+        /////
+
+        function adjustForInflaction() {
+            actual = !actual
+            drawParallel(data)
+        }
+    })
+}
+
+parCorReadCSV()
     
     
