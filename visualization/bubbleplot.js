@@ -37,8 +37,9 @@ var tooltip = d3.select("body")
 
 function update(data){
 
-  console.log("selected_ids_up: ", selected_ids)
-  compute_array(x_col, y_col, selected_ids, [])
+  //console.log("selected_ids_up: ", selected_ids)
+  if(chord_ids == null){selected_ids = null}
+  compute_array(x_col, y_col, selected_ids, [], false)
 
 
   if(!bubble_flag){
@@ -56,11 +57,12 @@ function update(data){
 
     
     
-      
+      //console.log(chord_ids != null)
       var cerchi = d3.select("#area_2_circles")
       .selectAll(".dot")
       .style("display", function (d) {
-        if((chord_ids.includes(d.imdb_id)) || (chord_ids.length == 0)){return null}
+        if((chord_ids != null) && ((chord_ids.includes(d.imdb_id)) || (chord_ids.length == 0))){return null}
+        //if((chord_ids.includes(d.imdb_id)) || (chord_ids.length == 0)){return null}
         return "none"
       })
     
@@ -68,6 +70,9 @@ function update(data){
 
   }
   else{
+
+    
+
     var data_grupped_avg = d3.nest()
     .key(function(d) {return d.year})
     .sortKeys(d3.ascending)
@@ -83,7 +88,7 @@ function update(data){
 
     for (let i=0; i<data.length; i++) { 
      
-      if( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id))){
+      if( (selected_ids!=null) && ( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
         var decade = data[i].year-(data[i].year % step)
         dict_bubbles[decade]['x'].push(parseInt(data[i][x_col]))
         dict_bubbles[decade]['y'].push(parseFloat(data[i][y_col]))
@@ -166,7 +171,7 @@ function update(data){
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) });
-      bolle.attr("r",function (d) { return d.n/10});
+      bolle.attr("r",function (d) { return d.n/100});
       bolle.style("fill", function (d) { 
         if(brushed_ids.length != 0){return "red"}
         else{return "rgb(66, 172, 66)"}
@@ -200,7 +205,7 @@ function draw_bubbleplot_2(data){
     
     x_col = chiavi[x_col_updated]
     //console.log("x_col: ", x_col)
-    compute_array(x_col, y_col, null, null)
+    compute_array(x_col, y_col, [], null, true)
     
     if(!bubble_flag){
 
@@ -298,7 +303,7 @@ function draw_bubbleplot_2(data){
     
     y_col = chiavi[y_col_updated]
     //console.log("y_col: ", y_col)
-    compute_array(x_col, y_col, null, null)
+    compute_array(x_col, y_col, [], null, true)
     
     if(!bubble_flag){
       y.domain(d3.extent(data, function(d) { return +d[y_col]; }));
@@ -403,29 +408,42 @@ function draw_bubbleplot_2(data){
     yAxis.call(d3.axisLeft(y))
 
     /// riposiziona punti
-
-    var nuovi_cerchi = d3.select("#area_2_circles").selectAll("circle")
+    //console.log(selected_ids)
+    var nuovi_cerchi = d3.select("#area_2_circles").selectAll(".dot")
     .data(data)
     .enter()
     .append("circle")
     .attr('class', 'dot')
-      .attr("cx", function (d) {return x(d[x_col]) } )
+      .attr("cx", function (d) { return x(d[x_col]) } )
       .attr("cy", function (d) {  return y(d[y_col]) } )
       .attr("r", 1)
       .attr("id", function (d) { return d[chiavi[2]] })
       .attr("name", function (d) { return d["title"] } )
       .style("fill", function (d) { 
-        if(selected_ids.includes(d.imdb_id)){return "red"}
+        if((selected_ids != null) && (selected_ids.includes(d.imdb_id))){return "red"}
         else{return "rgb(66, 172, 66)"}
       })
       .style("display", function (d) {
-        if((chord_ids.includes(d.imdb_id)) || (chord_ids.length == 0)){return null}
+        
+        if((chord_ids != null) && ((chord_ids.includes(d.imdb_id)) || (chord_ids.length == 0))){return null}
         return "none"
       })
       .style("stroke", "black")
       .style("stroke-width", "0.2") 
       .style("opacity", "0.0")
       .style("pointer-events", "all")
+      .on("mouseover", function(d) {
+        tooltip.html(d.title);
+       return tooltip.style("visibility", "visible");
+     })
+     .on("mousemove", function() {
+       return tooltip.style("top",
+         (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+     })
+     .on("mouseout", function() {
+       return tooltip.style("visibility", "hidden");
+      
+     });
       
     nuovi_cerchi.transition().duration(800).style("opacity", "0.8")
 
@@ -450,9 +468,10 @@ function draw_bubbleplot_2(data){
     for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0, "decade": i+"-"+(i+step-1)} }
 
     
- 
+    //console.log(selected_ids != null)
     for (let i=0; i<data.length; i++) { 
-      if( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id))){
+      
+      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
         var decade = data[i].year-(data[i].year % step)
         dict_bubbles[decade]['x'].push(parseInt(data[i][x_col]))
         dict_bubbles[decade]['y'].push(parseFloat(data[i][y_col]))
@@ -543,7 +562,7 @@ function draw_bubbleplot_2(data){
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/10})
+    .attr("r",function (d) {  return d.n/100})
     .style("fill", function (d) { 
       if(brushed_ids.length != 0){return "red"}
       else{return "rgb(66, 172, 66)"}
@@ -581,8 +600,8 @@ function draw_bubbleplot_2(data){
       else{
         d3.select(this).style("fill", "yellow")
         var bubble_range = d.decade.split("-")
-        console.log("test_x: ",x_col)
-        console.log("test_y: ",y_col)
+        //console.log("test_x: ",x_col)
+        //console.log("test_y: ",y_col)
         compute_array(x_col, y_col, selected_ids, bubble_range)
       }
       
@@ -729,6 +748,18 @@ scatter
     .style("stroke-width", "0.2") 
     .style("opacity", 0.8)
     .style("pointer-events", "all")
+    .on("mouseover", function(d) {
+      tooltip.html(d.title);
+     return tooltip.style("visibility", "visible");
+   })
+   .on("mousemove", function() {
+     return tooltip.style("top",
+       (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
+   })
+   .on("mouseout", function() {
+     return tooltip.style("visibility", "hidden");
+    
+   });
 }
 
 function start (ids){
@@ -766,10 +797,6 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
     update(data)
       
   })
-  
-  
-  
-  
 }
 
 

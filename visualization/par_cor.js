@@ -1,4 +1,4 @@
-import{parCor_to_chord} from "./chord.js"
+import{parCor_to_chord, filter_genres} from "./chord.js"
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
@@ -111,8 +111,10 @@ function drawParallel(data, actual) {
         .selectAll("path")
         .data(data)
         .enter().append("path")
+        .style("opacity", "1")
         .attr("id", function (d) { return d.imdb_id } )
         .attr("class","normal")
+        .attr("for", "consider")
         .attr("d", path);
     
 
@@ -171,7 +173,7 @@ function drawParallel(data, actual) {
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,height]])
+            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
             .on("brush.uno start.uno ", brushstart)
             .on("brush.due", brush_parallel_chart_2)
             .on("end.tre", brush_parallel_chart)
@@ -209,7 +211,7 @@ function drawParallel(data, actual) {
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush_parallel_chart() {   
-        
+        filter_genres(null)
         var index = -1
         for(var i=0;i<dimensions.length;++i) {
             if(d3.event.target==y[dimensions[i]].brush) {
@@ -220,7 +222,14 @@ function drawParallel(data, actual) {
         }
         var ids = []
         var imdb_ids = []
-        foreground.classed("active", function(d) {
+
+        var test = foreground.filter(function(d) {
+            
+            return this["style"]["opacity"] != 0
+          })
+
+
+        test.classed("active", function(d) {
             ids.push(d.id)
             imdb_ids.push(d.imdb_id)
             var eliminato = false
@@ -240,9 +249,11 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
+        //console.log(foreground.selectAll("style"))
+
+        
        
-       
-        foreground.classed("normal", function(d) {
+        test.classed("normal", function(d) {
             ids.push(d.id)
             var eliminato = false
             return dimensions.every(function(p, i) {
@@ -259,8 +270,10 @@ function drawParallel(data, actual) {
             return check_1
             }) ? false : true;
         });
-        d3.selectAll(".active").raise()
 
+
+
+        d3.selectAll(".active").raise()
         //update chord
         parCor_to_chord(imdb_ids)
 
