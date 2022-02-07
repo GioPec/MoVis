@@ -4,39 +4,42 @@
 
 <head>
   <link type="text/css" rel="stylesheet" href="style.css"/>
- 
-  
 </head>
 
 <body id="body" class="light">
 
   <div id="all" style="width: 98.5%; height: 98%; position: absolute; bottom: 0.5%; top:0.5%">
-    <div class="area" id="toolbar" style="width: 100%; height: 4%; border:1px solid; position: absolute; background: rgb(225, 213, 168)">
+    <div class="area" id="toolbar" style="width: 100%; height: 4%; border: 1px solid; position: absolute; background: rgb(225, 213, 168)">
       <div class="title">MOVIS
-        <input type="checkbox" id="darkModeCheckbox" onChange="darkMode()">
-        <label>Dark mode</label>
+        <input type="checkbox" id="darkModeCheckbox">
+        <label class="checkbox-label">Dark mode</label>
+
+        <input type="checkbox" id="changeDatasetCheckbox">
+        <label class="checkbox-label">Change dataset</label>
+
+        <input type="checkbox" id="inflactionCheckbox">
+        <label class="checkbox-label">Adjust dollar value for inflaction</label>
       </div>
     </div>
-    <div class="area" id="area_2" style="width: 36%; height: 49%; border:1px solid; position: absolute; margin-left: 38%; margin-top: 2%;"></div>
-    <div class="area" id="area_3" style="width: 26%; height: 49%; border:1px solid; position: absolute; margin-left: 74%; margin-top: 2%;"></div>
-    <div class="area" id="area_4" style="width: 60%; height: 49%; border:1px solid; position: absolute; top: 49%; margin-top: 2%;"></div>
-    <div class="area" id="area_5" style="width: 40%; height: 49%; border:1px solid; position: absolute; top: 49%; margin-left: 59.99%; margin-top: 2%;"></div>
-    <div class="area" id="area_1" style="width: 38%; height: 49%; border:1px solid; position: absolute; margin-top: 2%;"></div>
+    <div class="area darkborder" id="area_1" style="width: 38%; height: 48%; border:1px solid; position: absolute; margin-top: 2%;"></div>
+    <div class="area darkborder" id="area_2" style="width: 36%; height: 48%; border:1px solid; position: absolute; margin-left: 38%; margin-top: 2%;"></div>
+    <div class="area darkborder" id="area_3" style="width: 26%; height: 48%; border:1px solid; position: absolute; margin-left: 74%; margin-top: 2%;"></div>
+    <div class="area darkborder" id="area_4" style="width: 60%; height: 48%; border:1px solid; position: absolute; top: 48%; margin-top: 2%;"></div>
+    <div class="area darkborder" id="area_5" style="width: 40%; height: 48%; border:1px solid; position: absolute; top: 48%; margin-left: 59.99%; margin-top: 2%;"></div>
   </div>
    
-<script src="https://d3js.org/d3.v4.js"></script>
-<script src="d3v6.js"></script>
-<script type="module" src="darkmode.js"></script>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="d3v6.js"></script>
 
-<script type="module" src="par_cor.js"></script>
-<script type="module" src="mds.js"></script>
-<script type="module" src="chord.js"></script>
-<script type="module" src="boxplots.js"></script>
-<script type="module" src="bubbleplot.js"></script>
+  <script type="module" src="darkmode.js"></script>
+  <script type="module" src="functions.js"></script>
 
+  <script type="module" src="par_cor.js"></script>
+  <script type="module" src="mds.js"></script>
+  <script type="module" src="chord.js"></script>
+  <script type="module" src="boxplots.js"></script>
+  <script type="module" src="bubbleplot.js"></script>
 
-
-  
 </body>
 
 </html>

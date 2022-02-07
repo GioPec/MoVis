@@ -7,6 +7,8 @@ margin_left= 2
 
 var width = 500 - margin_left - margin_right
 var height = 300 - margin_top - margin_bottom
+
+var chiavi
   
 function draw_MDS(data){   
 
@@ -140,7 +142,7 @@ export function MDSreadCSV(DATASET_PATH) {
     chiavi = d3.keys(data[0])
     if (error) throw error;
       var l=data.length;
-      for (i=0;i<l;i++) data[i].id=i
+      for (let i=0;i<l;i++) data[i].id=i
       draw_MDS(data)
   })
 }

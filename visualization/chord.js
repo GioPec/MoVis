@@ -1,4 +1,8 @@
 import{chord_to_bubble} from "./bubbleplot.js"
+import{darkMode} from "./darkmode.js"
+
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+
 // create the svg area
 const svg = d3v6.select("#area_5")
 .append("svg")
@@ -84,6 +88,8 @@ createLabel(generi_info)
 
 var matrix2 = []
 
+var matrix_couples = []
+
 function reset_matrix() {
   matrix2 = [
     [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -100,49 +106,8 @@ function reset_matrix() {
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0]
-  ];
-}
-
-//var included_genres = Object.keys(dict)
-
-var included_genres = []
-
-var brushed_ids = []
-
-var bubble_ids = []
-
-
-function compute_matrix_row(row, genres_num) {
-
-  
-  
-  if (genres_num==1) {
-    var gen = row.genres.split("|")
-    matrix2[dict[gen]][dict[gen]] += 1
-  }
-  else {
-    for (let i=0; i<genres_num-1; i++) {
-      for (let j=i+1; j<genres_num; j++) {
-        var gen1 = row.genres.split("|")[i]
-        var gen2 = row.genres.split("|")[j]
-        matrix2[dict[gen1]][dict[gen2]] += 1
-        matrix2[dict[gen2]][dict[gen1]] += 1
-      }
-    }
-  } 
- 
-
-
-
-}
-
-function load_genres(included_genres, update_brushed_ids, highlighting, chord_filtering) {
-
-  
-
-  brushed_ids = update_brushed_ids
-  var chord_ids = []
-  matrix2 = [
+  ]
+  matrix_couples = [
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -157,64 +122,105 @@ function load_genres(included_genres, update_brushed_ids, highlighting, chord_fi
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0]
-  ];
+  ]
+}
 
-  if(included_genres.length == 0){included_genres = Object.keys(dict)}
+//var included_genres = Object.keys(dict)
+
+var included_genres = []
+
+var brushed_ids = []
+
+var bubble_ids = []
+
+
+function compute_matrix_row(row, genres_num) {
+
+  if (genres_num==1) {
+    var gen = row.genres.split("|")
+    matrix2[dict[gen]][dict[gen]] += 1
+  }
+  else {
+    for (let i=0; i<genres_num-1; i++) {
+      for (let j=i+1; j<genres_num; j++) {
+        var gen1 = row.genres.split("|")[i]
+        var gen2 = row.genres.split("|")[j]
+        matrix2[dict[gen1]][dict[gen2]] += 1
+        matrix2[dict[gen2]][dict[gen1]] += 1
+      }
+    }
+  } 
+}
+
+function compute_couples_matrix_row(row, genres_num) {
+
+  if (genres_num==1) {
+    var gen = row.genres.split("|")
+    matrix_couples[dict[gen]][dict[gen]] += 1
+  }
+  else {
+    var gen1 = row.genres.split("|")[0]
+    var gen2 = row.genres.split("|")[1]
+    matrix_couples[dict[gen1]][dict[gen2]] += 1
+    matrix_couples[dict[gen2]][dict[gen1]] += 1
+  }
+}
+
+function load_genres(included_genres, update_brushed_ids, highlighting, chord_filtering) {
+
+  brushed_ids = update_brushed_ids
+  var chord_ids = []
+  reset_matrix()
+
+  if (included_genres.length == 0) included_genres = Object.keys(dict)
   
   var selected_ids = []
-  d3v6.csv("../datasets/DATASET_MDS_NEW.csv", function(row) {
-    var genres_num = row.genres.split("|").length
+  d3v6.csv(DATASET_PATH, function(row) {
     var genres = row.genres.split("|")
+    var genres_num = genres.length
     var compute_row = false
-    
     
     for (let g=0; g<included_genres.length; g++) {
       if (genres.includes(included_genres[g])) {
         if (!selected_ids.includes(row.imdb_id)) selected_ids.push(row.imdb_id)
         compute_row = true
         chord_ids.push(row.imdb_id)
-        
         break
       }
     }
 
-    if( (brushed_ids.length == 0) || (brushed_ids.includes(row.imdb_id))){
+    if ((brushed_ids.length == 0) || (brushed_ids.includes(row.imdb_id))){
       if (compute_row) {
         // row in included_generes and in brushed_ids
         compute_matrix_row(row, genres_num)
+        //couples
+        if (genres_num<3) compute_couples_matrix_row(row, genres_num)
         bubble_ids.push(row.imdb_id)
-        
       }
     }
 
   }).then(function() {
+
+    //console.log(matrix_couples)
+    //console.log(matrix2)
     
     filtro(0)
     d3.select("#chord_arcs").remove()
     d3.select("#chord_ribbons").remove()
 
-
-
     createD3Chord()
    
     //update par_cor
-    if(!highlighting) {
+    if (!highlighting) {
       update_PC(selected_ids)
       update_MDS(selected_ids)
-      
     } 
-    if((chord_filtering) || (highlighting)){
+    if ((chord_filtering) || (highlighting)) {
 
-     
-        
         chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
         //brushed_ids = []
-        
-       
-    
     }
     bubble_ids = []
-    
   })
 }
 
@@ -280,9 +286,20 @@ function createD3Chord() {
     .on("mouseover", function(d) {
         var s = generi_info[d.target.__data__.source.index].genere
         var t = generi_info[d.target.__data__.target.index].genere
+        var movies_number = matrix_couples[d.target.__data__.source.index][d.target.__data__.target.index]
+        var old_n_film = d.target.__data__.source.value
         this["style"]["stroke"] = "black";
         d3.select(this).raise()
-        tooltip.html("<b>source :</b> "+s+",<br><b>target: </b>"+t + ",<br><b>n°_film: </b>" + d.target.__data__.source.value)
+        var tooltip_text = ""
+        if (d.target.__data__.source.index != d.target.__data__.target.index) {
+          tooltip_text = "<b>Main genre:</b> "+s+",<br><b>Secondary genre: </b>"+t+
+            ",<br><b>N° film exclusively "+s+" and "+t+": </b><br>"+movies_number+" out of "+old_n_film+" total"
+        }
+        else {
+          tooltip_text = "<b>Genre:</b> "+s+
+            ",<br><b>N° film: </b>"+movies_number
+        }
+        tooltip.html(tooltip_text)
         return tooltip.style("visibility", "visible") 
       })
       .on("mousemove", function() {
@@ -293,8 +310,6 @@ function createD3Chord() {
         this["style"]["stroke"] = null
         return tooltip.style("visibility", "hidden");
       });
-
-    
 }
 
 function createLabel(generi) {
@@ -329,10 +344,9 @@ function createLabel(generi) {
       }
       else included_genres.push(d.genere)
 
-      console.log("bids: ",brushed_ids)
+      //console.log("bids: ",brushed_ids)
   
       load_genres(included_genres, brushed_ids, false, true)
-
     })
     
   
@@ -413,3 +427,9 @@ export function parCor_to_chord(brushed_ids){
   
 }
 
+export function chordReadCSV(ds){
+
+  DATASET_PATH = ds
+  load_genres(included_genres, brushed_ids, true, false)
+  
+}

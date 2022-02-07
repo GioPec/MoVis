@@ -7,17 +7,23 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range){
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
-  
+export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range) {
 
-  if(ids_update != null){used_ids = ids_update; console.log("UPDATED SELECTED")}
-  if(bubble_update_range != null){bubble_range = bubble_update_range; console.log("UPDATED BUBBLE")}
+  if (ids_update != null) {
+    used_ids = ids_update; 
+    //console.log("UPDATED SELECTED")
+  }
+  if (bubble_update_range != null) {
+    bubble_range = bubble_update_range; 
+    //console.log("UPDATED BUBBLE")
+  }
  
   data_used_x = []
   data_used_y = []
   console.log("bubble-range: ", bubble_range)
-  d3v6.csv("../datasets/DATASET_MDS_NEW.csv", function(row) {
+  d3v6.csv(DATASET_PATH, function(row) {
 
     var range_check = bubble_range.length == 0
 
@@ -38,15 +44,11 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
         data_used_y.push(parseInt(row[colonna_y]))
       }
     }
-    
-    
-    
-  
 
   }).then(function() {
-    console.log(colonna_x)
-    console.log(colonna_y)
-    console.log("len: ", data_used_x.length)
+    //console.log(colonna_x)
+    //console.log(colonna_y)
+    //console.log("len: ", data_used_x.length)
     
     d3.select("#svg_area_3_x").remove()
     svg_area_3 = d3v6.select("#area_3")
@@ -58,12 +60,8 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
 
     draw_boxplot_x(colonna_x)
     draw_boxplot_y(colonna_y)
-    
-
   })
-
 }
-
 
 function draw_boxplot_x(colonna_x){
 
@@ -80,8 +78,9 @@ function draw_boxplot_x(colonna_x){
         "translate(" + 30 + "," + 40 + "), scale(0.8)")
 
   boxplot_x.append("text")
-  .style("fill", "black")
-  .style("font-size", "25px")
+  //.style("fill", "black")
+  .style("font-size", "20px")
+  .attr("class", "darkfill")
   .attr("transform",
         "translate(" + 120 + "," + -15 + "), scale(0.8)")
   .text(colonna_x)
@@ -162,7 +161,6 @@ boxplot_x
   .attr("transform", "translate("+(space*(-1))+",0)")
 }
 
-
 function draw_boxplot_y(colonna_y){
 
 
@@ -174,8 +172,9 @@ function draw_boxplot_y(colonna_y){
 
 
     boxplot_y.append("text")
-    .style("fill", "black")
-    .style("font-size", "25px")
+    //.style("fill", "black")
+    .style("font-size", "20px")
+    .attr("class", "darkfill")
     .text(colonna_y)
     .attr("transform",
           "translate(" + 120 + "," + -15 + "), scale(0.8)")
@@ -250,9 +249,12 @@ function draw_boxplot_y(colonna_y){
     .attr("y2", function(d){ return(y_box(d))} )
     .attr("stroke", "black")
     .attr("transform", "translate("+(space*(-1))+",0)")
-  }
-
-
+}
 
 compute_array("budget", "revenue", [], [])
+
+export function boxplotReadCSV(ds) {
+  DATASET_PATH = ds
+  compute_array("budget", "revenue", [], [])
+}
 

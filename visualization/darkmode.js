@@ -26,6 +26,8 @@ export function darkMode() {
             //if (l.hasAttribute("class", "darkfill"))
             a.setAttribute("class", "area lightborder")
         }
+
+        document.getElementsByClassName("domain").style("stroke", "FFF");
     }
 
     else {
@@ -57,6 +59,8 @@ export function darkMode() {
     }
 }
 
+var c = document.getElementById("darkModeCheckbox")
+c.addEventListener("click", darkMode)
 
 /*
 

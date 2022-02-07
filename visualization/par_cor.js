@@ -1,19 +1,10 @@
-import{MDSreadCSV} from "./mds.js"
 import{parCor_to_chord} from "./chord.js"
-
-var actual = false
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
-function changeDataset() {
-    DATASET_PATH = (DATASET_PATH=="../datasets/DATASET_MDS_NEW.csv") ? ("../datasets/DATASET_MDS_NEW_500.csv") : ("../datasets/DATASET_MDS_NEW.csv")
-    parCorReadCSV()
-    MDSreadCSV(DATASET_PATH)
-}
-
 //////////DISEGNO PARALLEL////////////
 
-function drawParallel(data) {
+function drawParallel(data, actual) {
 
     d3.select("#svg4").remove()
 
@@ -173,6 +164,7 @@ function drawParallel(data) {
         .attr("y", 4)
         .attr("font-size", "4px")
         //.style("fill", "#000")
+        .attr("class", "darkfill")
         .text(function(d) { return d; });
     })
     // Add and store a brush for each axis.
@@ -197,7 +189,7 @@ function drawParallel(data) {
     }
 
     function transition(g) {
-    return g.transition().duration(500);
+        return g.transition().duration(500);
     }
 
     // Returns the path for a given data point.
@@ -206,13 +198,12 @@ function drawParallel(data) {
     }
 
     function brushstart() {
-        console.log("START")
-    d3.event.sourceEvent.stopPropagation();
+        //console.log("START")
+        d3.event.sourceEvent.stopPropagation();
     }
 
     function brushend() {
-        console.log("END")
-    
+        //console.log("END")
     }
 
 
@@ -357,44 +348,20 @@ function drawParallel(data) {
 
 }
 
-function parCorReadCSV() {
+export function parCorReadCSV(ds, actual) {
 
-    d3.select("#actual").remove()
+    d3.csv(ds, function(error, data) {
 
-    d3.csv(DATASET_PATH, function(error, data) {
-
-        var chiavi= d3.keys(data[0])
+        //var chiavi = d3.keys(data[0])
         if (error) throw error;
         var l=data.length;
         for (var i=0;i<l;i++) {
             data[i].id=i
         }
-        drawParallel(data, false)
-
-        /////
-
-        var checkbox = d3.select("#area_4").append("div").attr("id", "actual")
-
-        checkbox.style("width", "100%")
-            .style("height", "10%")
-            .style("background", "rgb(225, 213, 168)")
-            .style("font-size", "20px")
-        
-        checkbox.append("label").text("Adjust dollar value for inflaction")
-        checkbox.append("input").attr("type", "checkbox").on("click", adjustForInflaction)
-
-        checkbox.append("label").text("Dataset 500")
-        checkbox.append("input").attr("type", "checkbox").on("click", changeDataset)
-
-        /////
-
-        function adjustForInflaction() {
-            actual = !actual
-            drawParallel(data)
-        }
+        drawParallel(data, actual)
     })
 }
 
-parCorReadCSV()
+parCorReadCSV(DATASET_PATH, false)
     
     

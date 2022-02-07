@@ -1,4 +1,5 @@
 import{compute_array} from "./boxplots.js"
+import{darkMode} from "./darkmode.js"
 
 var margin_top= 5, 
 margin_right= 2, 
@@ -36,7 +37,7 @@ var tooltip = d3.select("body")
 
 function update(data){
 
-  //console.log("selected_ids_up: ", selected_ids)
+  console.log("selected_ids_up: ", selected_ids)
   compute_array(x_col, y_col, selected_ids, [])
 
 
@@ -433,7 +434,7 @@ function draw_bubbleplot_2(data){
 
   function groupping(criterio){
 
-    if(criterio == "18"){eliminate_groups(x_col, y_col); return}
+    if(criterio == "20"){eliminate_groups(x_col, y_col); return}
 
     var data_grupped_avg = d3.nest()
     .key(function(d) {return d.year})
@@ -687,10 +688,10 @@ yAxis = svg_2.append("g")
 
 // Update global vars
 x_col = chiavi[5]
-y_col = chiavi[6]
+y_col = chiavi[7]
 
-x.domain(d3.extent(data, function(d) { return +d[chiavi[5]]; }));
-y.domain(d3.extent(data, function(d) { return +d[chiavi[6]]; }));
+x.domain(d3.extent(data, function(d) { return +d[x_col]; }));
+y.domain(d3.extent(data, function(d) { return +d[y_col]; }));
 
 xAxis.call(d3.axisBottom(x))
 yAxis.call(d3.axisLeft(y))
@@ -718,8 +719,8 @@ scatter
   .enter()
   .append("circle")
   .attr('class', 'dot')
-    .attr("cx", function (d) {  return x(d[chiavi[5]]) } )
-    .attr("cy", function (d) {  return y(d[chiavi[6]]) } )
+    .attr("cx", function (d) {  return x(d[x_col]) } )
+    .attr("cy", function (d) {  return y(d[y_col]) } )
     .attr("r", 1)
     .attr("id", function (d) { return d[chiavi[2]] })
     .attr("name", function (d) { return d["title"] } )
