@@ -1,3 +1,5 @@
+//../datasets/dataset_mds_500.csv
+var data_path = "../datasets/dataset_fake.csv"
 
 var data_used_x = []
 var data_used_y = []
@@ -7,17 +9,18 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range){
+export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
 
   
-
-  if(ids_update != null){used_ids = ids_update; console.log("UPDATED SELECTED")}
-  if(bubble_update_range != null){bubble_range = bubble_update_range; console.log("UPDATED BUBBLE")}
- 
+  
+  if(!changing_axis){used_ids = ids_update;}
+  
+  if(bubble_update_range != null){bubble_range = bubble_update_range;}
+  
   data_used_x = []
   data_used_y = []
-  console.log("bubble-range: ", bubble_range)
-  d3v6.csv("../datasets/dataset_mds_500.csv", function(row) {
+  
+  d3v6.csv(data_path, function(row) {
 
     var range_check = bubble_range.length == 0
 
@@ -33,7 +36,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
     
     if(range_check){
       
-      if((used_ids.length == 0) || (used_ids.includes(row.imdb_id))){
+      if((used_ids!=null) && ((used_ids.length == 0) || (used_ids.includes(row.imdb_id)))){
         data_used_x.push(parseInt(row[colonna_x]))
         data_used_y.push(parseInt(row[colonna_y]))
       }
@@ -44,9 +47,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
   
 
   }).then(function() {
-    console.log(colonna_x)
-    console.log(colonna_y)
-    console.log("len: ", data_used_x.length)
+
     
     d3.select("#svg_area_3_x").remove()
     svg_area_3 = d3v6.select("#area_3")
@@ -94,6 +95,7 @@ var data_fake = [25,28.0,29,29,30,34,35,35,37,38,10,-1,10,6]
 
 
 
+
 // Compute summary statistics used for the box:
 var data_sorted = data_used_x.sort(d3v6.ascending)
 //console.log(data_sorted)
@@ -105,6 +107,10 @@ var interQuantileRange = q3 - q1
 //var max = q1 + 1.5 * interQuantileRange
 var min = data_sorted.at(0)
 var max= data_sorted.at(-1)
+
+
+
+
 /*
 console.log("q1: ", q1)
 console.log("q3: ", q3)
@@ -122,8 +128,8 @@ boxplot_x.call(d3v6.axisLeft(y_box));
 
 
 // Show the main vertical line
-
-boxplot_x
+if(data_used_x.length != 0){
+  boxplot_x
 .append("line")
   .attr("x1", 200)
   .attr("x2", 200)
@@ -157,6 +163,8 @@ boxplot_x
   .attr("y2", function(d){ return(y_box(d))} )
   .attr("stroke", "black")
   .attr("transform", "translate("+(space*(-1))+",0)")
+}
+
 }
 
 
@@ -212,8 +220,9 @@ function draw_boxplot_y(colonna_y){
   
   
   // Show the main vertical line
-  
-  boxplot_y
+  if(data_used_y.length != 0){
+
+    boxplot_y
   .append("line")
     .attr("x1", 200)
     .attr("x2", 200)
@@ -247,9 +256,12 @@ function draw_boxplot_y(colonna_y){
     .attr("y2", function(d){ return(y_box(d))} )
     .attr("stroke", "black")
     .attr("transform", "translate("+(space*(-1))+",0)")
+
+  }
+  
   }
 
 
 
-compute_array("budget", "revenue", [], [])
+compute_array("budget", "revenue", [], [], true)
 

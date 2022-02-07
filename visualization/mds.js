@@ -1,3 +1,6 @@
+//../datasets/dataset_mds_500.csv
+var data_path = "../datasets/dataset_fake.csv"
+
 var margin_top= 5, 
 margin_right= 2, 
 margin_bottom= 1, 
@@ -130,7 +133,7 @@ function draw_MDS(data){
   }
 }
 
-d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
+d3.csv(data_path, function(error, data) {
   chiavi = d3.keys(data[0])
   if (error) throw error;
     var l=data.length;

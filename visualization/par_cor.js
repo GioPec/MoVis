@@ -1,5 +1,7 @@
+import{parCor_to_chord, filter_genres} from "./chord.js"
 
-    import{parCor_to_chord} from "./chord.js"
+//../datasets/dataset_mds_500.csv
+var data_path = "../datasets/dataset_fake.csv"
     
     //////////DISEGNO PARALLEL////////////
 
@@ -93,8 +95,10 @@
         .selectAll("path")
         .data(data)
         .enter().append("path")
+        .style("opacity", "1")
         .attr("id", function (d) { return d.imdb_id } )
         .attr("class","normal")
+        .attr("for", "consider")
         .attr("d", path);
     
 
@@ -191,7 +195,7 @@
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush_parallel_chart() {   
-        
+        filter_genres(null)
         var index = -1
         for(var i=0;i<dimensions.length;++i) {
             if(d3.event.target==y[dimensions[i]].brush) {
@@ -202,7 +206,14 @@
         }
         var ids = []
         var imdb_ids = []
-        foreground.classed("active", function(d) {
+
+        var test = foreground.filter(function(d) {
+            
+            return this["style"]["opacity"] != 0
+          })
+
+
+        test.classed("active", function(d) {
             ids.push(d.id)
             imdb_ids.push(d.imdb_id)
             var eliminato = false
@@ -222,9 +233,11 @@
             }) ? true : false;
 
         });
+        //console.log(foreground.selectAll("style"))
+
+        
        
-       
-        foreground.classed("normal", function(d) {
+        test.classed("normal", function(d) {
             ids.push(d.id)
             var eliminato = false
             return dimensions.every(function(p, i) {
@@ -241,8 +254,10 @@
             return check_1
             }) ? false : true;
         });
-        d3.selectAll(".active").raise()
 
+
+
+        d3.selectAll(".active").raise()
         //update chord
         parCor_to_chord(imdb_ids)
 
@@ -329,7 +344,7 @@
     }
 }
 
-d3.csv("../datasets/dataset_mds_500.csv", function(error, data) {
+d3.csv(data_path, function(error, data) {
 
     var chiavi= d3.keys(data[0])
     if (error) throw error;
