@@ -1,5 +1,9 @@
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
+function checkIfDarkMode() {
+  return document.getElementById("darkModeCheckbox").checked
+}
+
 var margin_top= 5, 
 margin_right= 2, 
 margin_bottom= 1, 
@@ -135,6 +139,17 @@ function draw_MDS(data){
       .attr("cx", function (d) { return newX(d[chiavi[0]]) } )
       .attr("cy", function (d) { return newY(d[chiavi[1]]) } )
   }
+
+
+  d3.select("#svg1").selectAll("text").attr("class", function(){
+    return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+  })
+  d3.select("#svg1").selectAll("line").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+  })
+  d3.select("#svg1").selectAll("path").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+  })
 }
 
 export function MDSreadCSV(DATASET_PATH) {

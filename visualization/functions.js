@@ -17,6 +17,9 @@ function changeDataset() {
     parCorReadCSV(DATASET_PATH)
     MDSreadCSV(DATASET_PATH)
     chordReadCSV(DATASET_PATH)
+/*     d3.select("#svg4").selectAll("path").attr("class", function(){
+    return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    }) */
 }
 
 function adjustForInflaction() {

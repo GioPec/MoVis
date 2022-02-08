@@ -27,7 +27,27 @@ export function darkMode() {
             a.setAttribute("class", "area lightborder")
         }
 
-        document.getElementsByClassName("domain").style("stroke", "FFF");
+        var cb = document.getElementsByClassName("chord_back")
+        for (let c of cb) {
+            //if (l.hasAttribute("class", "darkfill"))
+            c.setAttribute("class", "chord_back darkbackground")
+        }
+
+        d3.select(".area_3_g_x").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select(".area_3_g_y").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+
+        d3.select("#svg_2").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select("#svg1").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+
+        //document.getElementsByClassName("domain").style("stroke", "FFF");
     }
 
     else {
@@ -56,6 +76,26 @@ export function darkMode() {
             //if (l.hasAttribute("class", "darkfill"))
             a.setAttribute("class", "area darkborder")
         }
+
+        var cb = document.getElementsByClassName("chord_back")
+        for (let c of cb) {
+            //if (l.hasAttribute("class", "darkfill"))
+            c.setAttribute("class", "chord_back lightbackground")
+        }
+
+        d3.select(".area_3_g_x").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select(".area_3_g_y").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+
+        d3.select("#svg_2").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select("#svg1").selectAll("path").attr("class", function(){
+          return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
+        })
     }
 }
 
