@@ -1,27 +1,35 @@
 import{parCor_to_chord, filter_genres} from "./chord.js"
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
 //////////DISEGNO PARALLEL////////////
+
+
+var imdb_ids = null
+var ids = null
+var line = d3.line(),
+//axis = d3.axisLeft(x),
+// background,
+foreground,
+extents;
+var dimensions;
+
+var margin = {top: 30, right: 10, bottom: 10, left: 10},
+        width = 200 - margin.left - margin.right,
+        height = 150 - margin.top - margin.bottom;
+
+var x = d3.scaleBand().rangeRound([15, width+122]).padding(.1),
+y = {},
+dragging = {};
 
 function drawParallel(data, actual) {
 
     d3.select("#svg4").remove()
 
-    var margin = {top: 30, right: 10, bottom: 10, left: 10},
-        width = 200 - margin.left - margin.right,
-        height = 150 - margin.top - margin.bottom;
-
-    var x = d3.scaleBand().rangeRound([15, width+122]).padding(.1),
-        y = {},
-        dragging = {};
+    
 
 
-    var line = d3.line(),
-        //axis = d3.axisLeft(x),
-       // background,
-        foreground,
-        extents;
+ 
 
     
     var svg = d3.select("#area_4").append("svg")
@@ -39,7 +47,8 @@ function drawParallel(data, actual) {
         // then for all elements in the header
         //different than "name" it creates and y axis in a dictionary by variable name
 
-    var dimensions;
+    
+   
 
     var whichBudget = (actual) ? ("actual_budget") : ("budget")
     var whichRevenue = (actual) ? ("actual_revenue") : ("revenue")
@@ -208,20 +217,26 @@ function drawParallel(data, actual) {
         //console.log("END")
     }
 
-
+    
+    
     // Handles a brush event, toggling the display of foreground lines.
     function brush_parallel_chart() {   
         filter_genres(null)
         var index = -1
+        
+        
         for(var i=0;i<dimensions.length;++i) {
+           
             if(d3.event.target==y[dimensions[i]].brush) {
                 index = i
                 extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]);
-                //console.log(extents[i])
+                
+                
             }
         }
-        var ids = []
-        var imdb_ids = []
+        
+        ids = []
+        imdb_ids = []
 
         var test = foreground.filter(function(d) {
             
@@ -347,6 +362,7 @@ function drawParallel(data, actual) {
         //parCor_to_chord(imdb_ids)
 
         //update mds
+        /*
         var area_1 = d3.select("#area_1")
         area_1.selectAll(".dot").style("fill", function(d) {  
             for(var t=0;t<ids.length;t++){
@@ -356,9 +372,45 @@ function drawParallel(data, actual) {
             }
             return "rgb(66, 172, 66)"
         });
+        */
     }
 
+    
 
+}
+
+export function refresh_brush(){
+
+    console.log("refreshbrush")
+    imdb_ids = []
+    ids = []
+    var update = d3.selectAll(".active").filter(function(d) {
+        
+        if(this["style"]["opacity"] != 0){
+            imdb_ids.push(d.imdb_id)
+            ids.push(d.id)
+        }
+
+        return this["style"]["opacity"] != 0
+    })
+    
+        //update chord
+        parCor_to_chord(imdb_ids)
+
+        //update mds
+        var area_1 = d3.select("#area_1")
+        area_1.selectAll(".dot").style("fill", function(d) {  
+            for(var t=0;t<ids.length;t++){
+                if(ids[t] == d.id){
+                    return "red"
+                }
+            }
+            return "rgb(66, 172, 66)"
+        });
+
+        
+        
+    
 }
 
 export function parCorReadCSV(ds, actual) {

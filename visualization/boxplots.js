@@ -8,7 +8,7 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
 export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
   

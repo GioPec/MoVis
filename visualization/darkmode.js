@@ -21,13 +21,13 @@ export function darkMode() {
             t.setAttribute("class", "lightfill")
         }
 
-        var areas = document.getElementsByClassName("area")
-        for (let a of areas) {
-            //if (l.hasAttribute("class", "darkfill"))
-            a.setAttribute("class", "area lightborder")
-        }
+        d3.select("#area_1").style("border", "1px solid rgb(200,200,200)")
+        d3.select("#area_2").style("border", "1px solid rgb(200,200,200)")
+        d3.select("#area_3").style("border", "1px solid rgb(200,200,200)")
+        d3.select("#area_4").style("border", "1px solid rgb(200,200,200)")
+        d3.select("#area_5").style("border", "1px solid rgb(200,200,200)")
 
-        document.getElementsByClassName("domain").style("stroke", "FFF");
+        
     }
 
     else {
@@ -51,11 +51,11 @@ export function darkMode() {
             t.setAttribute("class", "darkfill")
         }
 
-        var areas = document.getElementsByClassName("area")
-        for (let a of areas) {
-            //if (l.hasAttribute("class", "darkfill"))
-            a.setAttribute("class", "area darkborder")
-        }
+        d3.select("#area_1").style("border", "1px solid black")
+        d3.select("#area_2").style("border", "1px solid black")
+        d3.select("#area_3").style("border", "1px solid black")
+        d3.select("#area_4").style("border", "1px solid black")
+        d3.select("#area_5").style("border", "1px solid black")
     }
 }
 

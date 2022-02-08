@@ -171,7 +171,7 @@ function update(data){
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) });
-      bolle.attr("r",function (d) { return d.n/100});
+      bolle.attr("r",function (d) { return d.n/10});
       bolle.style("fill", function (d) { 
         if(brushed_ids.length != 0){return "red"}
         else{return "rgb(66, 172, 66)"}
@@ -562,7 +562,7 @@ function draw_bubbleplot_2(data){
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/100})
+    .attr("r",function (d) {  return d.n/10})
     .style("fill", function (d) { 
       if(brushed_ids.length != 0){return "red"}
       else{return "rgb(66, 172, 66)"}
@@ -661,7 +661,11 @@ function draw_bubbleplot_2(data){
     var select_x_col = document.getElementById('opt_x').selectedOptions[0].id
     var select_y_col = document.getElementById('opt_y').selectedOptions[0].id
     if(this.value == "999"){update([])}
-    else{groupping(this.value, select_x_col.toLowerCase(), select_y_col.toLowerCase())}
+    else{
+      groupping(this.value, select_x_col.toLowerCase(), select_y_col.toLowerCase())
+ 
+      
+    }
  })
   select_opt_GroupBy.append("option").attr("value","4").text("Year")
   select_opt_GroupBy.append("option").attr("value","5").text("Budget")
@@ -763,7 +767,7 @@ scatter
 }
 
 function start (ids){
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW_500.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
@@ -787,7 +791,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
 
 
 
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW_500.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;

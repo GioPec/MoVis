@@ -1,7 +1,8 @@
 import{chord_to_bubble} from "./bubbleplot.js"
+import{refresh_brush} from "./par_cor.js"
 import{darkMode} from "./darkmode.js"
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -169,7 +170,11 @@ function compute_couples_matrix_row(row, genres_num) {
   }
 }
 
-function load_genres(included_genres, update_brushed_ids, highlighting, chord_filtering) {
+
+
+function load_genres(included_genres, update_brushed_ids, highlighting, chord_filtering, deselecting) {
+
+  
 
   brushed_ids = update_brushed_ids
   chord_ids = []
@@ -205,20 +210,27 @@ function load_genres(included_genres, update_brushed_ids, highlighting, chord_fi
 
   }).then(function() {
 
-    //console.log(matrix_couples)
-    //console.log(matrix2)
     
-    filtro(0)
-    d3.select("#chord_arcs").remove()
-    d3.select("#chord_ribbons").remove()
-    createD3Chord()
-   
-    //update par_cor
-    if (!highlighting) {
-      update_PC(selected_ids)
-      update_MDS(selected_ids)
-    } 
-    if ((chord_filtering) || (highlighting)) chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+    if(deselecting){
+      update_PC(selected_ids, true)
+    }
+    else{
+
+      filtro(0)
+      d3.select("#chord_arcs").remove()
+      d3.select("#chord_ribbons").remove()
+      createD3Chord()
+    
+      //update par_cor
+      if (!highlighting) {
+        update_PC(selected_ids, false)
+        update_MDS(selected_ids)
+        
+      } 
+       if ((chord_filtering) || (highlighting)) chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+
+    }
+    
   })
 }
 
@@ -420,22 +432,27 @@ function createLabel(generi) {
       var ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
     }).on('click', function(d){
+
+      // remove filter on arcs
       filter_genres(null)
+
+      //update back color
       var t = d3.select("#"+d.genere+"_chord_back").style("background-color")
-      if (t != "white") {
-        //d3.selectAll("#"+d.genere+"_chord").style("opacity", "0.3")
-        d3.select("#"+d.genere+"_chord_back").style("background-color", "white")
-      }
-      else d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")
+      var condition = false
+      if (t != "white") {d3.select("#"+d.genere+"_chord_back").style("background-color", "white");condition=true}
+      else {d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")}
+
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
         included_genres.splice(index, 1);
       }
       else included_genres.push(d.genere)
 
-      //console.log("bids: ",brushed_ids)
-  
-      load_genres(included_genres, brushed_ids, false, true)
+      //console.log("included_genres: ",included_genres)
+      //console.log("brushed_ids: ",brushed_ids)
+      
+      load_genres(included_genres, brushed_ids, false, true, condition)
+      //refresh_brush()
     })
     
   
@@ -473,7 +490,7 @@ function createLabel(generi) {
   return
 }
 
-function update_PC(selected_ids) {
+function update_PC(selected_ids, deselecting) {
   var paths = d3.select(".foreground").selectAll("path")
 
   paths.filter(function(d) {
@@ -483,6 +500,38 @@ function update_PC(selected_ids) {
   paths.filter(function(d) {
     return !selected_ids.includes(this['id'])
   }).style("opacity", "0")
+
+  /////////////////////////////////////////////////////
+  if(deselecting){
+    console.log("refreshbrush")
+    var imdb_ids = []
+    var ids = []
+    d3.selectAll(".active").filter(function(d) {
+        
+        if(this["style"]["opacity"] != 0){
+            imdb_ids.push(d.imdb_id)
+            ids.push(d.id)
+        }
+        return this["style"]["opacity"] != 0
+    })
+    
+        //update chord
+        load_genres(included_genres, imdb_ids, true, false, false)
+        //update mds 
+        var area_1 = d3.select("#area_1")
+        area_1
+        .selectAll(".dot")
+        .style("fill", function(d) {  
+          if(imdb_ids.includes(d.imdb_id)){return "red"}
+          else{return "rgb(66, 172, 66)"}
+        })
+        .style("display", function(d) {  
+          if(selected_ids.includes(d.imdb_id)){return null}
+          else{return "none"}
+        })
+  }
+
+ 
 }
 
 function update_MDS(selected_ids) {
@@ -508,17 +557,17 @@ function update_MDS(selected_ids) {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-load_genres(included_genres, brushed_ids, false, false)
+load_genres(included_genres, brushed_ids, false, false, false)
 
 export function parCor_to_chord(brushed_ids){
   
-  load_genres(included_genres, brushed_ids, true, false)
+  load_genres(included_genres, brushed_ids, true, false, false)
   
 }
 
 export function chordReadCSV(ds){
 
   DATASET_PATH = ds
-  load_genres(included_genres, brushed_ids, true, false)
+  load_genres(included_genres, brushed_ids, true, false, false)
   
 }

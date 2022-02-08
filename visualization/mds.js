@@ -1,4 +1,4 @@
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
 var margin_top= 5, 
 margin_right= 2, 
