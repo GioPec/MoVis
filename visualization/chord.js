@@ -1,6 +1,8 @@
 import{chord_to_bubble} from "./bubbleplot.js"
-import{refresh_brush} from "./par_cor.js"
-import{darkMode} from "./darkmode.js"
+
+function checkIfDarkMode() {
+  return document.getElementById("darkModeCheckbox").checked
+}
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
@@ -427,7 +429,6 @@ function createLabel(generi) {
     .enter()
     .append('text').text(function(d){return d.genere})
     .attr("id", function(d){return d.genere+"_chord"})
-    .style("background-color", "green")
     .attr("transform", function(d){
       var ret = "scale(0.5) translate(450,"+(d.id+1)*28+")"
       return ret
@@ -435,12 +436,15 @@ function createLabel(generi) {
 
       // remove filter on arcs
       filter_genres(null)
-
-      //update back color
-      var t = d3.select("#"+d.genere+"_chord_back").style("background-color")
+      var t = d3.select("#"+d.genere+"_chord_back").attr("class")
       var condition = false
-      if (t != "white") {d3.select("#"+d.genere+"_chord_back").style("background-color", "white");condition=true}
-      else {d3.select("#"+d.genere+"_chord_back").style("background-color", "rgb(225, 213, 168)")}
+      if (t != "chord_back darkbackground" && t!="chord_back lightbackground") {
+        d3.select("#"+d.genere+"_chord_back").attr("class", function(){
+          return (checkIfDarkMode()) ? ("chord_back darkbackground") : ("chord_back lightbackground")
+        })
+        condition=true
+      }
+      else d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted")//.style("background-color", "rgb(225, 213, 168)")
 
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
@@ -461,11 +465,11 @@ function createLabel(generi) {
         .data( generi_info)
         .enter()
  .append('div')
-.attr("id", function(d){return d.genere+"_chord_back"})
+ .attr("id", function(d){return d.genere+"_chord_back"})
+ .attr("class", "chord_back lightbackground")
  .style("position", "absolute")
- .style("top", function(d){return (3 +d.id*8.1)+"%"})
+ .style("top", function(d){return (3+d.id*8.1)+"%"})
  .style("left", "70%")
- .style("background-color", function(d){return "white"})
  .style("z-index", "-1")
  .style("position", "absolute")
  .style("font-size", "20px")

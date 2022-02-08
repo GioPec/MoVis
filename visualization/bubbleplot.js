@@ -1,5 +1,8 @@
 import{compute_array} from "./boxplots.js"
-import{darkMode} from "./darkmode.js"
+
+function checkIfDarkMode() {
+  return document.getElementById("darkModeCheckbox").checked
+}
 
 var margin_top= 5, 
 margin_right= 2, 
@@ -177,6 +180,17 @@ function update(data){
         else{return "rgb(66, 172, 66)"}
       });
   }
+
+
+  d3.select("#svg_2").selectAll("text").attr("class", function(){
+    return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+  })
+  d3.select("#svg_2").selectAll("line").attr("class", function(){
+    return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+  })
+  d3.select("#svg_2").selectAll("path").attr("class", function(){
+    return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+  })
 }
   
 function sort_bubble(bubble){
@@ -296,6 +310,17 @@ function draw_bubbleplot_2(data){
         cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
         cerchi.transition().duration(1000).attr("cx", function (d) {  return x(d.x) } )
     }
+
+        //update dark mode colors
+        d3.select("#svg_2").selectAll("text").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+        })
+        d3.select("#svg_2").selectAll("line").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select("#svg_2").selectAll("path").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+        })
   }
 
   function update_bubble_y(y_col_updated){
@@ -390,6 +415,17 @@ function draw_bubbleplot_2(data){
         cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
         cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
     }
+
+        //update dark mode colors
+        d3.select("#svg_2").selectAll("text").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+        })
+        d3.select("#svg_2").selectAll("line").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+        })
+        d3.select("#svg_2").selectAll("path").attr("class", function(){
+          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+        })
   }
 
   function eliminate_groups(x_col, y_col){
@@ -448,6 +484,16 @@ function draw_bubbleplot_2(data){
     nuovi_cerchi.transition().duration(800).style("opacity", "0.8")
 
     
+    //update dark mode colors
+    d3.select("#svg_2").selectAll("text").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+    })
+    d3.select("#svg_2").selectAll("line").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
+    d3.select("#svg_2").selectAll("path").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
   }
 
   function groupping(criterio){
@@ -609,6 +655,18 @@ function draw_bubbleplot_2(data){
       //return tooltip.style("top",(d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
     });
     bolle.transition().duration(800).style("opacity", "0.6")
+
+
+    //update dark mode colors
+    d3.select("#svg_2").selectAll("text").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+    })
+    d3.select("#svg_2").selectAll("line").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
+    d3.select("#svg_2").selectAll("path").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
   }
 
   
@@ -690,6 +748,7 @@ function draw_bubbleplot_2(data){
 
 var svg_2 = d3.select("#area_2")
 .append("svg")
+  .attr("id", "svg_2")
   .attr("preserveAspectRatio", "xMinYMin meet")
   .attr("viewBox", "0 0 300 165")
   .classed("svg-content", true)
@@ -702,6 +761,7 @@ xAxis = svg_2.append("g")
   .attr("transform", "translate(30," + 146.5 + ")")
   .call(d3.axisBottom(x))
   .attr("font-size", "6px")
+
   
 yAxis = svg_2.append("g")
   .attr("class", "axis axis--y")

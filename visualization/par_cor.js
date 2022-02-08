@@ -2,6 +2,10 @@ import{parCor_to_chord, filter_genres} from "./chord.js"
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 
+function checkIfDarkMode() {
+    return document.getElementById("darkModeCheckbox").checked
+}
+
 //////////DISEGNO PARALLEL////////////
 
 
@@ -375,13 +379,21 @@ function drawParallel(data, actual) {
         */
     }
 
-    
+    d3.select("#svg4").selectAll("text").attr("class", function(){
+        return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+    })
+    d3.select("#svg4").selectAll("line").attr("class", function(){
+        return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
+    d3.select("#svg4").selectAll(".domain").attr("class", function(){
+        return (checkIfDarkMode()) ? ("domain lightstroke") : ("domain darkstroke")
+    })
 
 }
 
 export function refresh_brush(){
 
-    console.log("refreshbrush")
+    //console.log("refreshbrush")
     imdb_ids = []
     ids = []
     var update = d3.selectAll(".active").filter(function(d) {
@@ -407,10 +419,6 @@ export function refresh_brush(){
             }
             return "rgb(66, 172, 66)"
         });
-
-        
-        
-    
 }
 
 export function parCorReadCSV(ds, actual) {

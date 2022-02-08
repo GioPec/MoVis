@@ -42,8 +42,9 @@
   font-size: 9px;
 }
 
-
-
+.chord_back_highlighted {
+  background-color: rgb(225, 213, 168);
+}
 
 /*****************************************/
 .active {
@@ -98,4 +99,11 @@
 }
 .lightborder {
   border-color: var(--light-color);
+}
+
+.darkbackground {
+  background-color: rgb(30, 30, 30);
+}
+.lightbackground {
+  background-color: white;
 }
