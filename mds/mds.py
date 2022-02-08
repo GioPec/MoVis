@@ -34,7 +34,7 @@ def samePosition(s1,s2):
 
 df_all = pd.read_csv(path_constants.DATASET)
 df = df_all[['imdb_id', 'title', 'genres','connected_movies', 'director']]
-dfn = df_all[['release_date','budget','revenue','runtime','vote_average','vote_count','popularity',
+dfn = df_all[['year','budget','revenue','runtime','vote_average','vote_count','popularity',
     'in_connections','out_connections','tot_connections']]
 
 imdb_id = df['imdb_id'].values
@@ -43,9 +43,9 @@ genres = df['genres'].values
 connected_movies = df['connected_movies'].values
 director = df['director'].values
 
-dfn['release_date'] = dfn['release_date'].apply(lambda g:
+""" dfn['release_date'] = dfn['release_date'].apply(lambda g:
     g[:4]
-)
+) """
 
 ###################
 
@@ -61,7 +61,7 @@ dfn.iloc[:,0:-1] = scaler.fit_transform(dfn.iloc[:,0:-1].to_numpy())
 ###################
 
 
-release_date = dfn['release_date'].values
+release_date = dfn['year'].values
 budget = dfn['budget'].values
 revenue = dfn['revenue'].values
 runtime = dfn['runtime'].values
@@ -109,13 +109,82 @@ for i in tqdm(range(len(imdb_id))):
         dissM_tot_connections[i][j] = euclideanDistance(tot_connections[i], tot_connections[j])
 
 
-#dissM = 0.1*dissM_genres + 0.3*dissM_connectedmovies + 0.01*dissM_titles
+""" parameters for mds_first_attempt:
+dissM = 0.1*dissM_genres + 0.3*dissM_connectedmovies + 0.01*dissM_titles
+"""
 
-dissM = 20*dissM_genres+500*dissM_connectedmovies+5*dissM_titles+10*dissM_directors
-dissM += dissM_release_date+dissM_budget+dissM_revenue
-dissM += dissM_runtime+dissM_vote_average+dissM_vote_count+0*dissM_popularity+dissM_in_connections+dissM_out_connections+0*dissM_tot_connections #TODO
-dissM *= 0.000001
+""" parameters for mds_second_attempt:
+dissM = 200*dissM_genres+500*dissM_connectedmovies+0*dissM_titles+100*dissM_directors
+dissM += 30*dissM_release_date+10*dissM_budget+10*dissM_revenue
+dissM += 10*dissM_runtime+100*dissM_vote_average+10*dissM_vote_count+0*dissM_popularity+0*dissM_in_connections+0*dissM_out_connections+0*dissM_tot_connections #TODO
+dissM *= 0.01 """
 
+""" parameters for mds_third_attempt:
+dissM = 3000*dissM_genres        #0-1 ____ 3000
+dissM += 6000*dissM_connectedmovies        #0-1 ____ 6000
+dissM += 0*dissM_titles        #0-1 ____ 0
+dissM += 2000*dissM_directors        #0-1 ____ 2000
+dissM += 0.5*dissM_release_date        #1910-2010 ____ 1000
+dissM += 10*dissM_budget        #0-350 (70) ____ 700
+dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
+dissM += 5*dissM_runtime        #0-220 (100) ____ 500
+dissM += 500*dissM_vote_average        #0-10 (6) ____ 3000
+dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
+dissM += 0*dissM_popularity        #0-500! (15) ??? ____ 0
+dissM += 0*dissM_in_connections        #0-7000 (bassa) ____ 0
+dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 0
+dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
+"""
+
+""" parameters for mds_fourth_attempt:
+dissM = 6000*dissM_genres        #0-1 ____ 6000
+dissM += 10000*dissM_connectedmovies        #0-1 ____ 10000
+dissM += 0*dissM_titles        #0-1 ____ 0
+dissM += 2000*dissM_directors        #0-1 ____ 2000
+dissM += 0.5*dissM_release_date        #1910-2010 ____ 1000
+dissM += 10*dissM_budget        #0-350 (70) ____ 700
+dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
+dissM += 5*dissM_runtime        #0-220 (100) ____ 500
+dissM += 300*dissM_vote_average        #0-10 (6) ____ 1800
+dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
+dissM += 0*dissM_popularity        #0-500! (15) ??? ____ 0
+dissM += 0*dissM_in_connections        #0-7000 (bassa) ____ 0
+dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 0
+dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
+"""
+
+""" parameters for mds_fifth_attempt:
+dissM = 6000*dissM_genres        #0-1 ____ 6000
+dissM += 20000*dissM_connectedmovies        #0-1 ____ 20000
+dissM += 0*dissM_titles        #0-1 ____ 0
+dissM += 5000*dissM_directors        #0-1 ____ 5000
+dissM += 1*dissM_release_date        #1910-2010 ____ 2000
+dissM += 10*dissM_budget        #0-350 (70) ____ 700
+dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
+dissM += 5*dissM_runtime        #0-220 (100) ____ 500
+dissM += 100*dissM_vote_average        #0-10 (6) ____ 1000
+dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
+dissM += 0*dissM_popularity        #0-500! (15) ??? ____ 0
+dissM += 0*dissM_in_connections        #0-7000 (bassa) ____ 0
+dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 0
+dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
+"""
+
+dissM = 400*dissM_genres        #0-1 ____ 4000
+dissM += 400000*dissM_connectedmovies        #0-1 ____ 40000
+dissM += 100*dissM_titles        #0-1 ____ 1000
+dissM += 500*dissM_directors        #0-1 ____ 5000
+dissM += 2*dissM_release_date        #1910-2010 ____ 4000
+dissM += 10*dissM_budget        #0-350 (70) ____ 700
+dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
+dissM += 5*dissM_runtime        #0-220 (100) ____ 500
+dissM += 20*dissM_vote_average        #0-10 (6) ____ 2000
+dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
+dissM += 2*dissM_popularity        #0-500! (15) ??? ____ 30-1000
+dissM += 0.5*dissM_in_connections        #0-7000 (bassa) ____ 3500
+dissM += 4*dissM_out_connections        #0-500 (bassissima) ____ 2000
+dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
+dissM *= 0.00000001
 
 print("Finished matrix")
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -128,7 +197,7 @@ i=0
 for c in pos_forprint:
     c.append(imdb_id[i])
     i+=1
-pd.DataFrame(pos_forprint).to_csv(path_constants.MDS_RESULTS, index=False)
+pd.DataFrame(pos_forprint).to_csv(path_constants.MDS_RESULTS_NEW, index=False)
 #np.savetxt("test.csv", pos_forprint, delimiter=",")
 
 print("Finished MDS")

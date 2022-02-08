@@ -1,11 +1,12 @@
 import{parCor_to_chord, filter_genres} from "./chord.js"
 
-//../datasets/dataset_mds_500.csv
-var data_path = "../datasets/dataset_fake.csv"
-    
-    //////////DISEGNO PARALLEL////////////
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
-    function drawParallel(data){
+//////////DISEGNO PARALLEL////////////
+
+function drawParallel(data, actual) {
+
+    d3.select("#svg4").remove()
 
     var margin = {top: 30, right: 10, bottom: 10, left: 10},
         width = 200 - margin.left - margin.right,
@@ -26,6 +27,7 @@ var data_path = "../datasets/dataset_fake.csv"
     var svg = d3.select("#area_4").append("svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 270 110")
+    .attr("id", "svg4")
     //.append("g")
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     .attr("transform", "scale(0.95) translate(-2,0)")
@@ -39,12 +41,26 @@ var data_path = "../datasets/dataset_fake.csv"
 
     var dimensions;
 
-     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+    var whichBudget = (actual) ? ("actual_budget") : ("budget")
+    var whichRevenue = (actual) ? ("actual_revenue") : ("revenue")
+
+    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
         if (
             (d == "year") 
-        || (d == "budget") || (d == "revenue") || (d == "runtime")
-        || (d == "vote_average")  || (d == "vote_count")  //|| (d == "popularity")  
-        || (d == "in_connections")  || (d == "out_connections")
+
+            //|| (d == "budget") 
+            //|| (d == "revenue") 
+            //|| (d == "actual_budget") 
+            //|| (d == "actual_revenue") 
+            || (d == whichBudget)
+            || (d == whichRevenue)
+
+            || (d == "runtime")
+            || (d == "vote_average")  
+            || (d == "vote_count")  
+            //|| (d == "popularity")  
+            || (d == "in_connections")  
+            || (d == "out_connections")
         ) {
             
             return y[d] = d3.scaleLinear()
@@ -149,14 +165,15 @@ var data_path = "../datasets/dataset_fake.csv"
         //.style("text-anchor", "big")
         .attr("y", 4)
         .attr("font-size", "4px")
-        .style("fill", "#000")
+        //.style("fill", "#000")
+        .attr("class", "darkfill")
         .text(function(d) { return d; });
     })
     // Add and store a brush for each axis.
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-8, 0], [8,height]])
+            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
             .on("brush.uno start.uno ", brushstart)
             .on("brush.due", brush_parallel_chart_2)
             .on("end.tre", brush_parallel_chart)
@@ -174,7 +191,7 @@ var data_path = "../datasets/dataset_fake.csv"
     }
 
     function transition(g) {
-    return g.transition().duration(500);
+        return g.transition().duration(500);
     }
 
     // Returns the path for a given data point.
@@ -183,13 +200,12 @@ var data_path = "../datasets/dataset_fake.csv"
     }
 
     function brushstart() {
-        console.log("START")
-    d3.event.sourceEvent.stopPropagation();
+        //console.log("START")
+        d3.event.sourceEvent.stopPropagation();
     }
 
     function brushend() {
-        console.log("END")
-    
+        //console.log("END")
     }
 
 
@@ -340,20 +356,25 @@ var data_path = "../datasets/dataset_fake.csv"
             }
             return "rgb(66, 172, 66)"
         });
-
     }
+
+
 }
 
-d3.csv(data_path, function(error, data) {
+export function parCorReadCSV(ds, actual) {
 
-    var chiavi= d3.keys(data[0])
-    if (error) throw error;
-      var l=data.length;
-      for (var i=0;i<l;i++) {
-        data[i].id=i
-      }
-      drawParallel(data)
-      
-})
+    d3.csv(ds, function(error, data) {
+
+        //var chiavi = d3.keys(data[0])
+        if (error) throw error;
+        var l=data.length;
+        for (var i=0;i<l;i++) {
+            data[i].id=i
+        }
+        drawParallel(data, actual)
+    })
+}
+
+parCorReadCSV(DATASET_PATH, false)
     
     

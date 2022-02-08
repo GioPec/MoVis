@@ -1,5 +1,4 @@
-//../datasets/dataset_mds_500.csv
-var data_path = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 var margin_top= 5, 
 margin_right= 2, 
@@ -8,8 +7,12 @@ margin_left= 2
 
 var width = 500 - margin_left - margin_right
 var height = 300 - margin_top - margin_bottom
+
+var chiavi
   
 function draw_MDS(data){   
+
+  d3.select("#svg1").remove()
 
   var tooltip = d3.select("body")
    .append("div")
@@ -27,6 +30,7 @@ function draw_MDS(data){
 
   var svg_1 = d3.select("#area_1")
   .append("svg")
+    .attr("id", "svg1")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 300 175")
     .classed("svg-content", true)
@@ -45,13 +49,13 @@ function draw_MDS(data){
   var y = d3.scaleLinear().range([height-140, 2])
 
   var xAxis = svg_1.append("g")
-    .attr("class", "axis axis--x")
+    .attr("class", "axis axis--x lightfill")
     .attr("transform", "translate(30," + 156 + ")")
     .call(d3.axisBottom(x))
     .attr("font-size", "6px")
     
   var yAxis = svg_1.append("g")
-    .attr("class", "axis axis--y")
+    .attr("class", "axis axis--y lightfill")
     .attr("transform", "translate(30," + 2 + ")")
     .call(d3.axisLeft(y))
     .attr("font-size", "6px")
@@ -133,10 +137,14 @@ function draw_MDS(data){
   }
 }
 
-d3.csv(data_path, function(error, data) {
-  chiavi = d3.keys(data[0])
-  if (error) throw error;
-    var l=data.length;
-    for (i=0;i<l;i++) data[i].id=i
-    draw_MDS(data)
-})
+export function MDSreadCSV(DATASET_PATH) {
+  d3.csv(DATASET_PATH, function(error, data) {
+    chiavi = d3.keys(data[0])
+    if (error) throw error;
+      var l=data.length;
+      for (let i=0;i<l;i++) data[i].id=i
+      draw_MDS(data)
+  })
+}
+
+MDSreadCSV(DATASET_PATH)

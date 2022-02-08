@@ -1,19 +1,19 @@
 
 .background path {
   fill: none;
-  stroke: #ddd;
+  /* stroke: #ddd; */
   stroke-width: 0.1px;
   shape-rendering: crispEdges;
 }
 
 .foreground path {
   fill: none;
-  stroke-width: 0.5px;
+  stroke-width: 0.1px;
 }
 
 .brush .extent {
   fill-opacity: .3;
-  stroke: #fff; 
+  /* stroke: #fff;  */
   shape-rendering: crispEdges;
 }
 
@@ -22,16 +22,17 @@
   font-family: sans-serif;
   fill: none;
 }
+
 .axis path {
   fill: none;
-  stroke: #000;
+  /*stroke: #000;*/
   shape-rendering: crispEdges;
 }
 
 
 .genere_square {
   height: 3.8%;
-  border :solid 1px black;
+  /* border :solid 1px black; */
 }
 .genere_info {
   cursor: pointer;
@@ -51,5 +52,50 @@
 
 .normal {
   stroke: rgb(66, 172, 66);
-  
+}
+
+.title {
+  font-weight: bolder;
+  font-size: xx-large;
+}
+
+.checkbox-label {
+  font-weight: normal;
+  font-size: medium;
+}
+
+/*****************************************/
+
+:root {
+  --light-color: rgb(200, 200, 200);
+}
+
+.dark {
+  background-color: rgb(30, 30, 30);
+  fill: var(--light-color);
+}
+.light {
+  background-color: white;
+  fill: black;
+}
+
+.darkfill {
+  fill: black;
+}
+.lightfill {
+  fill: var(--light-color);
+}
+
+.darkstroke {
+  stroke: black;
+}
+.lightstroke {
+  stroke: var(--light-color);
+}
+
+.darkborder {
+  border-color: black;
+}
+.lightborder {
+  border-color: var(--light-color);
 }

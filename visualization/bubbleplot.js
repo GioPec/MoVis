@@ -1,7 +1,5 @@
 import{compute_array} from "./boxplots.js"
-
-//../datasets/dataset_mds_500.csv
-var data_path = "../datasets/dataset_fake.csv"
+import{darkMode} from "./darkmode.js"
 
 var margin_top= 5, 
 margin_right= 2, 
@@ -10,6 +8,8 @@ margin_left= 2
 
 var width = 500 - margin_left - margin_right
 var height = 300 - margin_top - margin_bottom
+
+var chiavi
 
 var x
 var y
@@ -57,7 +57,7 @@ function update(data){
 
     
     
-      console.log(chord_ids != null)
+      //console.log(chord_ids != null)
       var cerchi = d3.select("#area_2_circles")
       .selectAll(".dot")
       .style("display", function (d) {
@@ -171,7 +171,7 @@ function update(data){
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) });
-      bolle.attr("r",function (d) { return d.n/0.5});
+      bolle.attr("r",function (d) { return d.n/100});
       bolle.style("fill", function (d) { 
         if(brushed_ids.length != 0){return "red"}
         else{return "rgb(66, 172, 66)"}
@@ -408,13 +408,13 @@ function draw_bubbleplot_2(data){
     yAxis.call(d3.axisLeft(y))
 
     /// riposiziona punti
-    console.log(selected_ids)
+    //console.log(selected_ids)
     var nuovi_cerchi = d3.select("#area_2_circles").selectAll(".dot")
     .data(data)
     .enter()
     .append("circle")
     .attr('class', 'dot')
-      .attr("cx", function (d) {console.log(d.imdb_id);return x(d[x_col]) } )
+      .attr("cx", function (d) { return x(d[x_col]) } )
       .attr("cy", function (d) {  return y(d[y_col]) } )
       .attr("r", 1)
       .attr("id", function (d) { return d[chiavi[2]] })
@@ -452,7 +452,7 @@ function draw_bubbleplot_2(data){
 
   function groupping(criterio){
 
-    if(criterio == "18"){eliminate_groups(x_col, y_col); return}
+    if(criterio == "20"){eliminate_groups(x_col, y_col); return}
 
     var data_grupped_avg = d3.nest()
     .key(function(d) {return d.year})
@@ -468,7 +468,7 @@ function draw_bubbleplot_2(data){
     for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0, "decade": i+"-"+(i+step-1)} }
 
     
-    console.log(selected_ids != null)
+    //console.log(selected_ids != null)
     for (let i=0; i<data.length; i++) { 
       
       if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
@@ -562,7 +562,7 @@ function draw_bubbleplot_2(data){
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/0.5})
+    .attr("r",function (d) {  return d.n/100})
     .style("fill", function (d) { 
       if(brushed_ids.length != 0){return "red"}
       else{return "rgb(66, 172, 66)"}
@@ -600,8 +600,8 @@ function draw_bubbleplot_2(data){
       else{
         d3.select(this).style("fill", "yellow")
         var bubble_range = d.decade.split("-")
-        console.log("test_x: ",x_col)
-        console.log("test_y: ",y_col)
+        //console.log("test_x: ",x_col)
+        //console.log("test_y: ",y_col)
         compute_array(x_col, y_col, selected_ids, bubble_range)
       }
       
@@ -627,50 +627,55 @@ function draw_bubbleplot_2(data){
  })
   select_opt.append("option").attr("value","4").attr("id", "year").text("Year")
   select_opt.append("option").attr("value","5").attr("id", "budget").attr("selected","true").text("Budget")
-  select_opt.append("option").attr("value","6").attr("id", "revenue").text("Revenue")
-  select_opt.append("option").attr("value","7").attr("id", "runtime").text("Runtime")
-  select_opt.append("option").attr("value","8").attr("id", "vote_average").text("Average vote")
-  select_opt.append("option").attr("value","9").attr("id", "vote_count").text("Votes count")
-  select_opt.append("option").attr("value","10").attr("id", "popularity").text("Popularity")
-  select_opt.append("option").attr("value","15").attr("id", "in_connections").text("In connections")
-  select_opt.append("option").attr("value","16").attr("id", "out_connections").text("Out connections")
-  select_opt.append("option").attr("value","17").attr("id", "tot_connections").text("Total connections")
+  select_opt.append("option").attr("value","6").attr("id", "actual_budget").text("Actual budget")
+  select_opt.append("option").attr("value","7").attr("id", "revenue").text("Revenue")
+  select_opt.append("option").attr("value","8").attr("id", "actual_revenue").text("Actual revenue")
+  select_opt.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
+  select_opt.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
+  select_opt.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
+  select_opt.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+  select_opt.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
+  select_opt.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
+  select_opt.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
   menu.append("label").text("Y: ")
   var select_opt_Y = menu.append("select").attr("id", "opt_y").on("change", function() {
     update_bubble_y(this.value)
-    
  })
-  select_opt_Y.append("option").attr("value","4").attr("id", "year").text("Year")
-  select_opt_Y.append("option").attr("value","5").attr("id", "budget").text("Budget")
-  select_opt_Y.append("option").attr("value","6").attr("id", "revenue").attr("selected","true").text("Revenue")
-  select_opt_Y.append("option").attr("value","7").attr("id", "runtime").text("Runtime")
-  select_opt_Y.append("option").attr("value","8").attr("id", "vote_average").text("Average vote")
-  select_opt_Y.append("option").attr("value","9").attr("id", "vote_count").text("Votes count")
-  select_opt_Y.append("option").attr("value","10").attr("id", "popularity").text("Popularity")
-  select_opt_Y.append("option").attr("value","15").attr("id", "in_connections").text("In connections")
-  select_opt_Y.append("option").attr("value","16").attr("id", "out_connections").text("Out connections")
-  select_opt_Y.append("option").attr("value","17").attr("id", "tot_connections").text("Total connections")
+ select_opt_Y.append("option").attr("value","4").attr("id", "year").text("Year")
+ select_opt_Y.append("option").attr("value","5").attr("id", "budget").text("Budget")
+ select_opt_Y.append("option").attr("value","6").attr("id", "actual_budget").text("Actual budget")
+ select_opt_Y.append("option").attr("value","7").attr("id", "revenue").attr("selected","true").text("Revenue")
+ select_opt_Y.append("option").attr("value","8").attr("id", "actual_revenue").text("Actual revenue")
+ select_opt_Y.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
+ select_opt_Y.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
+ select_opt_Y.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
+ select_opt_Y.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+ select_opt_Y.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
+ select_opt_Y.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
+ select_opt_Y.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
 
   menu.append("label").text("G: ")
   var select_opt_GroupBy = menu.append("select").attr("id", "opt_groupby").on("change", function() {
     var select_x_col = document.getElementById('opt_x').selectedOptions[0].id
     var select_y_col = document.getElementById('opt_y').selectedOptions[0].id
-    if(this.value == "5"){update([])}
+    if(this.value == "999"){update([])}
     else{groupping(this.value, select_x_col.toLowerCase(), select_y_col.toLowerCase())}
  })
   select_opt_GroupBy.append("option").attr("value","4").text("Year")
   select_opt_GroupBy.append("option").attr("value","5").text("Budget")
-  select_opt_GroupBy.append("option").attr("value","6").text("Revenue")
-  select_opt_GroupBy.append("option").attr("value","7").text("Runtime")
-  select_opt_GroupBy.append("option").attr("value","8").text("Average vote")
-  select_opt_GroupBy.append("option").attr("value","9").text("Votes count")
-  select_opt_GroupBy.append("option").attr("value","10").text("Popularity")
-  select_opt_GroupBy.append("option").attr("value","15").text("In connections")
-  select_opt_GroupBy.append("option").attr("value","16").text("Out connections")
-  select_opt_GroupBy.append("option").attr("value","17").text("Total connections")
-  select_opt_GroupBy.append("option").attr("value","18").attr("selected","true").text("Nessuno")
+  select_opt_GroupBy.append("option").attr("value","6").text("Actual budget")
+  select_opt_GroupBy.append("option").attr("value","7").text("Revenue")
+  select_opt_GroupBy.append("option").attr("value","8").text("Actual revenue")
+  select_opt_GroupBy.append("option").attr("value","9").text("Runtime")
+  select_opt_GroupBy.append("option").attr("value","10").text("Average vote")
+  select_opt_GroupBy.append("option").attr("value","11").text("Votes count")
+  select_opt_GroupBy.append("option").attr("value","12").text("Popularity")
+  select_opt_GroupBy.append("option").attr("value","17").text("In connections")
+  select_opt_GroupBy.append("option").attr("value","18").text("Out connections")
+  select_opt_GroupBy.append("option").attr("value","19").text("Total connections")
+  select_opt_GroupBy.append("option").attr("value","20").attr("selected","true").text("Nessuno")
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -702,10 +707,10 @@ yAxis = svg_2.append("g")
 
 // Update global vars
 x_col = chiavi[5]
-y_col = chiavi[6]
+y_col = chiavi[7]
 
-x.domain(d3.extent(data, function(d) { return +d[chiavi[5]]; }));
-y.domain(d3.extent(data, function(d) { return +d[chiavi[6]]; }));
+x.domain(d3.extent(data, function(d) { return +d[x_col]; }));
+y.domain(d3.extent(data, function(d) { return +d[y_col]; }));
 
 xAxis.call(d3.axisBottom(x))
 yAxis.call(d3.axisLeft(y))
@@ -733,8 +738,8 @@ scatter
   .enter()
   .append("circle")
   .attr('class', 'dot')
-    .attr("cx", function (d) {return x(d[chiavi[5]]) } )
-    .attr("cy", function (d) {  return y(d[chiavi[6]]) } )
+    .attr("cx", function (d) {  return x(d[x_col]) } )
+    .attr("cy", function (d) {  return y(d[y_col]) } )
     .attr("r", 1)
     .attr("id", function (d) { return d[chiavi[2]] })
     .attr("name", function (d) { return d["title"] } )
@@ -758,12 +763,12 @@ scatter
 }
 
 function start (ids){
-  d3.csv(data_path, function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
       var l=data.length;
-      for (i=0;i<l;i++) data[i].id=i
+      for (let i=0;i<l;i++) data[i].id=i
       draw_bubbleplot_2(data,false,ids)
   })
 
@@ -782,20 +787,16 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
 
 
 
-  d3.csv(data_path, function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
       var l=data.length;
-      for (i=0;i<l;i++) data[i].id=i
+      for (let i=0;i<l;i++) data[i].id=i
 
     update(data)
       
   })
-  
-  
-  
-  
 }
 
 

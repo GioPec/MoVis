@@ -1,5 +1,4 @@
 //../datasets/dataset_mds_500.csv
-var data_path = "../datasets/dataset_fake.csv"
 
 var data_used_x = []
 var data_used_y = []
@@ -9,9 +8,9 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
-  
+export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
   
   if(!changing_axis){used_ids = ids_update;}
   
@@ -20,7 +19,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
   data_used_x = []
   data_used_y = []
   
-  d3v6.csv(data_path, function(row) {
+  d3v6.csv(DATASET_PATH, function(row) {
 
     var range_check = bubble_range.length == 0
 
@@ -41,13 +40,8 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
         data_used_y.push(parseInt(row[colonna_y]))
       }
     }
-    
-    
-    
-  
 
   }).then(function() {
-
     
     d3.select("#svg_area_3_x").remove()
     svg_area_3 = d3v6.select("#area_3")
@@ -59,12 +53,8 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
 
     draw_boxplot_x(colonna_x)
     draw_boxplot_y(colonna_y)
-    
-
   })
-
 }
-
 
 function draw_boxplot_x(colonna_x){
 
@@ -81,8 +71,9 @@ function draw_boxplot_x(colonna_x){
         "translate(" + 30 + "," + 40 + "), scale(0.8)")
 
   boxplot_x.append("text")
-  .style("fill", "black")
-  .style("font-size", "25px")
+  //.style("fill", "black")
+  .style("font-size", "20px")
+  .attr("class", "darkfill")
   .attr("transform",
         "translate(" + 120 + "," + -15 + "), scale(0.8)")
   .text(colonna_x)
@@ -135,7 +126,8 @@ if(data_used_x.length != 0){
   .attr("x2", 200)
   .attr("y1", y_box(min) )
   .attr("y2", y_box(max) )
-  .attr("stroke", "black")
+  .attr("class", "darkstroke")
+  //.attr("stroke", "black")
   //.attr("transform", "scale(0.6) translate(0,0)")
   .attr("transform", "translate("+(space*(-1))+",0)")
   
@@ -147,7 +139,8 @@ boxplot_x
   .attr("y", y_box(q3) )
   .attr("height", (y_box(q1)-y_box(q3)) )
   .attr("width", 100 )
-  .attr("stroke", "black")
+  .attr("class", "darkstroke")
+  //.attr("stroke", "black")
   .style("fill", "#69b3a2")
   .attr("transform", "translate("+(space*(-1))+",0)")
 
@@ -161,12 +154,11 @@ boxplot_x
   .attr("x2", 200+100/2)
   .attr("y1", function(d){ return(y_box(d))} )
   .attr("y2", function(d){ return(y_box(d))} )
-  .attr("stroke", "black")
+  //.attr("stroke", "black")
+  .attr("class", "darkstroke")
   .attr("transform", "translate("+(space*(-1))+",0)")
 }
-
 }
-
 
 function draw_boxplot_y(colonna_y){
 
@@ -179,8 +171,9 @@ function draw_boxplot_y(colonna_y){
 
 
     boxplot_y.append("text")
-    .style("fill", "black")
-    .style("font-size", "25px")
+    //.style("fill", "black")
+    .style("font-size", "20px")
+    .attr("class", "darkfill")
     .text(colonna_y)
     .attr("transform",
           "translate(" + 120 + "," + -15 + "), scale(0.8)")
@@ -258,10 +251,12 @@ function draw_boxplot_y(colonna_y){
     .attr("transform", "translate("+(space*(-1))+",0)")
 
   }
-  
-  }
-
-
+}
 
 compute_array("budget", "revenue", [], [], true)
+
+export function boxplotReadCSV(ds) {
+  DATASET_PATH = ds
+  compute_array("budget", "revenue", [], [])
+}
 
