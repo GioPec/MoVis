@@ -1,4 +1,5 @@
 import{parCor_to_chord, filter_genres} from "./chord.js"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
@@ -186,7 +187,7 @@ function drawParallel(data, actual) {
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
+            d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
             .on("brush.uno start.uno ", brushstart)
             .on("brush.due", brush_parallel_chart_2)
             .on("end.tre", brush_parallel_chart)
@@ -301,11 +302,15 @@ function drawParallel(data, actual) {
         area_1.selectAll(".dot").style("fill", function(d) {  
             for(var t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
-                    return "red"
+                    return color_brushed
                 }
             }
-            return "rgb(66, 172, 66)"
+            return color_base
         });
+
+        //TODO: color_brushed to boxplots rects
+        //d3.select("#svg_area_3_x").selectAll("rect").style("fill", color_brushed)
+        //d3.select("#svg_area_3_y").selectAll("rect").style("fill", color_brushed)
 
     }
 
@@ -414,10 +419,10 @@ export function refresh_brush(){
         area_1.selectAll(".dot").style("fill", function(d) {  
             for(var t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
-                    return "red"
+                    return color_brushed
                 }
             }
-            return "rgb(66, 172, 66)"
+            return color_base
         });
 }
 

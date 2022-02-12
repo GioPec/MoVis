@@ -1,4 +1,4 @@
-//../datasets/dataset_mds_500.csv
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 var data_used_x = []
 var data_used_y = []
@@ -133,7 +133,7 @@ function draw_boxplot_x(colonna_x){
       return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
     })
     //.attr("stroke", "black")
-    .style("fill", "#69b3a2")
+    .style("fill", color_base)
     .attr("transform", "translate("+(space*(-1))+",0)")
 
   // show median, min and max horizontal lines

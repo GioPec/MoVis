@@ -1,4 +1,5 @@
-import{chord_to_bubble} from "./bubbleplot.js"
+import {chord_to_bubble} from "./bubbleplot.js"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -23,7 +24,8 @@ const colors_light = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462
 
 var tooltip = d3.select("body")
 .append("div")
-.style("background", "rgba(225, 213, 168,0.8)")
+.attr("id", "tooltip5")
+.style("background-color", "rgb(225, 213, 168)")
 .style("position", "absolute")
 .style("z-index", "10")
 .style("visibility", "hidden")

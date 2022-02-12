@@ -1,4 +1,5 @@
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -20,7 +21,8 @@ function draw_MDS(data){
 
   var tooltip = d3.select("body")
    .append("div")
-   .style("background", "rgba(225, 213, 168,0.8)")
+   .attr("id", "tooltip1")
+   .style("background-color", "rgb(225, 213, 168)")
    .style("position", "absolute")
    .style("z-index", "10")
    .style("visibility", "hidden")
@@ -93,7 +95,7 @@ function draw_MDS(data){
       .attr("r", 1)
       .attr("id", function (d) { return d[chiavi[2]] })
       .attr("name", function (d) { return d["title"] } )
-      .style("fill", "rgb(66, 172, 66)") // #ff0099
+      .style("fill", color_base) // #ff0099
       .style("stroke", "black")
       .style("stroke-width", "0.2") 
       .style("opacity", 0.8)

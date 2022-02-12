@@ -1,4 +1,5 @@
-import{compute_array} from "./boxplots.js"
+import {compute_array} from "./boxplots.js"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -30,7 +31,8 @@ var brushed_ids = []
 
 var tooltip = d3.select("body")
 .append("div")
-.style("background", "rgba(225, 213, 168,0.8)")
+.attr("id", "tooltip2")
+.style("background-color", "rgb(225, 213, 168)")
 .style("position", "absolute")
 .style("z-index", "10")
 .style("visibility", "hidden")
@@ -53,9 +55,9 @@ function update(data){
       .selectAll(".dot")
       .style("fill", function (d) {
        if(brushed_ids.includes(d.imdb_id)){
-        return "red"
+        return color_brushed
        }
-       return "rgb(66, 172, 66)"
+       return color_base
       }) 
 
     
@@ -176,8 +178,8 @@ function update(data){
       bolle.attr("cy", function (d) { return y(d.y) });
       bolle.attr("r",function (d) { return d.n/10});
       bolle.style("fill", function (d) { 
-        if(brushed_ids.length != 0){return "red"}
-        else{return "rgb(66, 172, 66)"}
+        if (brushed_ids.length != 0) return color_brushed
+        else return color_base
       });
   }
 
@@ -456,8 +458,8 @@ function draw_bubbleplot_2(data){
       .attr("id", function (d) { return d[chiavi[2]] })
       .attr("name", function (d) { return d["title"] } )
       .style("fill", function (d) { 
-        if((selected_ids != null) && (selected_ids.includes(d.imdb_id))){return "red"}
-        else{return "rgb(66, 172, 66)"}
+        if ((selected_ids != null) && (selected_ids.includes(d.imdb_id))) return color_brushed
+        else return color_base
       })
       .style("display", function (d) {
         
@@ -610,8 +612,8 @@ function draw_bubbleplot_2(data){
     .attr("cy", function (d) {  return y(d.y) } )
     .attr("r",function (d) {  return d.n/10})
     .style("fill", function (d) { 
-      if(brushed_ids.length != 0){return "red"}
-      else{return "rgb(66, 172, 66)"}
+      if (brushed_ids.length != 0) return color_brushed
+      else return color_base
     })
     .style("stroke", "black")
     .style("stroke-width", "1") 
@@ -630,29 +632,24 @@ function draw_bubbleplot_2(data){
       var colore = d3.select(this).style("fill")
 
       d3.selectAll(".bubble").style("fill", function (d) {  
-        if(brushed_ids.length == 0){return "rgb(66, 172, 66)"}
-        else{return "red"}
+        if (brushed_ids.length == 0) return color_base
+        else return color_brushed
       })
       
-      if(colore == "yellow"){
+      if (colore == color_selected) {
         d3.select(this).style("fill", function (d) {  
           
-          if(brushed_ids.length == 0){return "rgb(66, 172, 66)"}
-          else{return "red"}
+          if (brushed_ids.length == 0) return color_base
+          else return color_brushed
           
         })
         compute_array(x_col, y_col, selected_ids, [])
       }
-      else{
-        d3.select(this).style("fill", "yellow")
+      else {
+        d3.select(this).style("fill", color_selected)
         var bubble_range = d.decade.split("-")
-        //console.log("test_x: ",x_col)
-        //console.log("test_y: ",y_col)
         compute_array(x_col, y_col, selected_ids, bubble_range)
       }
-      
-      
-      //return tooltip.style("top",(d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
     });
     bolle.transition().duration(800).style("opacity", "0.6")
 
@@ -672,12 +669,13 @@ function draw_bubbleplot_2(data){
   
 
   var menu = d3.select("#area_2").append("div")
+    .attr("id", "bubble_toolbar")
     .style("width", "100%")
     .style("height", "10%")
     .style("background", "rgb(225, 213, 168)")
     .style("font-size", "20px")
 
-  menu.append("label").text("X: ")
+  menu.append("label").text("ㅤX axis: ")
   var select_opt = menu.append("select").attr("id", "opt_x").on("change", function() {
   
     update_bubble_x(this.value);
@@ -696,7 +694,7 @@ function draw_bubbleplot_2(data){
   select_opt.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
   select_opt.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
-  menu.append("label").text("Y: ")
+  menu.append("label").text("ㅤY axis: ")
   var select_opt_Y = menu.append("select").attr("id", "opt_y").on("change", function() {
     update_bubble_y(this.value)
  })
@@ -714,7 +712,7 @@ function draw_bubbleplot_2(data){
  select_opt_Y.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
 
 
-  menu.append("label").text("G: ")
+  menu.append("label").text("ㅤGroup by: ")
   var select_opt_GroupBy = menu.append("select").attr("id", "opt_groupby").on("change", function() {
     var select_x_col = document.getElementById('opt_x').selectedOptions[0].id
     var select_y_col = document.getElementById('opt_y').selectedOptions[0].id
@@ -737,7 +735,7 @@ function draw_bubbleplot_2(data){
   select_opt_GroupBy.append("option").attr("value","17").text("In connections")
   select_opt_GroupBy.append("option").attr("value","18").text("Out connections")
   select_opt_GroupBy.append("option").attr("value","19").text("Total connections")
-  select_opt_GroupBy.append("option").attr("value","20").attr("selected","true").text("Nessuno")
+  select_opt_GroupBy.append("option").attr("value","20").attr("selected","true").text("None")
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -783,7 +781,7 @@ yAxis.call(d3.axisLeft(y))
 var clip = svg_2.append("defs").append("SVG:clipPath")
   .attr("id", "clip")
   .append("SVG:rect")
-  .style("background-color", "yellow")
+  .style("background-color", color_selected)
   .attr("width",  width-250)
   .attr("height", height-160 )
   .attr("x", 0)
@@ -807,7 +805,7 @@ scatter
     .attr("r", 1)
     .attr("id", function (d) { return d[chiavi[2]] })
     .attr("name", function (d) { return d["title"] } )
-    .style("fill", "rgb(66, 172, 66)") // #ff0099
+    .style("fill", color_base) // #ff0099
     .style("stroke", "black")
     .style("stroke-width", "0.2") 
     .style("opacity", 0.8)

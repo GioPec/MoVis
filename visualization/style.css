@@ -48,11 +48,13 @@
 
 /*****************************************/
 .active {
-  stroke: red;
+  /*stroke: red;*/
+  stroke: #ff3e3e;
 }
 
 .normal {
-  stroke: rgb(66, 172, 66);
+  /*stroke: rgb(66, 172, 66);*/
+  stroke: #69b3a2
 }
 
 .title {
