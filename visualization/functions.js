@@ -13,7 +13,7 @@ var inflactionCheckbox = document.getElementById("inflactionCheckbox")
 inflactionCheckbox.addEventListener("click", adjustForInflaction)
 
 function changeDataset() {
-    DATASET_PATH = (DATASET_PATH=="../datasets/DATASET_MDS_NEW.csv") ? ("../datasets/DATASET_MDS_NEW_500.csv") : ("../datasets/DATASET_MDS_NEW.csv")
+    DATASET_PATH = (DATASET_PATH=="../datasets/DATASET_MDS_NEW.csv") ? ("../datasets/DATASET_MDS_250.csv") : ("../datasets/DATASET_MDS_NEW.csv")
     parCorReadCSV(DATASET_PATH)
     MDSreadCSV(DATASET_PATH)
     chordReadCSV(DATASET_PATH)

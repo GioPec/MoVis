@@ -8,7 +8,7 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
