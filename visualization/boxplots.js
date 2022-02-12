@@ -1,4 +1,4 @@
-//../datasets/dataset_mds_500.csv
+
 
 var data_used_x = []
 var data_used_y = []
@@ -9,6 +9,7 @@ var used_ids = []
 var bubble_range = []
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -130,7 +131,7 @@ function draw_boxplot_x(colonna_x){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
     })
     //.attr("stroke", "black")
     .style("fill", "#69b3a2")
@@ -231,7 +232,7 @@ function draw_boxplot_y(colonna_y){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
     })
     .style("fill", "#69b3a2")
     .attr("transform", "translate("+(space*(-1))+",0)")
@@ -262,6 +263,13 @@ function draw_boxplot_y(colonna_y){
   d3.select(".area_3_g_y").selectAll("path").attr("class", function(){
     return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
   })
+
+  if(bubble_range != null){
+    d3.selectAll(".box").style("fill", function(){
+      return (bubble_range.length == 0) ? ("#69b3a2") : ("yellow")
+    }) 
+  }
+  
   
 }
 

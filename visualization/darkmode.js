@@ -2,6 +2,9 @@ export function darkMode() {
     var isDarkChecked = document.getElementById("darkModeCheckbox").checked
     if (isDarkChecked) {
 
+
+        
+
         document.getElementById('body').setAttribute("class", "dark")
 
         var domains = document.getElementsByClassName("domain")
@@ -48,6 +51,8 @@ export function darkMode() {
         })
 
         //document.getElementsByClassName("domain").style("stroke", "FFF");
+        
+        d3.selectAll(".bubble").attr("class", " bubble lightstroke")
     }
 
     else {
@@ -96,6 +101,8 @@ export function darkMode() {
         d3.select("#svg1").selectAll("path").attr("class", function(){
           return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
         })
+
+        d3.selectAll(".bubble").attr("class", " bubble darkstroke")
     }
 }
 

@@ -1,5 +1,8 @@
 import{compute_array} from "./boxplots.js"
 
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
+
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
@@ -174,7 +177,10 @@ function update(data){
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) });
-      bolle.attr("r",function (d) { return d.n/10});
+      bolle.attr("r",function (d) { 
+        if(d.n == 0){return 0}
+        else{return (d.n/10)+2}
+      });
       bolle.style("fill", function (d) { 
         if(brushed_ids.length != 0){return "red"}
         else{return "rgb(66, 172, 66)"}
@@ -218,6 +224,7 @@ function draw_bubbleplot_2(data){
 
     
     x_col = chiavi[x_col_updated]
+    console.log("x_col: ", x_col)
     //console.log("x_col: ", x_col)
     compute_array(x_col, y_col, [], null, true)
     
@@ -608,12 +615,18 @@ function draw_bubbleplot_2(data){
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/10})
+    .attr("r",function (d) { 
+      if(d.n == 0){return 0}
+      else{return (d.n/10)+2}
+      
+    })
     .style("fill", function (d) { 
       if(brushed_ids.length != 0){return "red"}
       else{return "rgb(66, 172, 66)"}
     })
-    .style("stroke", "black")
+    .attr("class", function(){
+      return (checkIfDarkMode()) ? (" bubble lightstroke") : (" bubble darkstroke")
+    })
     .style("stroke-width", "1") 
     .style("opacity", "0")
     .style("pointer-events", "all")
@@ -635,6 +648,7 @@ function draw_bubbleplot_2(data){
       })
       
       if(colore == "yellow"){
+       
         d3.select(this).style("fill", function (d) {  
           
           if(brushed_ids.length == 0){return "rgb(66, 172, 66)"}
@@ -645,6 +659,7 @@ function draw_bubbleplot_2(data){
       }
       else{
         d3.select(this).style("fill", "yellow")
+        
         var bubble_range = d.decade.split("-")
         //console.log("test_x: ",x_col)
         //console.log("test_y: ",y_col)
@@ -655,6 +670,7 @@ function draw_bubbleplot_2(data){
       //return tooltip.style("top",(d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
     });
     bolle.transition().duration(800).style("opacity", "0.6")
+
 
 
     //update dark mode colors
@@ -827,7 +843,7 @@ scatter
 }
 
 function start (ids){
-  d3.csv("../datasets/DATASET_MDS_NEW_500.csv", function(error, data) {
+  d3.csv(DATASET_PATH, function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
@@ -851,7 +867,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
 
 
 
-  d3.csv("../datasets/DATASET_MDS_NEW_500.csv", function(error, data) {
+  d3.csv(DATASET_PATH, function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;

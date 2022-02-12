@@ -1,4 +1,5 @@
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -39,11 +40,12 @@ function draw_MDS(data){
     .attr("viewBox", "0 0 300 175")
     .classed("svg-content", true)
     .call(zoom)
+    /*
     .on("mousedown.zoom", null)
     .on("touchstart.zoom", null)
     .on("touchmove.zoom", null)
     .on("touchend.zoom", null)
-   
+   */
     //.call(zoom)
     //.attr("transform", "translate(" + 2 + "," + 2 + ")")
     //.style("border", "1px solid")

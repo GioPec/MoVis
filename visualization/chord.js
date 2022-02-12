@@ -5,6 +5,7 @@ function checkIfDarkMode() {
 }
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -390,7 +391,10 @@ function createD3Chord() {
       })
       
       .on("mouseout", function(d) {
-        this["style"]["stroke"] = null
+        if(this["style"]["opacity"] != "0.99"){
+          this["style"]["stroke"] = null
+        }
+        
         return tooltip.style("visibility", "hidden");
       })
       .on("click", function(d) {
@@ -403,10 +407,10 @@ function createD3Chord() {
         id_elem[0] = generi_info[parseInt(id_elem[0])].genere
         id_elem[1] = generi_info[parseInt(id_elem[1])].genere
         elem.style("opacity", "0.99")
+        elem.style("stroke", "black")
         filter_genres(id_elem)
         }
         else{
-          console.log("")
           d3.select("#chord_ribbons").selectAll("path").style("opacity", "1")
           filter_genres(null)
         }
