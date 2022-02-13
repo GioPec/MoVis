@@ -103,9 +103,9 @@ function draw_MDS(data){
       .style("opacity", 0.8)
       .style("pointer-events", "all")
       .on("mouseover", function(d) {
-      tooltip.text(d.title);
-     return tooltip.style("visibility", "visible");
-   })
+        tooltip.html("<b>"+d.title+"</b> ("+d.year+")<br><i>Directed by: "+d.director+"</i>");
+        return tooltip.style("visibility", "visible");
+      })
    .on("mousemove", function() {
      return tooltip.style("top",
        (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");

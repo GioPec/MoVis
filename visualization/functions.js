@@ -6,20 +6,45 @@ var actual = false
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
-var changeDatasetCheckbox = document.getElementById("changeDatasetCheckbox")
+/* var changeDatasetCheckbox = document.getElementById("changeDatasetCheckbox")
 changeDatasetCheckbox.addEventListener("click", changeDataset)
+
+var changeDatasetCheckbox1000 = document.getElementById("changeDataset1000Checkbox")
+changeDatasetCheckbox1000.addEventListener("click", changeDataset1000) */
+
+var changeDatasetSelect = document.getElementById("changeDatasetSelect")
+changeDatasetSelect.addEventListener("change", changeDataset)
+
 
 var inflactionCheckbox = document.getElementById("inflactionCheckbox")
 inflactionCheckbox.addEventListener("click", adjustForInflaction)
 
 function changeDataset() {
-    DATASET_PATH = (DATASET_PATH=="../datasets/DATASET_MDS_NEW.csv") ? ("../datasets/DATASET_MDS_250.csv") : ("../datasets/DATASET_MDS_NEW.csv")
+    var selected_size = document.getElementById("changeDatasetSelect").value
+    if (selected_size=="250") changeDataset250()
+    else if (selected_size=="1000") changeDataset1000()
+    else if (selected_size=="5000") changeDataset5000()
+}
+
+function changeDataset250() {
+    DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
     parCorReadCSV(DATASET_PATH)
     MDSreadCSV(DATASET_PATH)
     chordReadCSV(DATASET_PATH)
-/*     d3.select("#svg4").selectAll("path").attr("class", function(){
-    return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
-    }) */
+}
+
+function changeDataset1000() {
+    DATASET_PATH = "../datasets/DATASET_MDS_1000.csv"
+    parCorReadCSV(DATASET_PATH)
+    MDSreadCSV(DATASET_PATH)
+    chordReadCSV(DATASET_PATH)
+}
+
+function changeDataset5000() {
+    DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+    parCorReadCSV(DATASET_PATH)
+    MDSreadCSV(DATASET_PATH)
+    chordReadCSV(DATASET_PATH)
 }
 
 function adjustForInflaction() {

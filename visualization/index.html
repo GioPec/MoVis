@@ -11,14 +11,27 @@
   <div id="all" style="width: 98.5%; height: 98%; position: absolute; bottom: 0.5%; top:0.5%">
     <div class="area" id="toolbar" style="width: 100%; height: 4%; border: 1px solid; position: absolute; background: rgb(225, 213, 168)">
       <div class="title">MoVis
+
+        <label class="checkbox-label" for="ds">Choose dataset size:</label>
+        <select id="changeDatasetSelect" name="ds">
+          <option value="250">250</option>
+          <option value="1000">1000</option>
+          <option value="5000" selected>5000+</option>
+        </select>
+
+
         <input type="checkbox" id="darkModeCheckbox">
         <label class="checkbox-label">Dark mode</label>
+        <!-- 
+        <input type="radio" name="ds" id="changeDatasetCheckbox">
+        <label class="checkbox-label">Top 250 movies</label>
 
-        <input type="checkbox" id="changeDatasetCheckbox">
-        <label class="checkbox-label">Top 250 movies only</label>
+        <input type="radio" name="ds" id="changeDataset1000Checkbox">
+        <label class="checkbox-label">Top 1000 movies</label> -->
 
         <input type="checkbox" id="inflactionCheckbox">
         <label class="checkbox-label">Adjust $ for inflaction</label>
+
       </div>
     </div>
     <div class="area darkborder" id="area_1" style="width: 38%; height: 48%; border:1px solid; position: absolute; margin-top: 2%;"></div>

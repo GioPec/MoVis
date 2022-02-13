@@ -21,7 +21,7 @@ ds['actual_revenue'] = ds.apply(lambda r:
 #ds_pop = ds['popularity']
 #ds = ds[ds['year']<2015]
 
-ds = ds.nlargest(250,'popularity')
+ds = ds.nlargest(1000,'popularity')
 
 print(ds.head)
-ds.to_csv(path_constants.DATASET_250, index=False)
+ds.to_csv(path_constants.DATASET_1000, index=False)

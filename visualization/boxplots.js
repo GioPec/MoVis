@@ -130,7 +130,7 @@ function draw_boxplot_x(colonna_x){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
+      return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
     //.attr("stroke", "black")
     .style("fill", color_base)
@@ -232,7 +232,7 @@ function draw_boxplot_y(colonna_y){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
+      return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
     .style("fill", color_base)
     //.style("opacity", 0.6)
