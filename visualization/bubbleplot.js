@@ -1,7 +1,7 @@
 import{compute_array} from "./boxplots.js"
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-//var DATASET_PATH = "../datasets/dataset_fake.csv"
+//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -24,6 +24,8 @@ var yAxis
 
 var x_col
 var y_col
+
+var criterio = null
 
 var bubble_flag = false
 
@@ -80,25 +82,79 @@ function update(data){
     
 
     var data_grupped_avg = d3.nest()
-    .key(function(d) {return d.year})
+    .key(function(d) {return d[chiavi[criterio]]})
     .sortKeys(d3.ascending)
     .entries(data)
 
+    //console.log("data_grupped: ", data_grupped_avg)
     
-    var step = 10 // magari sarà un parametro
-    var start = data_grupped_avg[0].key-(data_grupped_avg[0].key % step)
-    var end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
+    var min_key = null
+    var max_key = null
+    
+
+    for(let i=0; i<data_grupped_avg.length; i++){
+      if(min_key == null){
+        min_key = parseInt(data_grupped_avg[i]["key"])
+        max_key = parseInt(data_grupped_avg[i]["key"])
+      }
+      else{
+        if(min_key > parseInt(data_grupped_avg[i]["key"])){
+          min_key = parseInt(data_grupped_avg[i]["key"])
+        }
+        if(max_key <  parseInt(data_grupped_avg[i]["key"])){
+          max_key = parseInt(data_grupped_avg[i]["key"])
+        }
+      }
+    }
+    
+ 
+    
+    var start = min_key
+    var end = max_key
+    var step = parseInt((max_key - min_key)/10)
+    //console.log("step: ", step)
+    //console.log("start: ", start)
+    //console.log("end: ", end)
 
     var dict_bubbles = {}
-    for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0, "decade": i+"-"+(i+step-1)} }
+    for (let i=start; i<end; i=i+step) {
+      var upper_margin = i+step-1
+      if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+      dict_bubbles[i] = {"x":[], "y":[], "n":0, "range": i+"-"+(upper_margin)} 
+    }
 
-    for (let i=0; i<data.length; i++) { 
-     
-      if( (selected_ids!=null) && ( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
-        var decade = data[i].year-(data[i].year % step)
-        dict_bubbles[decade]['x'].push(parseInt(data[i][x_col]))
-        dict_bubbles[decade]['y'].push(parseFloat(data[i][y_col]))
-        dict_bubbles[decade]['n']+=1
+    var k = Object.keys(dict_bubbles)
+    
+   
+    for (let i=0; i<data.length; i++) {
+      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
+        
+        for (let j=0; j<k.length; j++) {
+          
+          
+          var min_limit = parseInt(k[j])
+          var upper_margin = min_limit+step-1
+          if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+          var max_limit = upper_margin /// ???
+          var data_criterio = parseInt(data[i][chiavi[criterio]])
+
+          
+
+            //console.log("data_criterio: ", data_criterio)
+            //console.log("min_limit: ", min_limit)
+            //console.log("max_limit: ", max_limit)
+            
+          
+          if( ( data_criterio >= min_limit ) && ( data_criterio <= max_limit ) ){
+            
+            
+            
+            dict_bubbles[k[j]]['x'].push(parseInt(data[i][x_col]))
+            dict_bubbles[k[j]]['y'].push(parseInt(data[i][y_col]))
+            dict_bubbles[k[j]]['n']+=1
+            break
+          }
+        }
       }
     }
    
@@ -201,18 +257,20 @@ function update(data){
   
 function sort_bubble(bubble){
   var ret = []
+  var mannaggia = 0
   for (let i=0; i<bubble.length; i++) {
-    if(ret.length == 0 ){ ret.push(bubble[i])}
+    if(ret.length == 0 ){ ret.push(bubble[i]);}
     else{
       for (let j=0; j<ret.length; j++) {
         if(bubble[i]['n'] >= ret[j]['n']){
           ret.splice(j,0,bubble[i])
           break
         }
-        else{if(j == ret.length-1){ret.push(bubble[i])}}
+        else{if(j == ret.length-1){ret.push(bubble[i]);break}}
       }
     }
   }
+  
   return ret
 }
 
@@ -244,36 +302,88 @@ function draw_bubbleplot_2(data){
     else{
 
         var data_grupped_avg = d3.nest()
-        .key(function(d) {return d.year})
+        .key(function(d) {return d[chiavi[criterio]]})
         .sortKeys(d3.ascending)
         .entries(data)
       
-        var step = 10 // magari sarà un parametro
-        var start = data_grupped_avg[0].key-(data_grupped_avg[0].key % step)
-        var end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
+        var min_key = null
+        var max_key = null
+    
 
-        var dict_bubbles = {}
-        for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "n":0, "decade":i+"-"+(i+step-1) }}
+    for(let i=0; i<data_grupped_avg.length; i++){
+      if(min_key == null){
+        min_key = parseInt(data_grupped_avg[i]["key"])
+        max_key = parseInt(data_grupped_avg[i]["key"])
+      }
+      else{
+        if(min_key > parseInt(data_grupped_avg[i]["key"])){
+          min_key = parseInt(data_grupped_avg[i]["key"])
+        }
+        if(max_key <  parseInt(data_grupped_avg[i]["key"])){
+          max_key = parseInt(data_grupped_avg[i]["key"])
+        }
+      }
+    }
+    
+   
+    
+    var start = min_key
+    var end = max_key
+    var step = parseInt((max_key - min_key)/10)
+    //console.log("step: ", step)
+    //console.log("start: ", start)
+    //console.log("end: ", end)
 
-        //console.log("x_col", chiavi[x_col])
+    var dict_bubbles = {}
+    for (let i=start; i<end; i=i+step) {
+      var upper_margin = i+step-1
+      if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+      dict_bubbles[i] = {"x":[], "n":0, "range": i+"-"+(upper_margin)} 
+    }
+
+    var k = Object.keys(dict_bubbles)
+    
+   
+    for (let i=0; i<data.length; i++) {
+      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
         
-        for (let i=0; i<data.length; i++) {
-          if( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id))){
-            var decade = data[i].year-(data[i].year % step)
-            dict_bubbles[decade]['x'].push(parseInt(data[i][x_col]))
-            dict_bubbles[decade]['n']+=1
-          } 
+        for (let j=0; j<k.length; j++) {
+          
+          
+          var min_limit = parseInt(k[j])
+          var upper_margin = min_limit+step-1
+          if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+          var max_limit = upper_margin /// ???
+          var data_criterio = parseInt(data[i][chiavi[criterio]])
+
+          
+
+            //console.log("data_criterio: ", data_criterio)
+            //console.log("min_limit: ", min_limit)
+            //console.log("max_limit: ", max_limit)
+            
+          
+          if( ( data_criterio >= min_limit ) && ( data_criterio <= max_limit ) ){
+            
+            
+            
+            dict_bubbles[k[j]]['x'].push(parseInt(data[i][x_col]))
+            dict_bubbles[k[j]]['n']+=1
+            break
+          }
         }
-        //console.log(dict_bubbles)
-        var bubbles = []
-        var k = Object.keys(dict_bubbles)
-        for(let i =0; i< k.length;i++){
-          bubbles.push(dict_bubbles[k[i]])
-          bubbles[i].x = bubbles[i].x.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].x.length
-        }
-       
-        var min_x = 0
-        var max_x = 0
+      }
+    }
+    console.log("dict_bubbles: ", dict_bubbles)
+    var bubbles = []
+    var k = Object.keys(dict_bubbles)
+    for(let i =0; i< k.length;i++){
+      bubbles.push(dict_bubbles[k[i]])
+      bubbles[i].x = bubbles[i].x.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].x.length
+    }
+    
+    var min_x = 0
+    var max_x = 0
 
     
     
@@ -334,6 +444,7 @@ function draw_bubbleplot_2(data){
 
     
     y_col = chiavi[y_col_updated]
+    console.log(y_col)
     //console.log("y_col: ", y_col)
     compute_array(x_col, y_col, [], null, true)
     
@@ -350,89 +461,143 @@ function draw_bubbleplot_2(data){
 
     else{
 
-        var data_grupped_avg = d3.nest()
-        .key(function(d) {return d.year})
-        .sortKeys(d3.ascending)
-        .entries(data)
-      
-        var step = 10 // magari sarà un parametro
-        var start = data_grupped_avg[0].key-(data_grupped_avg[0].key % step)
-        var end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
-
-        var dict_bubbles = {}
-        for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"y":[], "n":0, "decade":i+"-"+(i+step-1) }}
-
-        //console.log("x_col", chiavi[x_col])
-        
-        for (let i=0; i<data.length; i++) {
-          if( (selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id))){
-            var decade = data[i].year-(data[i].year % step)
-            dict_bubbles[decade]['y'].push(parseInt(data[i][y_col]))
-            dict_bubbles[decade]['n']+=1
-          } 
-        }
-        //console.log(dict_bubbles)
-        var bubbles = []
-        var k = Object.keys(dict_bubbles)
-        for(let i =0; i< k.length;i++){
-          bubbles.push(dict_bubbles[k[i]])
-          bubbles[i].y = bubbles[i].y.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].y.length
-        }
-
+      var data_grupped_avg = d3.nest()
+      .key(function(d) {return d[chiavi[criterio]]})
+      .sortKeys(d3.ascending)
+      .entries(data)
+    
+      var min_key = null
+      var max_key = null
   
-    
-        var min_y = 0
-        var max_y = 0
-        
-        
-        for(let i =0; i< k.length;i++){
-          
-          if( isNaN(bubbles[i].y)){
-            
-            bubbles[i].y = 0
-            bubbles[i].n = 0
-          }
-    
-      
-          if(bubbles[i].y > max_y){max_y = bubbles[i].y}
-          
-    
-        
-          if((min_y == 0) || ((bubbles[i].y < min_y)) && (bubbles[i].y != 0)){min_y = bubbles[i].y}
-        }
 
-        /// change range for bubbles
-        
-        var range_y = d3.extent(bubbles, function(d) {return +d.y; })
-     
-        
-        range_y = [min_y, max_y]
-        var padding_y = parseInt((range_y[1] - range_y[0])/5)
-        //range_y[0]=(range_y[0]-10) - ((range_y[0]-10)%10)
-        //range_y[1]=range_y[1] - ((range_y[0]-10)%10) +10
-        range_y[0] = range_y[0] - padding_y -1
-        range_y[1] = range_y[1] + padding_y +1
-        y.domain(range_y);
-        yAxis.call(d3.axisLeft(y))
+  for(let i=0; i<data_grupped_avg.length; i++){
+    if(min_key == null){
+      min_key = parseInt(data_grupped_avg[i]["key"])
+      max_key = parseInt(data_grupped_avg[i]["key"])
+    }
+    else{
+      if(min_key > parseInt(data_grupped_avg[i]["key"])){
+        min_key = parseInt(data_grupped_avg[i]["key"])
+      }
+      if(max_key <  parseInt(data_grupped_avg[i]["key"])){
+        max_key = parseInt(data_grupped_avg[i]["key"])
+      }
+    }
+  }
+  
+ 
+  
+  var start = min_key
+    var end = max_key
+    var step = parseInt((max_key - min_key)/10)
+    //console.log("step: ", step)
+    //console.log("start: ", start)
+    //console.log("end: ", end)
 
-
-        var sorted_bubbles = sort_bubble(bubbles)
-        //console.log(sorted_bubbles)
-
-        cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
-        cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
+    var dict_bubbles = {}
+    for (let i=start; i<end; i=i+step) {
+      var upper_margin = i+step-1
+      if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+      dict_bubbles[i] = {"y":[], "n":0, "range": i+"-"+(upper_margin)} 
     }
 
-        //update dark mode colors
-        d3.select("#svg_2").selectAll("text").attr("class", function(){
-          return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
-        })
-        d3.select("#svg_2").selectAll("line").attr("class", function(){
-          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
-        })
-        d3.select("#svg_2").selectAll("path").attr("class", function(){
-          return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
-        })
+    var k = Object.keys(dict_bubbles)
+    
+   
+    for (let i=0; i<data.length; i++) {
+      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
+        
+        for (let j=0; j<k.length; j++) {
+          
+          
+          var min_limit = parseInt(k[j])
+          var upper_margin = min_limit+step-1
+          if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+          var max_limit = upper_margin /// ???
+          var data_criterio = parseInt(data[i][chiavi[criterio]])
+
+          
+
+            //console.log("data_criterio: ", data_criterio)
+            //console.log("min_limit: ", min_limit)
+            //console.log("max_limit: ", max_limit)
+            
+          
+          if( ( data_criterio >= min_limit ) && ( data_criterio <= max_limit ) ){
+            
+            
+          
+            dict_bubbles[k[j]]['y'].push(parseInt(data[i][y_col]))
+            dict_bubbles[k[j]]['n']+=1
+            break
+          }
+        }
+      }
+    }
+  console.log("dict_bubbles: ", dict_bubbles)
+  var bubbles = []
+  var k = Object.keys(dict_bubbles)
+  for(let i =0; i< k.length;i++){
+    bubbles.push(dict_bubbles[k[i]])
+    bubbles[i].y = bubbles[i].y.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].y.length
+  }
+  
+  var min_y = 0
+  var max_y = 0
+
+  
+  
+  for(let i =0; i< k.length;i++){
+    
+    if( isNaN(bubbles[i].y)){
+      bubbles[i].y = 0
+      
+      bubbles[i].n = 0
+    }
+
+    if(bubbles[i].y > max_y){max_y = bubbles[i].y}
+   
+    
+
+    if((min_y == 0) || ((bubbles[i].y < min_y)) && (bubbles[i].y != 0)){min_y = bubbles[i].y}
+    
+  }
+
+      /// change range for bubbles
+      
+      var range_y = d3.extent(bubbles, function(d) {return +d.y; })
+   
+      
+      range_y = [min_y, max_y]
+      var padding_y = parseInt((range_y[1] - range_y[0])/5)
+      //range_x[0]=(range_x[0]-10) - ((range_x[0]-10)%10)
+      //range_x[1]=range_x[1] - ((range_x[0]-10)%10) +10
+      range_y[0] = range_y[0] - padding_y -1
+      range_y[1] = range_y[1] + padding_y +1
+      y.domain(range_y);
+      yAxis.call(d3.axisLeft(y))
+
+      
+      
+
+      var sorted_bubbles = sort_bubble(bubbles)
+
+  
+
+      cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
+      cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
+  }
+
+      //update dark mode colors
+      d3.select("#svg_2").selectAll("text").attr("class", function(){
+        return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+      })
+      d3.select("#svg_2").selectAll("line").attr("class", function(){
+        return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      })
+      d3.select("#svg_2").selectAll("path").attr("class", function(){
+        return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      })
   }
 
   function eliminate_groups(x_col, y_col){
@@ -503,46 +668,103 @@ function draw_bubbleplot_2(data){
     })
   }
 
-  function groupping(criterio){
+  function groupping(criterio_update){
+
+    criterio = criterio_update
+
+    
 
     if(criterio == "20"){eliminate_groups(x_col, y_col); return}
 
+    //console.log("criterio: ", criterio)
+
     var data_grupped_avg = d3.nest()
-    .key(function(d) {return d.year})
+    .key(function(d) {return d[chiavi[criterio]]})
     .sortKeys(d3.ascending)
     .entries(data)
 
+    //console.log("data_grupped: ", data_grupped_avg)
     
-    var step = 10 // magari sarà un parametro
-    var start = data_grupped_avg[0].key-(data_grupped_avg[0].key % step)
-    var end = data_grupped_avg[data_grupped_avg.length-1].key-(data_grupped_avg[data_grupped_avg.length-1].key % step)
+    var min_key = null
+    var max_key = null
+    
+
+    for(let i=0; i<data_grupped_avg.length; i++){
+      if(min_key == null){
+        min_key = parseInt(data_grupped_avg[i]["key"])
+        max_key = parseInt(data_grupped_avg[i]["key"])
+      }
+      else{
+        if(min_key > parseInt(data_grupped_avg[i]["key"])){
+          min_key = parseInt(data_grupped_avg[i]["key"])
+        }
+        if(max_key <  parseInt(data_grupped_avg[i]["key"])){
+          max_key = parseInt(data_grupped_avg[i]["key"])
+        }
+      }
+    }
+    
+ 
+    
+    var start = min_key
+    var end = max_key
+    var step = parseInt((max_key - min_key)/10)
+    //console.log("step: ", step)
+    //console.log("start: ", start)
+    //console.log("end: ", end)
 
     var dict_bubbles = {}
-    for (let i=start; i<end+step; i=i+step) { dict_bubbles[i] = {"x":[], "y":[], "n":0, "decade": i+"-"+(i+step-1)} }
-
-    
-    //console.log(selected_ids != null)
-    for (let i=0; i<data.length; i++) { 
-      
-      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
-        var decade = data[i].year-(data[i].year % step)
-        dict_bubbles[decade]['x'].push(parseInt(data[i][x_col]))
-        dict_bubbles[decade]['y'].push(parseFloat(data[i][y_col]))
-        dict_bubbles[decade]['n']+=1
-      }
-      
+    for (let i=start; i<end; i=i+step) {
+      var upper_margin = i+step-1
+      if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+      dict_bubbles[i] = {"x":[], "y":[], "n":0, "range": i+"-"+(upper_margin)} 
     }
 
+    var k = Object.keys(dict_bubbles)
+    
+   
+    for (let i=0; i<data.length; i++) {
+      if( (selected_ids != null) && ((selected_ids.length == 0) || (selected_ids.includes(data[i].imdb_id)))){
+        
+        for (let j=0; j<k.length; j++) {
+          
+          
+          var min_limit = parseInt(k[j])
+          var upper_margin = min_limit+step-1
+          if( (upper_margin+step >= end) && (upper_margin <= end) ){upper_margin = end +1}
+          var max_limit = upper_margin /// ???
+          var data_criterio = parseInt(data[i][chiavi[criterio]])
+
+          
+
+            //console.log("data_criterio: ", data_criterio)
+            //console.log("min_limit: ", min_limit)
+            //console.log("max_limit: ", max_limit)
+            
+          
+          if( ( data_criterio >= min_limit ) && ( data_criterio <= max_limit ) ){
+            
+            
+            
+            dict_bubbles[k[j]]['x'].push(parseInt(data[i][x_col]))
+            dict_bubbles[k[j]]['y'].push(parseInt(data[i][y_col]))
+            dict_bubbles[k[j]]['n']+=1
+            break
+          }
+        }
+      }
+    }
+  
+    console.log("dict: ", dict_bubbles)
     
     var bubbles = []
-    var k = Object.keys(dict_bubbles)
+    
     for(let i =0; i< k.length;i++){
       bubbles.push(dict_bubbles[k[i]])
       bubbles[i].x = bubbles[i].x.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].x.length
       bubbles[i].y = bubbles[i].y.reduce((partialSum, a) => partialSum + a, 0)/bubbles[i].y.length
     }
-
-
+   
     /// fade circles
     var cerchi = d3.select("#area_2_circles").selectAll(".dot").transition().duration(800).style("opacity", "0")
     cerchi.remove(); // mettere transizione
@@ -575,6 +797,9 @@ function draw_bubbleplot_2(data){
       if((min_y == 0) || ((bubbles[i].y < min_y)) && (bubbles[i].y != 0)){min_y = bubbles[i].y}
     }
 
+    console.log("bubbles: ", bubbles)
+    
+
     /// change range for bubbles
     var range_x = d3.extent(bubbles, function(d) { return +d.x; })
     range_x = [min_x, max_x]
@@ -604,7 +829,21 @@ function draw_bubbleplot_2(data){
     
     var sorted_bubbles =sort_bubble(bubbles)
 
+    console.log("sorted_bubbles: ", sorted_bubbles)
 
+    if(bubble_flag == true){/*
+      console.log("UPDATE BUBBLES")
+      cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
+      cerchi.transition().duration(1000)
+      .attr("r",function (d) { 
+        if(d.n == 0){return 0}
+        else{return (d.n/10)+2}
+      })
+      .attr("cx", function (d) {  return x(d.x) } )
+      .attr("cy", function (d) {  return y(d.y) } )*/
+      d3.select("#area_2_circles").selectAll(".bubble").remove()
+
+    }
     /// END TEST
     bubble_flag = true
     /// add bubbles
@@ -631,7 +870,7 @@ function draw_bubbleplot_2(data){
     .style("opacity", "0")
     .style("pointer-events", "all")
     .on("mouseover", function(d) {
-    tooltip.html("<b>decade: </b>"+d.decade+",<br><b> n°_film:</b> "+d.n);
+    tooltip.html("<b>range: </b>"+d.range+",<br><b> n°_film:</b> "+d.n);
      return tooltip.style("visibility", "visible");
     })
     .on("mousemove", function() {
@@ -660,9 +899,8 @@ function draw_bubbleplot_2(data){
       else{
         d3.select(this).style("fill", "yellow")
         
-        var bubble_range = d.decade.split("-")
-        //console.log("test_x: ",x_col)
-        //console.log("test_y: ",y_col)
+        var bubble_range = d.range.split("-")
+        console.log(bubble_range)
         compute_array(x_col, y_col, selected_ids, bubble_range)
       }
       
@@ -707,7 +945,7 @@ function draw_bubbleplot_2(data){
   select_opt.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
   select_opt.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
   select_opt.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
-  select_opt.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+  //select_opt.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
   select_opt.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
   select_opt.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
   select_opt.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
@@ -724,7 +962,7 @@ function draw_bubbleplot_2(data){
  select_opt_Y.append("option").attr("value","9").attr("id", "runtime").text("Runtime")
  select_opt_Y.append("option").attr("value","10").attr("id", "vote_average").text("Average vote")
  select_opt_Y.append("option").attr("value","11").attr("id", "vote_count").text("Votes count")
- select_opt_Y.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
+ //select_opt_Y.append("option").attr("value","12").attr("id", "popularity").text("Popularity")
  select_opt_Y.append("option").attr("value","17").attr("id", "in_connections").text("In connections")
  select_opt_Y.append("option").attr("value","18").attr("id", "out_connections").text("Out connections")
  select_opt_Y.append("option").attr("value","19").attr("id", "tot_connections").text("Total connections")
