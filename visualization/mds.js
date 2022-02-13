@@ -15,14 +15,15 @@ var height = 300 - margin_top - margin_bottom
 
 var chiavi
   
-function draw_MDS(data){   
+function draw_MDS(data){
 
   d3.select("#svg1").remove()
 
   var tooltip = d3.select("body")
    .append("div")
    .attr("id", "tooltip1")
-   .style("background-color", "rgb(225, 213, 168)")
+   .style("background-color", function() { return checkIfDarkMode() ? color_tooltip_dark : color_tooltip_light })
+   .style("color", function() { return checkIfDarkMode() ? "white" : "black" })
    .style("position", "absolute")
    .style("z-index", "10")
    .style("visibility", "hidden")
@@ -41,11 +42,12 @@ function draw_MDS(data){
     .attr("viewBox", "0 0 300 175")
     .classed("svg-content", true)
     .call(zoom)
+    /*
     .on("mousedown.zoom", null)
     .on("touchstart.zoom", null)
     .on("touchmove.zoom", null)
     .on("touchend.zoom", null)
-   
+   */
     //.call(zoom)
     //.attr("transform", "translate(" + 2 + "," + 2 + ")")
     //.style("border", "1px solid")
@@ -140,6 +142,16 @@ function draw_MDS(data){
       .selectAll("circle")
       .attr("cx", function (d) { return newX(d[chiavi[0]]) } )
       .attr("cy", function (d) { return newY(d[chiavi[1]]) } )
+
+    d3.select("#svg1").selectAll("text").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+    })
+    d3.select("#svg1").selectAll("line").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
+    d3.select("#svg1").selectAll("path").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
   }
 
 

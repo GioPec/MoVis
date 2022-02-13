@@ -280,7 +280,7 @@ export function filter_genres(filter_genres) {
           bubble_ids_up.push(row.imdb_id)
           selected_ids_up.push(row.imdb_id)
           chord_ids_up.push(row.imdb_id)
-          console.log(row)
+          //console.log(row)
           //console.log("bubble_ids_up: ", bubble_ids_up.length)
         }
         if (!selected_ids_up.includes(row.imdb_id)){
@@ -290,8 +290,8 @@ export function filter_genres(filter_genres) {
       }
     }).then(function() {
       
-    console.log("selected_ids_up_fin: ", selected_ids_up.length)
-    console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
+    //console.log("selected_ids_up_fin: ", selected_ids_up.length)
+    //console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
     update_PC(selected_ids_up)
     update_MDS(selected_ids_up)
     if(chord_ids_up.length == 0) {chord_ids_up = null}
@@ -392,7 +392,10 @@ function createD3Chord() {
       })
       
       .on("mouseout", function(d) {
-        this["style"]["stroke"] = null
+        if(this["style"]["opacity"] != "0.99"){
+          this["style"]["stroke"] = null
+        }
+        
         return tooltip.style("visibility", "hidden");
       })
       .on("click", function(d) {
@@ -405,10 +408,10 @@ function createD3Chord() {
         id_elem[0] = generi_info[parseInt(id_elem[0])].genere
         id_elem[1] = generi_info[parseInt(id_elem[1])].genere
         elem.style("opacity", "0.99")
+        elem.style("stroke", "black")
         filter_genres(id_elem)
         }
         else{
-          console.log("")
           d3.select("#chord_ribbons").selectAll("path").style("opacity", "1")
           filter_genres(null)
         }

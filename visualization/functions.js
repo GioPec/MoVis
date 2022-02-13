@@ -29,7 +29,8 @@ function adjustForInflaction() {
 
 export const color_base = "#69b3a2"
 export const color_brushed = "#ff3e3e"
-export const color_selected = "rgb(155, 156, 47)"
+//export const color_selected = "rgb(155, 156, 47)"
+export const color_selected = "rgb(200, 200, 60)"
 
 export const color_tooltip_light = "rgb(225, 213, 168)"
 export const color_tooltip_dark = "rgb(34, 54, 52)"

@@ -130,10 +130,11 @@ function draw_boxplot_x(colonna_x){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
     })
     //.attr("stroke", "black")
     .style("fill", color_base)
+    //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
 
   // show median, min and max horizontal lines
@@ -231,9 +232,10 @@ function draw_boxplot_y(colonna_y){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
     })
-    .style("fill", "#69b3a2")
+    .style("fill", color_base)
+    //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
   
   // show median, min and max horizontal lines
@@ -262,6 +264,13 @@ function draw_boxplot_y(colonna_y){
   d3.select(".area_3_g_y").selectAll("path").attr("class", function(){
     return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
   })
+
+  if(bubble_range != null){
+    d3.selectAll(".box").style("fill", function(){
+      return (bubble_range.length == 0) ? color_base : color_selected
+    }) 
+  }
+  
   
 }
 

@@ -1,6 +1,9 @@
 import {compute_array} from "./boxplots.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
+
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
@@ -176,7 +179,10 @@ function update(data){
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) });
-      bolle.attr("r",function (d) { return d.n/10});
+      bolle.attr("r",function (d) { 
+        if(d.n == 0){return 0}
+        else{return (d.n/10)+2}
+      });
       bolle.style("fill", function (d) { 
         if (brushed_ids.length != 0) return color_brushed
         else return color_base
@@ -220,6 +226,7 @@ function draw_bubbleplot_2(data){
 
     
     x_col = chiavi[x_col_updated]
+    console.log("x_col: ", x_col)
     //console.log("x_col: ", x_col)
     compute_array(x_col, y_col, [], null, true)
     
@@ -610,12 +617,18 @@ function draw_bubbleplot_2(data){
     .attr('class', 'bubble')
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
-    .attr("r",function (d) {  return d.n/10})
+    .attr("r",function (d) { 
+      if(d.n == 0){return 0}
+      else{return (d.n/10)+2}
+      
+    })
     .style("fill", function (d) { 
       if (brushed_ids.length != 0) return color_brushed
       else return color_base
     })
-    .style("stroke", "black")
+    .attr("class", function(){
+      return (checkIfDarkMode()) ? (" bubble lightstroke") : (" bubble darkstroke")
+    })
     .style("stroke-width", "1") 
     .style("opacity", "0")
     .style("pointer-events", "all")
@@ -652,6 +665,7 @@ function draw_bubbleplot_2(data){
       }
     });
     bolle.transition().duration(800).style("opacity", "0.6")
+
 
 
     //update dark mode colors

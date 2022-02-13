@@ -1,9 +1,10 @@
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 export function darkMode() {
+  
     var isDarkChecked = document.getElementById("darkModeCheckbox").checked
-    if (isDarkChecked) {
 
+    if (isDarkChecked) {
         document.getElementById('body').setAttribute("class", "dark")
 
         var domains = document.getElementsByClassName("domain")
@@ -62,10 +63,11 @@ export function darkMode() {
         d3.select("#tooltip5").style("color", "white")
 
         //document.getElementsByClassName("domain").style("stroke", "FFF");
+        
+        d3.selectAll(".bubble").attr("class", "bubble lightstroke")
     }
 
     else {
-        //document.getElementById('body').removeAttribute("class", "dark")
         document.getElementById("body").setAttribute("class", "light")
 
         var domains = document.getElementsByClassName("domain")
@@ -110,6 +112,8 @@ export function darkMode() {
         d3.select("#svg1").selectAll("path").attr("class", function(){
           return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
         })
+
+        d3.selectAll(".bubble").attr("class", "bubble darkstroke")
         
         d3.select("#toolbar").style("background-color", color_tooltip_light)
         d3.select("#toolbar").style("color", "black")
