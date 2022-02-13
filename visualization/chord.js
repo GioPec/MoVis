@@ -512,7 +512,7 @@ function update_PC(selected_ids, deselecting) {
 
   /////////////////////////////////////////////////////
   if(deselecting){
-    console.log("refreshbrush")
+    //console.log("refreshbrush")
     var imdb_ids = []
     var ids = []
     d3.selectAll(".active").filter(function(d) {
@@ -531,12 +531,12 @@ function update_PC(selected_ids, deselecting) {
         area_1
         .selectAll(".dot")
         .style("fill", function(d) {  
-          if(imdb_ids.includes(d.imdb_id)){return "red"}
-          else{return "rgb(66, 172, 66)"}
+          if (imdb_ids.includes(d.imdb_id)) return color_brushed
+          else return color_base
         })
         .style("display", function(d) {  
-          if(selected_ids.includes(d.imdb_id)){return null}
-          else{return "none"}
+          if (selected_ids.includes(d.imdb_id)) return null
+          else return "none"
         })
   }
 
@@ -557,8 +557,8 @@ function update_MDS(selected_ids) {
 
   cerchi.style("fill",function(d) {
     var color = this["style"]["fill"]
-    return color == "red"
-  }) ? "red" : "rgb(66, 172, 66)"
+    return color == color_brushed
+  }) ? color_brushed : color_base
 
 }
 
