@@ -1,5 +1,20 @@
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
+const mapping = {
+  "4": "year",
+  "5": "budget",
+  "6": "actual_budget",
+  "7": "revenue",
+  "8": "actual_revenue",
+  "9": "runtime",
+  "10": "vote_average",
+  "11": "vote_count",
+  "12": "popularity",
+  "17": "in_connections",
+  "18": "out_connections",
+  "19": "tot_connections",
+}
+
 var data_used_x = []
 var data_used_y = []
 var svg_area_3;
@@ -12,6 +27,10 @@ var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
+}
+
+function get_group() {
+  return document.getElementById("opt_groupby").value
 }
 
 export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
@@ -30,10 +49,11 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
     
     //console.log("lenght: ",  bubble_range.length)
     //console.log("check_1: ", range_check)
+    
     if(!range_check){
-
-      range_check = ( (parseInt(row["year"])  >= parseInt(bubble_range[0])) && 
-                    (parseInt(row["year"])  <= parseInt(bubble_range[1])) )
+      //console.log("val_: ",mapping[get_group()])
+      range_check = ( (parseInt(row[mapping[get_group()]])  >= parseInt(bubble_range[0])) && 
+                    (parseInt(row[mapping[get_group()]])  <= parseInt(bubble_range[1])) )
     
     }
     
@@ -61,6 +81,8 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
 }
 
 function draw_boxplot_x(colonna_x){
+
+  //console.log("data_used_x: ", data_used_x)
 
   // append the svg object to the body of the page
 

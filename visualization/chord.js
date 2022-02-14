@@ -449,7 +449,12 @@ function createLabel(generi) {
         })
         condition=true
       }
-      else d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted")//.style("background-color", "rgb(225, 213, 168)")
+      else {
+        if ((checkIfDarkMode())) {
+          d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted_dark")
+        }
+        else d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted")
+      }
 
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {

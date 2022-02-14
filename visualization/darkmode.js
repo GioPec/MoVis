@@ -65,6 +65,8 @@ export function darkMode() {
         //document.getElementsByClassName("domain").style("stroke", "FFF");
         
         d3.selectAll(".bubble").attr("class", "bubble lightstroke")
+
+        d3.selectAll(".chord_back_highlighted").attr("class", "chord_back_highlighted_dark")
     }
 
     else {
@@ -126,6 +128,8 @@ export function darkMode() {
         d3.select("#tooltip2").style("color", "black")
         d3.select("#tooltip5").style("background-color", color_tooltip_light)
         d3.select("#tooltip5").style("color", "black")
+
+        d3.selectAll(".chord_back_highlighted_dark").attr("class", "chord_back_highlighted")
     }
 }
 
