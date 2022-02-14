@@ -373,7 +373,11 @@ function createD3Chord() {
         var t = generi_info[d.target.__data__.target.index].genere
         var movies_number = matrix_couples[d.target.__data__.source.index][d.target.__data__.target.index]
         var old_n_film = d.target.__data__.source.value
-        this["style"]["stroke"] = "black";
+        if(checkIfDarkMode()){
+          this["style"]["stroke"] = "white";
+        }else{
+          this["style"]["stroke"] = "black";
+        }
         d3.select(this).raise()
         var tooltip_text = ""
         if (d.target.__data__.source.index != d.target.__data__.target.index) {
@@ -399,7 +403,7 @@ function createD3Chord() {
         return tooltip.style("visibility", "hidden");
       })
       .on("click", function(d) {
-        
+        d3.select("#chord_ribbons").selectAll("path").style("stroke", null)
         if(this["style"]["opacity"] == 1){
           
         d3.select("#chord_ribbons").selectAll("path").style("opacity", "0.3")
@@ -407,13 +411,41 @@ function createD3Chord() {
         var id_elem = this.id.split("_");
         id_elem[0] = generi_info[parseInt(id_elem[0])].genere
         id_elem[1] = generi_info[parseInt(id_elem[1])].genere
+        if(checkIfDarkMode()){
+          elem.style("stroke", "white")
+        }else{
+          elem.style("stroke", "black")
+        }
         elem.style("opacity", "0.99")
-        elem.style("stroke", "black")
+        
         filter_genres(id_elem)
         }
         else{
-          d3.select("#chord_ribbons").selectAll("path").style("opacity", "1")
-          filter_genres(null)
+          if(this["style"]["opacity"] == 0.99){
+            d3.select("#chord_ribbons").selectAll("path").style("opacity", "1")
+            this["style"]["stroke"] = null
+            filter_genres(null)
+          }else{
+            d3.select("#chord_ribbons").selectAll("path").style("opacity", "1")
+            this["style"]["stroke"] = null
+            if(this["style"]["opacity"] == 1){
+            
+              //filter_genres(null)
+          
+              d3.select("#chord_ribbons").selectAll("path").style("opacity", "0.3")
+              var elem =d3.select(this)
+              var id_elem = this.id.split("_");
+              id_elem[0] = generi_info[parseInt(id_elem[0])].genere
+              id_elem[1] = generi_info[parseInt(id_elem[1])].genere
+              elem.style("opacity", "0.99")
+              if(checkIfDarkMode()){
+                elem.style("stroke", "white")
+              }else{
+                elem.style("stroke", "black")
+              }
+              filter_genres(id_elem)
+            }
+          }
         }
         
 
