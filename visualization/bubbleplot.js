@@ -2,7 +2,7 @@ import{compute_array} from "./boxplots.js"
 
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
 //var DATASET_PATH = "../datasets/dataset_fake.csv"
-var THE_DATA = null
+//var data = null
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
@@ -529,9 +529,9 @@ function draw_bubbleplot_2(data){
     else{
         var sorted_bubbles = null
        
-        if(criterio == "4"){ sorted_bubbles = group_by_year(THE_DATA, true, false)}
-        else if(criterio == "10"){sorted_bubbles = group_by_vote(THE_DATA, true, false)}
-        else{sorted_bubbles = group_by_all(THE_DATA, true, false)}
+        if(criterio == "4"){ sorted_bubbles = group_by_year(data, true, false)}
+        else if(criterio == "10"){sorted_bubbles = group_by_vote(data, true, false)}
+        else{sorted_bubbles = group_by_all(data, true, false)}
         cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
         cerchi.transition().duration(1000).attr("cx", function (d) {  return x(d.x) } )
     }
@@ -564,9 +564,9 @@ function draw_bubbleplot_2(data){
     else{
       var sorted_bubbles = null
       
-      if(criterio == "4"){ sorted_bubbles = group_by_year(THE_DATA, false, true)}
-      else if(criterio == "10"){sorted_bubbles = group_by_vote(THE_DATA, false, true)}
-      else{sorted_bubbles = group_by_all(THE_DATA, false, true)}
+      if(criterio == "4"){ sorted_bubbles = group_by_year(data, false, true)}
+      else if(criterio == "10"){sorted_bubbles = group_by_vote(data, false, true)}
+      else{sorted_bubbles = group_by_all(data, false, true)}
 
       cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
@@ -656,9 +656,9 @@ function draw_bubbleplot_2(data){
     criterio = criterio_update
     var sorted_bubbles = null;
     if(criterio == "20"){eliminate_groups(x_col, y_col); return}
-    else if( (criterio == "4") ){sorted_bubbles = group_by_year(THE_DATA, true, true)}
-    else if( (criterio == "10") ){sorted_bubbles = group_by_vote(THE_DATA, true, true)}
-    else{sorted_bubbles = group_by_all(THE_DATA, true, true)}
+    else if( (criterio == "4") ){sorted_bubbles = group_by_year(data, true, true)}
+    else if( (criterio == "10") ){sorted_bubbles = group_by_vote(data, true, true)}
+    else{sorted_bubbles = group_by_all(data, true, true)}
 
     if(bubble_flag == true){/*
       console.log("UPDATE BUBBLES")
@@ -908,13 +908,13 @@ scatter
 }
 
 function start (ids){
-  d3.csv(DATASET_PATH, function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
       var l=data.length;
       for (let i=0;i<l;i++) data[i].id=i
-      THE_DATA = data
+      //data = data
       draw_bubbleplot_2(data,false,ids)
   })
 
@@ -923,7 +923,7 @@ function start (ids){
 /// START
 start([])
 
-export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
+export function chord_to_bubble(DATASET, brushed_ids_up, chord_ids_up, bubble_ids_up){
 
 
 
@@ -931,15 +931,16 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   brushed_ids = brushed_ids_up
   chord_ids = chord_ids_up
 
+  //DATASET_PATH = DATASET
+  //console.log(DATASET_PATH)
 
-
-  d3.csv(DATASET_PATH, function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
       var l=data.length;
       for (let i=0;i<l;i++) data[i].id=i
-    THE_DATA = data
+    //data = data
     
     update(data)
       

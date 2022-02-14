@@ -230,7 +230,7 @@ function load_genres(included_genres, update_brushed_ids, highlighting, chord_fi
         update_MDS(selected_ids)
         
       } 
-       if ((chord_filtering) || (highlighting)) chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+       if ((chord_filtering) || (highlighting)) chord_to_bubble(DATASET_PATH, brushed_ids, chord_ids, bubble_ids)
 
     }
     
@@ -294,7 +294,7 @@ export function filter_genres(filter_genres) {
     update_PC(selected_ids_up)
     update_MDS(selected_ids_up)
     if(chord_ids_up.length == 0) {chord_ids_up = null}
-    chord_to_bubble(brushed_ids, chord_ids_up, bubble_ids_up)
+    chord_to_bubble(DATASET_PATH, brushed_ids, chord_ids_up, bubble_ids_up)
     })
 
   }
@@ -302,7 +302,7 @@ export function filter_genres(filter_genres) {
     filtro(0)
     update_PC(selected_ids)
     update_MDS(selected_ids)
-    chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+    chord_to_bubble(DATASET_PATH, brushed_ids, chord_ids, bubble_ids)
   }
 
 }
