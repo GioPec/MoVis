@@ -1,7 +1,7 @@
 import{parCor_to_chord, filter_genres} from "./chord.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
 
 function checkIfDarkMode() {
     return document.getElementById("darkModeCheckbox").checked
@@ -371,6 +371,7 @@ function drawParallel(data, actual) {
 
         d3.selectAll(".active").raise()
         //update chord
+        console.log("LEN: ", imdb_ids.length)
         parCor_to_chord(imdb_ids)
 
         //update mds

@@ -22,8 +22,8 @@ var space = 120
 
 var used_ids = []
 var bubble_range = []
-
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var isBrushed = false
+var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -33,8 +33,8 @@ function get_group() {
   return document.getElementById("opt_groupby").value
 }
 
-export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis){
-  
+export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_range, changing_axis, isBrushedup){
+  isBrushed = isBrushedup
   if(!changing_axis){used_ids = ids_update;}
   
   if(bubble_update_range != null){bubble_range = bubble_update_range;}
@@ -143,7 +143,7 @@ function draw_boxplot_x(colonna_x){
     //.attr("transform", "scale(0.6) translate(0,0)")
     .attr("transform", "translate("+(space*(-1))+",0)")
     
-
+  console.log("isBrushed; ", isBrushed)
   // Show the box
   boxplot_x
   .append("rect")
@@ -155,7 +155,8 @@ function draw_boxplot_x(colonna_x){
       return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
     //.attr("stroke", "black")
-    .style("fill", color_base)
+    .style("fill", function(){
+      return (isBrushed) ? (color_brushed) : (color_base)})
     //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
 
@@ -256,7 +257,8 @@ function draw_boxplot_y(colonna_y){
     .attr("class", function(){
       return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
-    .style("fill", color_base)
+    .style("fill", function(){
+      return (isBrushed) ? (color_brushed) : (color_base)})
     //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
   
@@ -286,20 +288,33 @@ function draw_boxplot_y(colonna_y){
   d3.select(".area_3_g_y").selectAll("path").attr("class", function(){
     return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
   })
+/*
+  if(bubble_range != null){
+    d3.selectAll(".box").style("fill", function(){
+      return (bubble_range.length == 0) ? "color_base ": color_selected
+    }) 
+  }
+*/
 
   if(bubble_range != null){
     d3.selectAll(".box").style("fill", function(){
-      return (bubble_range.length == 0) ? color_base : color_selected
-    }) 
+
+      if(bubble_range.length == 0){
+        if(isBrushed){return color_brushed}
+        else{return color_base}
+      }
+      else{return color_selected}
+    })
   }
+
   
   
 }
 
-compute_array("budget", "revenue", [], [], true)
+compute_array("budget", "revenue", [], [], true, false)
 
 export function boxplotReadCSV(ds) {
   DATASET_PATH = ds
-  compute_array("budget", "revenue", [], [])
+  compute_array("budget", "revenue", [], [], true, false) /// occhio
 }
 

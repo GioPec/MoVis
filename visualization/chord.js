@@ -5,7 +5,7 @@ function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -441,6 +441,7 @@ function createLabel(generi) {
 
       // remove filter on arcs
       filter_genres(null)
+
       var t = d3.select("#"+d.genere+"_chord_back").attr("class")
       var condition = false
       if (t != "chord_back darkbackground" && t!="chord_back lightbackground") {
@@ -459,13 +460,14 @@ function createLabel(generi) {
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
         included_genres.splice(index, 1);
+        console.log("AIUTO")
       }
       else included_genres.push(d.genere)
 
       //console.log("included_genres: ",included_genres)
       //console.log("brushed_ids: ",brushed_ids)
       
-      load_genres(included_genres, brushed_ids, false, true, condition)
+      load_genres(included_genres, brushed_ids, false, true, true)
       //refresh_brush()
     })
     

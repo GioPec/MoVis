@@ -1,7 +1,7 @@
 import {compute_array} from "./boxplots.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
 //var DATASET_PATH = "../datasets/dataset_fake.csv"
 //var data = null
 function checkIfDarkMode() {
@@ -48,7 +48,7 @@ function update(data_updated){
 
   //console.log("selected_ids_up: ", selected_ids)
   if(chord_ids == null){selected_ids = null}
-  compute_array(x_col, y_col, selected_ids, [], false)
+  compute_array(x_col, y_col, selected_ids, [], false, brushed_ids.length != 0)
   if(!bubble_flag){
       var cerchi = d3.select("#area_2_circles")
       .selectAll(".dot")
@@ -73,8 +73,22 @@ function update(data_updated){
     else if(criterio == "10"){sorted_bubbles = group_by_vote(data_updated, true, true)}
     else{sorted_bubbles = group_by_all(data_updated, true, true)}
 
-    var scale_of_ray = d3.scaleLinear().range([0, 25])
-    scale_of_ray .domain(d3.extent(sorted_bubbles, function(d) { return +d.n; }));
+    //ray domain
+    var ray = d3.scaleLinear().range([2, 30])
+    var minimum_not_zero = sorted_bubbles[0]["n"];
+
+    for (let i=0; i<sorted_bubbles.length; i++) {
+      if( ((i+1) ==  sorted_bubbles.length) || (sorted_bubbles[i+1]["n"] == 0) ){
+        minimum_not_zero = sorted_bubbles[i]["n"]
+        break;
+      }
+    }
+  
+    var ray_domain = [minimum_not_zero, sorted_bubbles[0]["n"] ]
+    
+    ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
+    ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
+    ray.domain(ray_domain);
     
     /// add bubbles
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
@@ -87,9 +101,8 @@ function update(data_updated){
       });
 
       bolle.transition().duration(1000)
-      .attr("r",function (d) { 
-        if(d.n == 0){return 0}
-        else{return (d.n/10)+2}
+      .attr("r", function (d) { 
+        if(d.n != 0){return  +ray(Math.sqrt((d.n/Math.PI)))}
       });
   }
 
@@ -535,7 +548,7 @@ function draw_bubbleplot_2(data){
     
     x_col = chiavi[x_col_updated]
     //update boxplot x
-    compute_array(x_col, y_col, [], null, true)
+    compute_array(x_col, y_col, [], null, true,  brushed_ids.length != 0)
     
     if(!bubble_flag){
       x.domain(d3.extent(data, function(d) { return +d[x_col]; }));
@@ -550,6 +563,24 @@ function draw_bubbleplot_2(data){
         if(criterio == "4"){ sorted_bubbles = group_by_year(data, true, false)}
         else if(criterio == "10"){sorted_bubbles = group_by_vote(data, true, false)}
         else{sorted_bubbles = group_by_all(data, true, false)}
+
+
+        //ray domain
+        var ray = d3.scaleLinear().range([2, 30])
+        var minimum_not_zero = sorted_bubbles[0]["n"];
+
+        for (let i=0; i<sorted_bubbles.length; i++) {
+          if( ((i+1) ==  sorted_bubbles.length) || (sorted_bubbles[i+1]["n"] == 0) ){
+            minimum_not_zero = sorted_bubbles[i]["n"]
+            break;
+          }
+        }
+
+        var ray_domain = [minimum_not_zero, sorted_bubbles[0]["n"] ]
+        ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
+        ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
+        ray.domain(ray_domain);
+
         cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
         cerchi.transition().duration(1000).attr("cx", function (d) {  return x(d.x) } )
     }
@@ -571,7 +602,7 @@ function draw_bubbleplot_2(data){
     
     y_col = chiavi[y_col_updated]
     //update boxplot y
-    compute_array(x_col, y_col, [], null, true)
+    compute_array(x_col, y_col, [], null, true, brushed_ids.length != 0)
     
     if(!bubble_flag){
       y.domain(d3.extent(data, function(d) { return +d[y_col]; }));
@@ -585,6 +616,22 @@ function draw_bubbleplot_2(data){
       if(criterio == "4"){ sorted_bubbles = group_by_year(data, false, true)}
       else if(criterio == "10"){sorted_bubbles = group_by_vote(data, false, true)}
       else{sorted_bubbles = group_by_all(data, false, true)}
+
+      //ray domain
+      var ray = d3.scaleLinear().range([2, 30])
+      var minimum_not_zero = sorted_bubbles[0]["n"];
+
+      for (let i=0; i<sorted_bubbles.length; i++) {
+        if( ((i+1) ==  sorted_bubbles.length) || (sorted_bubbles[i+1]["n"] == 0) ){
+          minimum_not_zero = sorted_bubbles[i]["n"]
+          break;
+        }
+      }
+  
+    var ray_domain = [minimum_not_zero, sorted_bubbles[0]["n"] ]
+    ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
+    ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
+    ray.domain(ray_domain);
 
       cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
       cerchi.transition().duration(1000).attr("cy", function (d) {  return y(d.y) } )
@@ -691,6 +738,23 @@ function draw_bubbleplot_2(data){
       d3.select("#area_2_circles").selectAll(".bubble").remove()
 
     }
+
+    //ray domain
+    var ray = d3.scaleLinear().range([2, 30])
+    var minimum_not_zero = sorted_bubbles[0]["n"];
+
+    for (let i=0; i<sorted_bubbles.length; i++) {
+      if( ((i+1) ==  sorted_bubbles.length) || (sorted_bubbles[i+1]["n"] == 0) ){
+        minimum_not_zero = sorted_bubbles[i]["n"]
+        break;
+      }
+    }
+  
+    var ray_domain = [minimum_not_zero, sorted_bubbles[0]["n"] ]
+    ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
+    ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
+    ray.domain(ray_domain);
+   
     /// END TEST
     bubble_flag = true
     /// add bubbles
@@ -736,20 +800,27 @@ function draw_bubbleplot_2(data){
           else return color_brushed
           
         })
-        compute_array(x_col, y_col, selected_ids, [])
+        compute_array(x_col, y_col, selected_ids, [],true, brushed_ids.length != 0)
       }
       else {
         d3.select(this).style("fill", color_selected)
         var bubble_range = d.range.split("-")
-        compute_array(x_col, y_col, selected_ids, bubble_range)
+        compute_array(x_col, y_col, selected_ids, bubble_range,true, brushed_ids.length != 0)
       }
     });
     bolle.transition().duration(1000)
     .style("opacity", "0.6")
+    .attr("r", function (d) { 
+      if(d.n != 0){return  +ray(Math.sqrt((d.n/Math.PI)))}
+    }
+     
+      
+    );
+    /*
     .attr("r",function (d) { 
       if(d.n == 0){return 0}
       else{return (d.n/10)+2}
-    });
+    });*/
     //bolle.transition().duration(800)
     
 
@@ -921,7 +992,7 @@ scatter
 }
 
 function start (ids){
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_250.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
@@ -945,7 +1016,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   //DATASET_PATH = DATASET
   //console.log(DATASET_PATH)
 
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_250.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
