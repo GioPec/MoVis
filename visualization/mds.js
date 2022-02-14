@@ -1,5 +1,5 @@
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -15,13 +15,15 @@ var height = 300 - margin_top - margin_bottom
 
 var chiavi
   
-function draw_MDS(data){   
+function draw_MDS(data){
 
   d3.select("#svg1").remove()
 
   var tooltip = d3.select("body")
    .append("div")
-   .style("background", "rgba(225, 213, 168,0.8)")
+   .attr("id", "tooltip1")
+   .style("background-color", function() { return checkIfDarkMode() ? color_tooltip_dark : color_tooltip_light })
+   .style("color", function() { return checkIfDarkMode() ? "white" : "black" })
    .style("position", "absolute")
    .style("z-index", "10")
    .style("visibility", "hidden")
@@ -95,15 +97,15 @@ function draw_MDS(data){
       .attr("r", 1)
       .attr("id", function (d) { return d[chiavi[2]] })
       .attr("name", function (d) { return d["title"] } )
-      .style("fill", "rgb(66, 172, 66)") // #ff0099
+      .style("fill", color_base) // #ff0099
       .style("stroke", "black")
       .style("stroke-width", "0.2") 
       .style("opacity", 0.8)
       .style("pointer-events", "all")
       .on("mouseover", function(d) {
-      tooltip.text(d.title);
-     return tooltip.style("visibility", "visible");
-   })
+        tooltip.html("<b>"+d.title+"</b> ("+d.year+")<br><i>Directed by: "+d.director+"</i>");
+        return tooltip.style("visibility", "visible");
+      })
    .on("mousemove", function() {
      return tooltip.style("top",
        (d3.event.pageY - 10) + "px").style("left", (d3.event.pageX + 10) + "px");
@@ -140,6 +142,16 @@ function draw_MDS(data){
       .selectAll("circle")
       .attr("cx", function (d) { return newX(d[chiavi[0]]) } )
       .attr("cy", function (d) { return newY(d[chiavi[1]]) } )
+
+    d3.select("#svg1").selectAll("text").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
+    })
+    d3.select("#svg1").selectAll("line").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
+    d3.select("#svg1").selectAll("path").attr("class", function(){
+      return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
+    })
   }
 
 

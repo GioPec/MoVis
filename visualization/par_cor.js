@@ -1,7 +1,7 @@
 import{parCor_to_chord, filter_genres} from "./chord.js"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 function checkIfDarkMode() {
     return document.getElementById("darkModeCheckbox").checked
@@ -49,11 +49,9 @@ function drawParallel(data, actual) {
 
 
     // Extract the list of dimensions and create a scale for eac/cars[0] contains the header elements,h.
-        // then for all elements in the header
-        //different than "name" it creates and y axis in a dictionary by variable name
+    // then for all elements in the header
+    //different than "name" it creates and y axis in a dictionary by variable name
 
-    
-   
 
     var whichBudget = (actual) ? ("actual_budget") : ("budget")
     var whichRevenue = (actual) ? ("actual_revenue") : ("revenue")
@@ -171,8 +169,6 @@ function drawParallel(data, actual) {
             d3.select(this)
             .call(d3.axisLeft(y[d]))
             .attr("font-size", "4px")
-   
-        
         //text does not show up because previous line breaks somehow
         .append("text")
         
@@ -187,10 +183,11 @@ function drawParallel(data, actual) {
     g.append("g")
         .attr("class", "brush")
         .each(function(d) {
-            var palla = d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
+            d3.select(this).call(y[d].brush = d3.brushY().extent([[-4, 0], [4,height]])
             .on("brush.uno start.uno ", brushstart)
             .on("brush.due", brush_parallel_chart_2)
             .on("end.tre", brush_parallel_chart)
+            .on("end.quattro", brushend)
             
             );
             
@@ -200,8 +197,8 @@ function drawParallel(data, actual) {
         .attr("width", 16);
 
     function position(d) {
-    var v = dragging[d];
-    return v == null ? x(d) : v;
+        var v = dragging[d];
+        return v == null ? x(d) : v;
     }
 
     function transition(g) {
@@ -220,22 +217,77 @@ function drawParallel(data, actual) {
 
     function brushend() {
         //console.log("END")
+        
     }
 
-    
-    
+   
+
+    var array = [false,false,false,false,false,false,false,false]
     // Handles a brush event, toggling the display of foreground lines.
-    function brush_parallel_chart() {   
+    function brush_parallel_chart() { 
+       
+          
         filter_genres(null)
-        var index = -1
+        var index 
         
-        
+        var test = foreground.filter(function(d) {
+            
+            return this["style"]["opacity"] != 0
+          })
+        var runcode=true
         for(var i=0;i<dimensions.length;++i) {
-           
+            d3.event.target==y[dimensions[i]].brush
             if(d3.event.target==y[dimensions[i]].brush) {
-                index = i
-                extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]);
+                if(d3.event.selection==null){
+                    //console.log(extents)
+                    // clearbrush
+                    //brushstart
+                    //console.log("ciao" + extents[i])
+                    // extents[i]=[0,0]
+                    //console.log("ciao" + extents[i])
+
+                    // test.classed("normal", true)
+                    // test.classed("active",false)
+                    array[i]=false
+                    extents[i][0]=0
+                    extents[i][1]=0
+
+                    runcode=false
+                    //array.pop()
+                    //console.log(array)
+
+                    
+                    if (array.indexOf(true)!=-1){
+
+                    }else{
+                        test.classed("normal", true)
+                        test.classed("active",false)
+                    
+                        imdb_ids=[]
+                        // update chord
+                        parCor_to_chord(imdb_ids)
+
+                        //update mds
+                        var area_1 = d3.select("#area_1")
+                        area_1.selectAll(".dot").style("fill", color_base)
+                    
+                        return
                 
+                
+                    }
+                    
+                    
+                    // return
+
+                    
+                }else{
+                    //array.push(false)
+                    array[i]=true
+                    runcode=true
+                    index = i
+                    extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]); 
+                    //console.log("cisono")
+                }
                 
             }
         }
@@ -243,20 +295,26 @@ function drawParallel(data, actual) {
         ids = []
         imdb_ids = []
 
-        var test = foreground.filter(function(d) {
-            
-            return this["style"]["opacity"] != 0
-          })
+        
 
-
+        // if(runcode){
+            // console.log("cosa"+extents[i])
         test.classed("active", function(d) {
             ids.push(d.id)
             imdb_ids.push(d.imdb_id)
             var eliminato = false
             return dimensions.every(function(p, i) {
+                //console.log("ciaoprova" + extents[i])
                 
+
+
                 var check_2 = extents[i][0]==0 && extents[i][1]==0
                 if(check_2) return true;
+
+                // if(runcode==false) {
+                //     extents[i][0]=0
+                //     extents[i][1]=0
+                // }
                 
             var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
             
@@ -277,9 +335,11 @@ function drawParallel(data, actual) {
             ids.push(d.id)
             var eliminato = false
             return dimensions.every(function(p, i) {
-                
+                //console.log("ciaoprova" + extents[i])
+                // if(runcode==false) return false
                 var check_2 = extents[i][0]==0 && extents[i][1]==0
                 if(check_2) return true;
+                
                 
             var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
             
@@ -287,11 +347,27 @@ function drawParallel(data, actual) {
                 eliminato = true
                 ids.pop()
             }
+
             return check_1
-            }) ? false : true;
+            }) ? null : "none";
         });
 
+        
+        
 
+
+        
+        // }else{
+        //     var eliminato = false   
+        //     eliminato = true
+        //         ids.pop()
+        //         imdb_ids.pop()
+        //     test.classed("normal", true)
+        //     test.classed("active",false)
+        //     console.log("sto doiing")
+        // }
+
+    
 
         d3.selectAll(".active").raise()
         //update chord
@@ -302,19 +378,24 @@ function drawParallel(data, actual) {
         area_1.selectAll(".dot").style("fill", function(d) {  
             for(var t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
-                    return "red"
+                    return color_brushed
                 }
             }
-            return "rgb(66, 172, 66)"
+            return color_base
         });
+
+        //TODO: color_brushed to boxplots rects
+        //d3.select("#svg_area_3_x").selectAll("rect").style("fill", color_brushed)
+        //d3.select("#svg_area_3_y").selectAll("rect").style("fill", color_brushed)
 
     }
 
     function brush_parallel_chart_2() {   
         
-        var index = -1
+        var index
         for(var i=0;i<dimensions.length;++i) {
             if(d3.event.target==y[dimensions[i]].brush) {
+                //array[i]=false
                 index = i
                 extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]);
                 //console.log(extents[i])
@@ -322,6 +403,9 @@ function drawParallel(data, actual) {
         }
         var ids = []
         var imdb_ids = []
+        
+
+
         foreground.classed("active", function(d) {
             ids.push(d.id)
             imdb_ids.push(d.imdb_id)
@@ -358,9 +442,17 @@ function drawParallel(data, actual) {
                 eliminato = true
                 ids.pop()
             }
-            return check_1
-            }) ? false : true;
+            if(check_1){
+              return check_1  
+            }
+            return extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            }) ? null : "none";
         });
+
+
+
+
+
         d3.selectAll(".active").raise()
 
         //update chord
@@ -415,10 +507,10 @@ export function refresh_brush(){
         area_1.selectAll(".dot").style("fill", function(d) {  
             for(var t=0;t<ids.length;t++){
                 if(ids[t] == d.id){
-                    return "red"
+                    return color_brushed
                 }
             }
-            return "rgb(66, 172, 66)"
+            return color_base
         });
 }
 

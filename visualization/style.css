@@ -8,7 +8,7 @@
 
 .foreground path {
   fill: none;
-  stroke-width: 0.5px;
+  stroke-width: 0.1px;
 }
 
 .brush .extent {
@@ -46,13 +46,19 @@
   background-color: rgb(225, 213, 168);
 }
 
+.chord_back_highlighted_dark {
+  background-color: rgb(34, 54, 52)
+}
+
 /*****************************************/
 .active {
-  stroke: red;
+  /*stroke: red;*/
+  stroke: #ff3e3e;
 }
 
 .normal {
-  stroke: rgb(66, 172, 66);
+  /*stroke: rgb(66, 172, 66);*/
+  stroke: #69b3a2
 }
 
 .title {

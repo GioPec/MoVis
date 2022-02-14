@@ -1,11 +1,11 @@
-import{chord_to_bubble} from "./bubbleplot.js"
+import {chord_to_bubble} from "./bubbleplot.js"
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
 
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -24,7 +24,8 @@ const colors_light = ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462
 
 var tooltip = d3.select("body")
 .append("div")
-.style("background", "rgba(225, 213, 168,0.8)")
+.attr("id", "tooltip5")
+.style("background-color", "rgb(225, 213, 168)")
 .style("position", "absolute")
 .style("z-index", "10")
 .style("visibility", "hidden")
@@ -279,7 +280,7 @@ export function filter_genres(filter_genres) {
           bubble_ids_up.push(row.imdb_id)
           selected_ids_up.push(row.imdb_id)
           chord_ids_up.push(row.imdb_id)
-          console.log(row)
+          //console.log(row)
           //console.log("bubble_ids_up: ", bubble_ids_up.length)
         }
         if (!selected_ids_up.includes(row.imdb_id)){
@@ -289,8 +290,8 @@ export function filter_genres(filter_genres) {
       }
     }).then(function() {
       
-    console.log("selected_ids_up_fin: ", selected_ids_up.length)
-    console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
+    //console.log("selected_ids_up_fin: ", selected_ids_up.length)
+    //console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
     update_PC(selected_ids_up)
     update_MDS(selected_ids_up)
     if(chord_ids_up.length == 0) {chord_ids_up = null}
@@ -448,7 +449,12 @@ function createLabel(generi) {
         })
         condition=true
       }
-      else d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted")//.style("background-color", "rgb(225, 213, 168)")
+      else {
+        if ((checkIfDarkMode())) {
+          d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted_dark")
+        }
+        else d3.select("#"+d.genere+"_chord_back").attr("class", "chord_back_highlighted")
+      }
 
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
@@ -511,7 +517,7 @@ function update_PC(selected_ids, deselecting) {
 
   /////////////////////////////////////////////////////
   if(deselecting){
-    console.log("refreshbrush")
+    //console.log("refreshbrush")
     var imdb_ids = []
     var ids = []
     d3.selectAll(".active").filter(function(d) {
@@ -530,12 +536,12 @@ function update_PC(selected_ids, deselecting) {
         area_1
         .selectAll(".dot")
         .style("fill", function(d) {  
-          if(imdb_ids.includes(d.imdb_id)){return "red"}
-          else{return "rgb(66, 172, 66)"}
+          if (imdb_ids.includes(d.imdb_id)) return color_brushed
+          else return color_base
         })
         .style("display", function(d) {  
-          if(selected_ids.includes(d.imdb_id)){return null}
-          else{return "none"}
+          if (selected_ids.includes(d.imdb_id)) return null
+          else return "none"
         })
   }
 
@@ -556,8 +562,8 @@ function update_MDS(selected_ids) {
 
   cerchi.style("fill",function(d) {
     var color = this["style"]["fill"]
-    return color == "red"
-  }) ? "red" : "rgb(66, 172, 66)"
+    return color == color_brushed
+  }) ? color_brushed : color_base
 
 }
 

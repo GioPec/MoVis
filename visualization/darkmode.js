@@ -1,10 +1,10 @@
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
+
 export function darkMode() {
+  
     var isDarkChecked = document.getElementById("darkModeCheckbox").checked
+
     if (isDarkChecked) {
-
-
-        
-
         document.getElementById('body').setAttribute("class", "dark")
 
         var domains = document.getElementsByClassName("domain")
@@ -50,13 +50,26 @@ export function darkMode() {
           return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
         })
 
+        d3.select("#toolbar").style("background-color", color_tooltip_dark)
+        d3.select("#toolbar").style("color", "white")
+        d3.select("#bubble_toolbar").style("background-color", color_tooltip_dark)
+        d3.select("#bubble_toolbar").style("color", "white")
+
+        d3.select("#tooltip1").style("background-color", color_tooltip_dark)
+        d3.select("#tooltip1").style("color", "white")
+        d3.select("#tooltip2").style("background-color", color_tooltip_dark)
+        d3.select("#tooltip2").style("color", "white")
+        d3.select("#tooltip5").style("background-color", color_tooltip_dark)
+        d3.select("#tooltip5").style("color", "white")
+
         //document.getElementsByClassName("domain").style("stroke", "FFF");
         
-        d3.selectAll(".bubble").attr("class", " bubble lightstroke")
+        d3.selectAll(".bubble").attr("class", "bubble lightstroke")
+
+        d3.selectAll(".chord_back_highlighted").attr("class", "chord_back_highlighted_dark")
     }
 
     else {
-        //document.getElementById('body').removeAttribute("class", "dark")
         document.getElementById("body").setAttribute("class", "light")
 
         var domains = document.getElementsByClassName("domain")
@@ -102,71 +115,23 @@ export function darkMode() {
           return (isDarkChecked) ? ("lightstroke") : ("darkstroke")
         })
 
-        d3.selectAll(".bubble").attr("class", " bubble darkstroke")
+        d3.selectAll(".bubble").attr("class", "bubble darkstroke")
+        
+        d3.select("#toolbar").style("background-color", color_tooltip_light)
+        d3.select("#toolbar").style("color", "black")
+        d3.select("#bubble_toolbar").style("background-color", color_tooltip_light)
+        d3.select("#bubble_toolbar").style("color", "black")
+
+        d3.select("#tooltip1").style("background-color", color_tooltip_light)
+        d3.select("#tooltip1").style("color", "black")
+        d3.select("#tooltip2").style("background-color", color_tooltip_light)
+        d3.select("#tooltip2").style("color", "black")
+        d3.select("#tooltip5").style("background-color", color_tooltip_light)
+        d3.select("#tooltip5").style("color", "black")
+
+        d3.selectAll(".chord_back_highlighted_dark").attr("class", "chord_back_highlighted")
     }
 }
 
 var c = document.getElementById("darkModeCheckbox")
 c.addEventListener("click", darkMode)
-
-/*
-
-.dark {
-    background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-    fill: rgb(200, 200, 200);
-    border-color: rgb(200, 200, 200);
-  }
-  
-  .dark text {
-    background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-    fill: rgb(200, 200, 200);
-    //border-color: rgb(200, 200, 200);
-  }
-  
-  .dark svg {
-    //background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  .dark g {
-    //background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  .dark label {
-    //background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  .dark rect {
-    background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  .dark line {
-    background-color: rgb(30, 30, 30);
-    stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  //.dark path {
-    background-color: rgb(30, 30, 30);
-    stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  }
-  
-  .dark svg {
-    background-color: rgb(30, 30, 30);
-    //stroke: rgb(200, 200, 200);
-    color: rgb(200, 200, 200);
-  } 
-  
-*/ 

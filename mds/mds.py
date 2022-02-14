@@ -32,7 +32,7 @@ def samePosition(s1,s2):
             tot+=1
     return(tot/min(len(s1),len(s2)))
 
-df_all = pd.read_csv(path_constants.DATASET)
+df_all = pd.read_csv(path_constants.DATASET_1000)
 df = df_all[['imdb_id', 'title', 'genres','connected_movies', 'director']]
 dfn = df_all[['year','budget','revenue','runtime','vote_average','vote_count','popularity',
     'in_connections','out_connections','tot_connections']]
@@ -170,21 +170,38 @@ dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 0
 dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
 """
 
-dissM = 400*dissM_genres        #0-1 ____ 4000
-dissM += 400000*dissM_connectedmovies        #0-1 ____ 40000
-dissM += 100*dissM_titles        #0-1 ____ 1000
-dissM += 500*dissM_directors        #0-1 ____ 5000
-dissM += 2*dissM_release_date        #1910-2010 ____ 4000
+""" parameters for mds_results_250:
+dissM = 3000*dissM_genres        #0-1 ____ 3000
+dissM += 5000*dissM_connectedmovies        #0-1 ____ 40000
+dissM += 1000*dissM_titles        #0-1 ____ 1000
+dissM += 2000*dissM_directors        #0-1 ____ 5000
+dissM += 1*dissM_release_date        #1910-2010 ____ 4000
 dissM += 10*dissM_budget        #0-350 (70) ____ 700
 dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
 dissM += 5*dissM_runtime        #0-220 (100) ____ 500
 dissM += 20*dissM_vote_average        #0-10 (6) ____ 2000
 dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
-dissM += 2*dissM_popularity        #0-500! (15) ??? ____ 30-1000
-dissM += 0.5*dissM_in_connections        #0-7000 (bassa) ____ 3500
-dissM += 4*dissM_out_connections        #0-500 (bassissima) ____ 2000
+dissM += 0*dissM_popularity        #0-500! (15) ??? ____ 30-1000
+dissM += 0*dissM_in_connections        #0-7000 (bassa) ____ 3500
+dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 2000
 dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
-dissM *= 0.00000001
+dissM *= 0.0001 """
+
+dissM = 6000*dissM_genres        #0-1 ____ 6000
+dissM += 20000*dissM_connectedmovies        #0-1 ____ 20000
+dissM += 0*dissM_titles        #0-1 ____ 0
+dissM += 5000*dissM_directors        #0-1 ____ 5000
+dissM += 1*dissM_release_date        #1910-2010 ____ 2000
+dissM += 10*dissM_budget        #0-350 (70) ____ 700
+dissM += 5*dissM_revenue        #0-2000 (200) ____ 1000
+dissM += 5*dissM_runtime        #0-220 (100) ____ 500
+dissM += 100*dissM_vote_average        #0-10 (6) ____ 1000
+dissM += 0.25*dissM_vote_count        #0-14000 (2000) ____ 500
+dissM += 0*dissM_popularity        #0-500! (15) ??? ____ 0
+dissM += 0*dissM_in_connections        #0-7000 (bassa) ____ 0
+dissM += 0*dissM_out_connections        #0-500 (bassissima) ____ 0
+dissM += 0*dissM_tot_connections        #0-7500 (bassa) ____ 0
+dissM *= 0.000001
 
 print("Finished matrix")
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -197,7 +214,7 @@ i=0
 for c in pos_forprint:
     c.append(imdb_id[i])
     i+=1
-pd.DataFrame(pos_forprint).to_csv(path_constants.MDS_RESULTS_NEW, index=False)
+pd.DataFrame(pos_forprint).to_csv(path_constants.MDS_RESULTS_1000, index=False)
 #np.savetxt("test.csv", pos_forprint, delimiter=",")
 
 print("Finished MDS")

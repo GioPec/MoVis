@@ -1,3 +1,5 @@
+import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
+
 const mapping = {
   "4": "year",
   "5": "budget",
@@ -21,8 +23,7 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -50,7 +51,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
     //console.log("check_1: ", range_check)
     
     if(!range_check){
-      console.log("val_: ",mapping[get_group()])
+      //console.log("val_: ",mapping[get_group()])
       range_check = ( (parseInt(row[mapping[get_group()]])  >= parseInt(bubble_range[0])) && 
                     (parseInt(row[mapping[get_group()]])  <= parseInt(bubble_range[1])) )
     
@@ -81,7 +82,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
 
 function draw_boxplot_x(colonna_x){
 
-  console.log("data_used_x: ", data_used_x)
+  //console.log("data_used_x: ", data_used_x)
 
   // append the svg object to the body of the page
 
@@ -151,10 +152,11 @@ function draw_boxplot_x(colonna_x){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
+      return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
     //.attr("stroke", "black")
-    .style("fill", "#69b3a2")
+    .style("fill", color_base)
+    //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
 
   // show median, min and max horizontal lines
@@ -252,9 +254,10 @@ function draw_boxplot_y(colonna_y){
     .attr("height", (y_box(q1)-y_box(q3)) )
     .attr("width", 100 )
     .attr("class", function(){
-      return (checkIfDarkMode()) ? (" box lightstroke") : (" box darkstroke")
+      return (checkIfDarkMode()) ? ("box lightstroke") : ("box darkstroke")
     })
-    .style("fill", "#69b3a2")
+    .style("fill", color_base)
+    //.style("opacity", 0.6)
     .attr("transform", "translate("+(space*(-1))+",0)")
   
   // show median, min and max horizontal lines
@@ -286,7 +289,7 @@ function draw_boxplot_y(colonna_y){
 
   if(bubble_range != null){
     d3.selectAll(".box").style("fill", function(){
-      return (bubble_range.length == 0) ? ("#69b3a2") : ("yellow")
+      return (bubble_range.length == 0) ? color_base : color_selected
     }) 
   }
   
