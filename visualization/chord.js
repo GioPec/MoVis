@@ -4,8 +4,8 @@ function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
 
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW_500.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -279,7 +279,7 @@ export function filter_genres(filter_genres) {
           bubble_ids_up.push(row.imdb_id)
           selected_ids_up.push(row.imdb_id)
           chord_ids_up.push(row.imdb_id)
-          console.log(row)
+          //console.log(row)
           //console.log("bubble_ids_up: ", bubble_ids_up.length)
         }
         if (!selected_ids_up.includes(row.imdb_id)){
@@ -289,8 +289,8 @@ export function filter_genres(filter_genres) {
       }
     }).then(function() {
       
-    console.log("selected_ids_up_fin: ", selected_ids_up.length)
-    console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
+    //console.log("selected_ids_up_fin: ", selected_ids_up.length)
+    //console.log("bubble_ids_up_fin: ", bubble_ids_up.length)
     update_PC(selected_ids_up)
     update_MDS(selected_ids_up)
     if(chord_ids_up.length == 0) {chord_ids_up = null}
@@ -511,7 +511,7 @@ function update_PC(selected_ids, deselecting) {
 
   /////////////////////////////////////////////////////
   if(deselecting){
-    console.log("refreshbrush")
+    //console.log("refreshbrush")
     var imdb_ids = []
     var ids = []
     d3.selectAll(".active").filter(function(d) {

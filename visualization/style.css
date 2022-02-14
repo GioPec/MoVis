@@ -8,7 +8,7 @@
 
 .foreground path {
   fill: none;
-  stroke-width: 0.5px;
+  stroke-width: 0.1px;
 }
 
 .brush .extent {
