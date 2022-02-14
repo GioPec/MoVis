@@ -221,22 +221,7 @@ function drawParallel(data, actual) {
         
     }
 
-    function clearbrush(selectionName) {
-        foreground.style("display", "none")
-        
-        var dimensionsIndex = dimensions.indexOf(selectionName);
-      
-        extents[dimensionsIndex] = [0, 0];
-      
-        foreground.style("display", function(d) {
-          return dimensions.every(function(p, i) {
-              if(extents[i][0]==0 && extents[i][0]==0) {
-                  return true;
-              }
-            return extents[i][1] <= d[p] && d[p] <= extents[i][0];
-          }) ? null : "none";
-        });
-      }
+   
 
     var array = [false,false,false,false,false,false,false,false]
     // Handles a brush event, toggling the display of foreground lines.
@@ -258,9 +243,9 @@ function drawParallel(data, actual) {
                     //console.log(extents)
                     // clearbrush
                     //brushstart
-                    console.log("ciao" + extents[i])
+                    //console.log("ciao" + extents[i])
                     // extents[i]=[0,0]
-                    console.log("ciao" + extents[i])
+                    //console.log("ciao" + extents[i])
 
                     // test.classed("normal", true)
                     // test.classed("active",false)
@@ -270,7 +255,7 @@ function drawParallel(data, actual) {
 
                     runcode=false
                     //array.pop()
-                    console.log(array)
+                    //console.log(array)
 
                     
                     if (array.indexOf(true)!=-1){
@@ -302,7 +287,7 @@ function drawParallel(data, actual) {
                     runcode=true
                     index = i
                     extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]); 
-                    console.log("cisono")
+                    //console.log("cisono")
                 }
                 
             }
