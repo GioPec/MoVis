@@ -1,4 +1,5 @@
-var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+//var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+var DATASET_PATH = "../datasets/dataset_fake.csv"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 function checkIfDarkMode() {

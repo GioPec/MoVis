@@ -23,7 +23,8 @@ var space = 120
 var used_ids = []
 var bubble_range = []
 var isBrushed = false
-var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+//var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked

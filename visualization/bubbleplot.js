@@ -766,6 +766,7 @@ function draw_bubbleplot_2(data){
     .attr("cx", function (d) {  return x(d.x) } )
     .attr("cy", function (d) {  return y(d.y) } )
     .attr("r", "0")
+    .style("cursor", "pointer")
     .style("fill", function (d) { 
       if (brushed_ids.length != 0) return color_brushed
       else return color_base
@@ -991,8 +992,10 @@ scatter
    });
 }
 
+
+
 function start (ids){
-  d3.csv("../datasets/DATASET_MDS_250.csv", function(error, data) {
+  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
@@ -1016,7 +1019,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   //DATASET_PATH = DATASET
   //console.log(DATASET_PATH)
 
-  d3.csv("../datasets/DATASET_MDS_250.csv", function(error, data) {
+  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;

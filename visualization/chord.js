@@ -5,7 +5,8 @@ function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
 }
 
-var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+//var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -321,6 +322,7 @@ function createD3Chord() {
   svg
   .datum(res)
   .append("g")
+  
   .attr("id", "chord_arcs")
   .attr("transform", "scale(0.38) translate(250,240)")
   .selectAll("g")
@@ -349,6 +351,7 @@ function createD3Chord() {
     .style("fill", function(d){ return colors_light[d.source.index]})
     .style("opacity", 1)
     .attr("id", function(d){return d.target.index+"_"+d.source.index})
+    .style("cursor", "pointer")
     .style("display", function(d){ 
 
       if(included_genres.length == 0){return null}
@@ -456,6 +459,7 @@ function createLabel(generi) {
 
   d3.select('#svg_5')
     .append("g")
+    .attr("class", "pointer")
       .style("top", "5%")
       .style("right", "3.5%")
       .style("width", "35%")
