@@ -995,7 +995,7 @@ scatter
 
 
 function start (ids){
-  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
@@ -1016,10 +1016,9 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   brushed_ids = brushed_ids_up
   chord_ids = chord_ids_up
 
-  //DATASET_PATH = DATASET
-  //console.log(DATASET_PATH)
 
-  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
+
+  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
