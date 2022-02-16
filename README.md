@@ -15,6 +15,8 @@ A report of the project has been produced [here](TODO); <!-- VICrime_report.pdf 
 <br>
 or, [here](TODO) you can find the presentation slides.    <!-- Italian%20Crime%20Visualizator.pdf -->
 
+NOTE: the visualization can be viewed correctly on 2560x1440 screens
+
 ## Authors
 
 Giovanni Pecorelli
