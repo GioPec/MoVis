@@ -795,6 +795,8 @@ function draw_bubbleplot_2(data){
       })
       
       if (colore == color_selected) {
+        
+        document.getElementById('film_counter').innerText =  selected_ids.length
         d3.select(this).style("fill", function (d) {  
           
           if (brushed_ids.length == 0) return color_base
@@ -804,6 +806,7 @@ function draw_bubbleplot_2(data){
         compute_array(x_col, y_col, selected_ids, [],true, brushed_ids.length != 0)
       }
       else {
+        document.getElementById('film_counter').innerText =  d.n
         d3.select(this).style("fill", color_selected)
         var bubble_range = d.range.split("-")
         compute_array(x_col, y_col, selected_ids, bubble_range,true, brushed_ids.length != 0)
@@ -998,12 +1001,14 @@ function start (ids){
   d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
+    document.getElementById('film_counter').innerText =  data.length
     if (error) throw error;
       var l=data.length;
       for (let i=0;i<l;i++) data[i].id=i
       //data = data
       draw_bubbleplot_2(data,false,ids)
   })
+  
 
 }
 
@@ -1015,6 +1020,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   selected_ids = bubble_ids_up;
   brushed_ids = brushed_ids_up
   chord_ids = chord_ids_up
+  document.getElementById('film_counter').innerText =  selected_ids.length
 
 
 

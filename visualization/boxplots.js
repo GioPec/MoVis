@@ -145,7 +145,7 @@ function draw_boxplot_x(colonna_x){
     //.attr("transform", "scale(0.6) translate(0,0)")
     .attr("transform", "translate("+(space*(-1))+",0)")
     
-  console.log("isBrushed; ", isBrushed)
+  
   // Show the box
   boxplot_x
   .append("rect")

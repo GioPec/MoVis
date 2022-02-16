@@ -497,7 +497,7 @@ function createLabel(generi) {
       const index = included_genres.indexOf(d.genere);
       if (index > -1) {
         included_genres.splice(index, 1);
-        console.log("AIUTO")
+        
       }
       else included_genres.push(d.genere)
 
