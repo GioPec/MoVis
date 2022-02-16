@@ -17,7 +17,7 @@ var width = 500 - margin_left - margin_right
 var height = 300 - margin_top - margin_bottom
 
 var chiavi
-
+var data_len = 0
 var x
 var y
 var xAxis
@@ -796,7 +796,8 @@ function draw_bubbleplot_2(data){
       
       if (colore == color_selected) {
         
-        document.getElementById('film_counter').innerText =  selected_ids.length
+        
+        document.getElementById('film_counter').innerText =  selected_ids.length == 0 ? data_len: selected_ids.length
         d3.select(this).style("fill", function (d) {  
           
           if (brushed_ids.length == 0) return color_base
@@ -1000,8 +1001,8 @@ scatter
 function start (ids){
   d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
-    
-    document.getElementById('film_counter').innerText =  data.length
+    data_len = data.length
+    document.getElementById('film_counter').innerText =  data_len
     if (error) throw error;
       var l=data.length;
       for (let i=0;i<l;i++) data[i].id=i
