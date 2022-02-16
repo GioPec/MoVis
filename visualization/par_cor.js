@@ -373,7 +373,7 @@ function drawParallel(data, actual) {
 
         d3.selectAll(".active").raise()
         //update chord
-        console.log("LEN: ", imdb_ids.length)
+        
         parCor_to_chord(imdb_ids)
 
         //update mds
