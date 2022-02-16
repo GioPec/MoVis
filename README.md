@@ -11,9 +11,9 @@ or you can clone the repository, run ```python -m http.server``` and then search
 
 Enjoy!
 
-A report of the project has been produced [here](TODO); <!-- VICrime_report.pdf -->
+A report of the project has been produced [here](docs/report.pdf);
 <br>
-or, [here](TODO) you can find the presentation slides.    <!-- Italian%20Crime%20Visualizator.pdf -->
+or, [here](TODO) you can find the presentation slides.
 
 NOTE: the visualization can be viewed correctly on 2560x1440 screens
 
