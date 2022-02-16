@@ -31,6 +31,6 @@ Giacomo Venneri
 
 ## Snapshots
 
-<img src="https://raw.githubusercontent.com/GioPec/VA_project/blob/img/MoVisInteractLight.png" width="100%" height="100%">
+<img src="https://raw.githubusercontent.com/GioPec/VA_project/blob/main/img/MoVisInteractLight.png" width="100%" height="100%">
 
-<img src="https://raw.githubusercontent.com/GioPec/VA_project/blob/img/MoVisInteractDark.png" width="100%" height="100%">
+<img src="https://raw.githubusercontent.com/GioPec/VA_project/blob/main/img/MoVisInteractDark.png" width="100%" height="100%">
