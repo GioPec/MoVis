@@ -47,12 +47,6 @@ function drawParallel(data, actual) {
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     .attr("transform", "scale(0.95) translate(-2,0)")
     //.style("background-color", "red")
-        
-
-
-    // Extract the list of dimensions and create a scale for eac/cars[0] contains the header elements,h.
-    // then for all elements in the header
-    //different than "name" it creates and y axis in a dictionary by variable name
 
 
     var whichBudget = (actual) ? ("actual_budget") : ("budget")
@@ -84,41 +78,10 @@ function drawParallel(data, actual) {
         return false
     }));
 
-/*  TENTATIVO DI USARE ANCHE SCALE LOG
 
-    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
-        if (
-        (d == "year") || //(d == "budget") || (d == "revenue") || 
-        (d == "runtime") || 
-        (d == "vote_average")  || (d == "vote_count") ||  //|| (d == "popularity")  
-        (d == "in_connections")  || (d == "out_connections")
-        ) {
-            return y[d] = d3.scaleLinear()
-            .domain(d3.extent(data, function(p) { return +p[d]; }))
-            .range([104, 6]);
-        }
-        else if (
-            (d == "budget") || (d == "revenue")
-        ) {
-            return y[d] = d3.scaleLog()
-            .domain(d3.extent(data, function(p) { return +p[d]; }))
-            .range([104, 6]);
-        }
-        return false
-    })); */
 
     extents = dimensions.map(function(p) { return [0,0]; });
 
-    // Add grey background lines for context.
-    /*
-    background = svg.append("g")
-        .attr("class", "background")
-        .selectAll("path")
-        .data(data)
-        .enter().append("path")
-        .attr("class","backpath")
-        .attr("d", path);
-*/
     // Add red foreground lines for focus.
     foreground = svg.append("g")
         .attr("class", "foreground")
@@ -138,31 +101,7 @@ function drawParallel(data, actual) {
         .enter().append("g")
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-        /*
-        .call(d3.drag()
-            .subject(function(d) { return {x: x(d)}; })
-            .on("start", function(d) {
-            dragging[d] = x(d);
-            background.attr("visibility", "hidden");
-            })
-            .on("drag", function(d) {
-            dragging[d] = Math.min(width, Math.max(0, d3.event.x));
-            foreground.attr("d", path);
-            dimensions.sort(function(a, b) { return position(a) - position(b); });
-            x.domain(dimensions);
-            g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-            })
-            .on("end", function(d) {
-            delete dragging[d];
-            transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
-            transition(foreground).attr("d", path);
-            background
-                .attr("d", path)
-                .transition()
-                .delay(500)
-                .duration(0)
-                .attr("visibility", null);
-            }));*/
+        
     // Add an axis and title.
     g.append("g")
         .attr("class", "axis")
@@ -236,34 +175,26 @@ function drawParallel(data, actual) {
             
             return this["style"]["opacity"] != 0
           })
+          
         var runcode=true
         for(var i=0;i<dimensions.length;++i) {
             d3.event.target==y[dimensions[i]].brush
             if(d3.event.target==y[dimensions[i]].brush) {
                 if(d3.event.selection==null){
-                    //console.log(extents)
-                    // clearbrush
-                    //brushstart
-                    //console.log("ciao" + extents[i])
-                    // extents[i]=[0,0]
-                    //console.log("ciao" + extents[i])
-
-                    // test.classed("normal", true)
-                    // test.classed("active",false)
+               
                     array[i]=false
                     extents[i][0]=0
                     extents[i][1]=0
 
                     runcode=false
-                    //array.pop()
-                    //console.log(array)
+                  
 
                     
                     if (array.indexOf(true)!=-1){
 
                     }else{
-                        test.classed("normal", true)
-                        test.classed("active",false)
+                        d3.select("#svg4").selectAll("path").classed("active", false).classed("normal", true)
+                      
                     
                         imdb_ids=[]
                         // update chord
@@ -297,10 +228,60 @@ function drawParallel(data, actual) {
         ids = []
         imdb_ids = []
 
-        
+        var color_up = foreground.filter(function(d) {return true})
 
-        // if(runcode){
-            // console.log("cosa"+extents[i])
+        color_up.classed("active", function(d) {
+            ids.push(d.id)
+            imdb_ids.push(d.imdb_id)
+            var eliminato = false
+            return dimensions.every(function(p, i) {
+                //console.log("ciaoprova" + extents[i])
+                
+
+
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
+                if(check_2) return true;
+
+                // if(runcode==false) {
+                //     extents[i][0]=0
+                //     extents[i][1]=0
+                // }
+                
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            
+            if(!check_1 && !(eliminato)){
+                eliminato = true
+                ids.pop()
+                imdb_ids.pop()
+            }
+            return check_1
+            }) ? true : false;
+
+        });
+    
+        color_up.classed("normal", function(d) {
+            ids.push(d.id)
+            var eliminato = false
+            return dimensions.every(function(p, i) {
+                //console.log("ciaoprova" + extents[i])
+                // if(runcode==false) return false
+                var check_2 = extents[i][0]==0 && extents[i][1]==0
+                if(check_2) return true;
+                
+                
+            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+            
+            if(!check_1 && !(eliminato)){
+                eliminato = true
+                ids.pop()
+            }
+
+            return check_1
+            }) ? false : true;
+        });
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        ids = []
+        imdb_ids = []
         test.classed("active", function(d) {
             ids.push(d.id)
             imdb_ids.push(d.imdb_id)
@@ -329,10 +310,7 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
-        //console.log(foreground.selectAll("style"))
 
-        
-       
         test.classed("normal", function(d) {
             ids.push(d.id)
             var eliminato = false
@@ -351,26 +329,10 @@ function drawParallel(data, actual) {
             }
 
             return check_1
-            }) ? null : "none";
+            }) ? false : true;
         });
 
         
-        
-
-
-        
-        // }else{
-        //     var eliminato = false   
-        //     eliminato = true
-        //         ids.pop()
-        //         imdb_ids.pop()
-        //     test.classed("normal", true)
-        //     test.classed("active",false)
-        //     console.log("sto doiing")
-        // }
-
-    
-
         d3.selectAll(".active").raise()
         //update chord
         
@@ -387,9 +349,6 @@ function drawParallel(data, actual) {
             return color_base
         });
 
-        //TODO: color_brushed to boxplots rects
-        //d3.select("#svg_area_3_x").selectAll("rect").style("fill", color_brushed)
-        //d3.select("#svg_area_3_y").selectAll("rect").style("fill", color_brushed)
 
     }
 
@@ -403,6 +362,7 @@ function drawParallel(data, actual) {
                 extents[i]=d3.event.selection.map(y[dimensions[i]].invert,y[dimensions[i]]);
                 //console.log(extents[i])
             }
+            
         }
         var ids = []
         var imdb_ids = []
@@ -429,6 +389,7 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
+       
        
        
         foreground.classed("normal", function(d) {

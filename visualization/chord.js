@@ -385,8 +385,8 @@ function createD3Chord() {
         d3.select(this).raise()
         var tooltip_text = ""
         if (d.target.__data__.source.index != d.target.__data__.target.index) {
-          tooltip_text = "<b>Main genre:</b> "+s+",<br><b>Secondary genre: </b>"+t+
-            ",<br><b>N° film exclusively "+s+" and "+t+": </b><br>"+movies_number+" out of "+old_n_film+" total"
+          tooltip_text = "<b>Genres:</b> "+s+", "+t+
+            "<br><b>N° film exclusively "+s+" and "+t+": </b><br>"+movies_number+" out of "+old_n_film+" total"
         }
         else {
           tooltip_text = "<b>Genre:</b> "+s+
