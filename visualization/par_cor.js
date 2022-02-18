@@ -191,7 +191,7 @@ function drawParallel(data, actual) {
 
                     }else{
                         d3.select("#svg4").selectAll("path").classed("normal", true).classed("active", false)
-                        
+                        console.log("AIUTO")
                         //test.classed("normal", true)
                         //test.classed("active",false)
                     
@@ -252,7 +252,7 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
-        
+        console.log("active: ", imdb_ids)
         //console.log(foreground.selectAll("style"))
 
         
@@ -353,7 +353,7 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
-        
+        console.log("AO?: ", imdb_ids)
         
        
        

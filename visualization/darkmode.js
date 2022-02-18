@@ -6,8 +6,6 @@ export function darkMode() {
 
     if (isDarkChecked) {
         document.getElementById('body').setAttribute("class", "dark")
-        
-        d3.select("#svg_area_3_x").selectAll("rect").classed("darkstroke", false).classed("lightstroke", true)
 
         var domains = document.getElementsByClassName("domain")
         for (let p of domains) {
@@ -73,8 +71,6 @@ export function darkMode() {
 
     else {
         document.getElementById("body").setAttribute("class", "light")
-
-        d3.select("#svg_area_3_x").selectAll("rect").classed("lightstroke", false).classed("darkstroke", true)
 
         var domains = document.getElementsByClassName("domain")
         for (let p of domains) {
