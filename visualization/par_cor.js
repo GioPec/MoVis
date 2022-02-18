@@ -2,8 +2,9 @@ import{parCor_to_chord, filter_genres} from "./chord.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 //var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-//var DATASET_PATH = "../datasets/dataset_fake.csv"
+
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 function checkIfDarkMode() {
     return document.getElementById("darkModeCheckbox").checked
@@ -15,8 +16,7 @@ function checkIfDarkMode() {
 var imdb_ids = null
 var ids = null
 var line = d3.line(),
-//axis = d3.axisLeft(x),
-// background,
+
 foreground,
 extents;
 var dimensions;
@@ -32,27 +32,13 @@ dragging = {};
 function drawParallel(data, actual) {
 
     d3.select("#svg4").remove()
-
-    
-
-
- 
-
-    
     var svg = d3.select("#area_4").append("svg")
     .attr("preserveAspectRatio", "xMinYMin meet")
     .attr("viewBox", "0 0 270 110")
     .attr("id", "svg4")
-    //.append("g")
-    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     .attr("transform", "scale(0.95) translate(-2,0)")
-    //.style("background-color", "red")
+   
         
-
-
-    // Extract the list of dimensions and create a scale for eac/cars[0] contains the header elements,h.
-    // then for all elements in the header
-    //different than "name" it creates and y axis in a dictionary by variable name
 
 
     var whichBudget = (actual) ? ("actual_budget") : ("budget")
@@ -62,17 +48,11 @@ function drawParallel(data, actual) {
         if (
             (d == "year") 
 
-            //|| (d == "budget") 
-            //|| (d == "revenue") 
-            //|| (d == "actual_budget") 
-            //|| (d == "actual_revenue") 
             || (d == whichBudget)
             || (d == whichRevenue)
-
             || (d == "runtime")
             || (d == "vote_average")  
             || (d == "vote_count")  
-            //|| (d == "popularity")  
             || (d == "in_connections")  
             || (d == "out_connections")
         ) {
@@ -84,41 +64,9 @@ function drawParallel(data, actual) {
         return false
     }));
 
-/*  TENTATIVO DI USARE ANCHE SCALE LOG
-
-    x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
-        if (
-        (d == "year") || //(d == "budget") || (d == "revenue") || 
-        (d == "runtime") || 
-        (d == "vote_average")  || (d == "vote_count") ||  //|| (d == "popularity")  
-        (d == "in_connections")  || (d == "out_connections")
-        ) {
-            return y[d] = d3.scaleLinear()
-            .domain(d3.extent(data, function(p) { return +p[d]; }))
-            .range([104, 6]);
-        }
-        else if (
-            (d == "budget") || (d == "revenue")
-        ) {
-            return y[d] = d3.scaleLog()
-            .domain(d3.extent(data, function(p) { return +p[d]; }))
-            .range([104, 6]);
-        }
-        return false
-    })); */
 
     extents = dimensions.map(function(p) { return [0,0]; });
 
-    // Add grey background lines for context.
-    /*
-    background = svg.append("g")
-        .attr("class", "background")
-        .selectAll("path")
-        .data(data)
-        .enter().append("path")
-        .attr("class","backpath")
-        .attr("d", path);
-*/
     // Add red foreground lines for focus.
     foreground = svg.append("g")
         .attr("class", "foreground")
@@ -138,31 +86,7 @@ function drawParallel(data, actual) {
         .enter().append("g")
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-        /*
-        .call(d3.drag()
-            .subject(function(d) { return {x: x(d)}; })
-            .on("start", function(d) {
-            dragging[d] = x(d);
-            background.attr("visibility", "hidden");
-            })
-            .on("drag", function(d) {
-            dragging[d] = Math.min(width, Math.max(0, d3.event.x));
-            foreground.attr("d", path);
-            dimensions.sort(function(a, b) { return position(a) - position(b); });
-            x.domain(dimensions);
-            g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-            })
-            .on("end", function(d) {
-            delete dragging[d];
-            transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
-            transition(foreground).attr("d", path);
-            background
-                .attr("d", path)
-                .transition()
-                .delay(500)
-                .duration(0)
-                .attr("visibility", null);
-            }));*/
+    
     // Add an axis and title.
     g.append("g")
         .attr("class", "axis")
@@ -236,6 +160,10 @@ function drawParallel(data, actual) {
             
             return this["style"]["opacity"] != 0
           })
+        test = foreground.filter(function(d) {
+            
+            return true
+          })
         var runcode=true
         for(var i=0;i<dimensions.length;++i) {
             d3.event.target==y[dimensions[i]].brush
@@ -262,8 +190,10 @@ function drawParallel(data, actual) {
                     if (array.indexOf(true)!=-1){
 
                     }else{
-                        test.classed("normal", true)
-                        test.classed("active",false)
+                        d3.select("#svg4").selectAll("path").classed("normal", true).classed("active", false)
+                        console.log("AIUTO")
+                        //test.classed("normal", true)
+                        //test.classed("active",false)
                     
                         imdb_ids=[]
                         // update chord
@@ -308,27 +238,21 @@ function drawParallel(data, actual) {
             return dimensions.every(function(p, i) {
                 //console.log("ciaoprova" + extents[i])
                 
-
-
                 var check_2 = extents[i][0]==0 && extents[i][1]==0
                 if(check_2) return true;
-
-                // if(runcode==false) {
-                //     extents[i][0]=0
-                //     extents[i][1]=0
-                // }
                 
-            var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
+                var check_1 = extents[i][1] <= d[p] && d[p] <= extents[i][0];
             
-            if(!check_1 && !(eliminato)){
-                eliminato = true
-                ids.pop()
-                imdb_ids.pop()
-            }
+                if(!check_1 && !(eliminato)){
+                    eliminato = true
+                    ids.pop()
+                    imdb_ids.pop()
+                }
             return check_1
             }) ? true : false;
 
         });
+        console.log("active: ", imdb_ids)
         //console.log(foreground.selectAll("style"))
 
         
@@ -429,6 +353,8 @@ function drawParallel(data, actual) {
             }) ? true : false;
 
         });
+        console.log("AO?: ", imdb_ids)
+        
        
        
         foreground.classed("normal", function(d) {

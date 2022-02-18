@@ -6,8 +6,9 @@ function checkIfDarkMode() {
 }
 
 //var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-//var DATASET_PATH = "../datasets/dataset_fake.csv"
+
 var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
@@ -301,12 +302,12 @@ export function filter_genres(filter_genres) {
     })
 
   }
-  else{
-    filtro(0)
-    update_PC(selected_ids)
-    update_MDS(selected_ids)
-    chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
-  }
+    else{
+      filtro(0)
+      update_PC(selected_ids)
+      update_MDS(selected_ids)
+      chord_to_bubble(brushed_ids, chord_ids, bubble_ids)
+    }
 
 }
 
