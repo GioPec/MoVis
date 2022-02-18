@@ -1,8 +1,8 @@
 import {compute_array} from "./boxplots.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
-//var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
 //var data = null
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -677,8 +677,7 @@ function draw_bubbleplot_2(data){
       .attr("id", function (d) { return d[chiavi[2]] })
       .attr("name", function (d) { return d["title"] } )
       .style("fill", function (d) { 
-        console.log(brushed_ids)
-        if ((brushed_ids.length != 0) && ((selected_ids != null) && (selected_ids.includes(d.imdb_id)))) return color_brushed
+        if ((selected_ids != null) && (selected_ids.includes(d.imdb_id))) return color_brushed
         else return color_base
       })
       .style("display", function (d) {
@@ -996,7 +995,6 @@ scatter
     
    });
 }
-
 
 
 
