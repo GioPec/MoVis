@@ -2,8 +2,8 @@ import {compute_array} from "./boxplots.js"
 import {color_base, color_brushed, color_selected, color_tooltip_light, color_tooltip_dark} from "./functions.js"
 
 //var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 //var data = null
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -45,9 +45,113 @@ var tooltip = d3.select("body")
 .style("font-size", "20px")
 .text("a simple tooltip");
 
+function legenda_size(sorted_bubbles){
+
+  var svg_2 = d3.select("#svg_2")
+  var svg_legenda = svg_2.append("svg").attr("id", "legenda_size")
+
+  var step_size = sorted_bubbles[0].n > 5 ? sorted_bubbles[0].n / 5 : 1
+  var list_size = 
+  [
+    1, parseInt(step_size)+1, parseInt(2*step_size)+1, parseInt(3*step_size)+1, parseInt(4*step_size)+1
+  ]
+  var map_size ={"0": 4, "1": 8, "2": 12, "3": 16, "4": 20 }
+///////////////////////////////////////////////
+  svg_legenda.append("g")
+  .attr("id", "id_test_1")
+  .append("circle")
+  .attr("cx", "50" )
+  .attr("cy", "50" )
+  .attr("r", 20)
+  .style("fill", "rgb(220,220,220)")
+  .attr("transform", "translate(222," + -22 + ")")
+
+  svg_legenda.append("g")
+  .attr("id", "testo_1")
+  .append('text').text(parseInt(4*step_size)+1+" - "+parseInt(5*step_size))  //sorted_bubbles[0].n
+  .style("font-size", "7px" )
+  .attr("transform", "translate(255," + 6 + ")")
+///////////////////////////////////////////////
+  svg_legenda.append("g")
+    .attr("id", "id_test_2")
+    .append("circle")
+    .attr("cx", "50" )
+    .attr("cy", "50" )
+    .attr("r", 16)
+    .style("fill", "rgb(220,220,220)")
+    .attr("transform", "translate(222," + 22 + ")")
+
+    svg_legenda.append("g")
+    .attr("id", "testo_2")
+    .append('text').text(parseInt(3*step_size)+1+" - "+parseInt(4*step_size))
+    .style("font-size", "7px" )
+    .attr("transform", "translate(255," + 54 + ")")
+///////////////////////////////////////////////
+    svg_legenda.append("g")
+    .attr("id", "id_test_3")
+    .append("circle")
+    .attr("cx", "50" )
+    .attr("cy", "50" )
+    .attr("r", 12)
+    .style("fill", "rgb(220,220,220)")
+    .attr("transform", "translate(222," + 58 + ")")
+
+    svg_legenda.append("g")
+    .attr("id", "testo_3")
+    .append('text').text(parseInt(2*step_size)+1+" - "+parseInt(3*step_size))
+    .style("font-size", "7px" )
+    .attr("transform", "translate(255," + 94 + ")")
+//////////////////////////////////////////////
+    svg_legenda.append("g")
+    .attr("id", "id_test_4")
+    .append("circle")
+    .attr("cx", "50" )
+    .attr("cy", "50" )
+    .attr("r", 8)
+    .style("fill", "rgb(220,220,220)")
+    .attr("transform", "translate(222," + 86 + ")")
+
+    svg_legenda.append("g")
+    .attr("id", "testo_4")
+    .append('text').text(parseInt(step_size+1)+" - "+parseInt(2*step_size))
+    .style("font-size", "7px" )
+    .attr("transform", "translate(255," + 126 + ")")
+//////////////////////////////////////////////
+
+    svg_legenda.append("g")
+    .attr("id", "id_test_5")
+    .append("circle")
+    .attr("cx", "50" )
+    .attr("cy", "50" )
+    .attr("r", 4)
+    .style("fill", "rgb(220,220,220)")
+    .attr("transform", "translate(222," + 106 + ")")
+
+    svg_legenda.append("g")
+    .attr("id", "testo_5")
+    .append('text').text("1 - "+parseInt(step_size))
+    .style("font-size", "7px" )
+    .attr("transform", "translate(255," + 150 + ")")
+//////////////////////////////////////////////
+
+    d3.selectAll(".bubble").transition().duration(1000)
+      .style("opacity", "0.9")
+      .attr("r", function (d) { 
+        if(d.n != 0){
+          for (let i=0; i<list_size.length; i++) {
+            //console.log(map_size[i])
+            if(i+1 == list_size.length){return map_size[i]}
+            if(d.n < list_size[i+1]){return map_size[i]}
+          }
+          
+        }
+      });
+  
+}
+
 function update(data_updated){
 
-  //console.log("selected_ids_up: ", selected_ids)
+  d3.select("#legenda_size").remove()
   if(chord_ids == null){selected_ids = null}
   compute_array(x_col, y_col, selected_ids, [], false, brushed_ids.length != 0)
   if(!bubble_flag){
@@ -69,11 +173,24 @@ function update(data_updated){
   }
   else{
     var sorted_bubbles = null
-    
-    if(criterio == "4"){ sorted_bubbles = group_by_year(data_updated, true, true)}
-    else if(criterio == "10"){sorted_bubbles = group_by_vote(data_updated, true, true)}
-    else{sorted_bubbles = group_by_all(data_updated, true, true)}
+    var bubbles = null
+    if(criterio == "4"){ 
+      var ris = group_by_year(data_updated, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
+    }
+    else if(criterio == "10"){
+      ris = group_by_vote(data_updated, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
+    }
+    else{
+      var ris = group_by_all(data_updated, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
+    }
 
+    
     //ray domain
     var ray = d3.scaleLinear().range([2, 30])
     var minimum_not_zero = sorted_bubbles[0]["n"];
@@ -93,18 +210,31 @@ function update(data_updated){
     
     /// add bubbles
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
+
+    var color_domain = [0, bubbles.length-1 ]
+    var myColor_base = d3.scaleLinear().domain(color_domain)
+    .range(["white", "rgb(0, 69, 52)"])
+    var myColor_brush = d3.scaleLinear().domain(color_domain)
+    .range(["white", "red"])
+    
+    var color_dizionari = {}
+    for (let i=0; i<bubbles.length; i++) {
+      color_dizionari[bubbles[i]["range"]] = i
+    }
     
       bolle.attr("cx", function (d) { return x(d.x)});
       bolle.attr("cy", function (d) { return y(d.y) })
       bolle.style("fill", function (d) { 
-        if(brushed_ids.length != 0){return color_brushed}
-        else{return color_base}
-      });
-
+        if (brushed_ids.length != 0) return myColor_brush(color_dizionari[d.range])
+        else return myColor_base(color_dizionari[d.range])
+      })
+    console.log("????")
+    legenda_size(sorted_bubbles)
+/*
       bolle.transition().duration(1000)
       .attr("r", function (d) { 
         if(d.n != 0){return  +ray(Math.sqrt((d.n/Math.PI)))}
-      });
+      });*/
   }
 
   d3.select("#svg_2").selectAll("text").attr("class", function(){
@@ -261,7 +391,7 @@ function group_by_all(data_to_use, use_x, use_y){
   var sorted_bubbles =sort_bubble(bubbles)
 
 
-  return sorted_bubbles
+  return [sorted_bubbles, bubbles]
 
   
 
@@ -383,7 +513,7 @@ function group_by_year(data_to_use, use_x, use_y){
   var sorted_bubbles =sort_bubble(bubbles)
 
 
-  return sorted_bubbles
+  return [sorted_bubbles, bubbles]
 
   
 
@@ -517,7 +647,7 @@ function group_by_vote(data_to_use, use_x, use_y){
   var sorted_bubbles =sort_bubble(bubbles)
 
 
-  return sorted_bubbles
+  return [sorted_bubbles, bubbles]
 
   
 
@@ -541,6 +671,7 @@ function sort_bubble(bubble){
   return ret
 }
 
+
 function draw_bubbleplot_2(data){   
 
  
@@ -560,10 +691,22 @@ function draw_bubbleplot_2(data){
     }
     else{
         var sorted_bubbles = null
-       
-        if(criterio == "4"){ sorted_bubbles = group_by_year(data, true, false)}
-        else if(criterio == "10"){sorted_bubbles = group_by_vote(data, true, false)}
-        else{sorted_bubbles = group_by_all(data, true, false)}
+        var bubbles = null
+        if(criterio == "4"){ 
+          var ris = group_by_year(data, true, false)
+          sorted_bubbles = ris[0]
+          bubbles = ris[1]
+          }
+        else if(criterio == "10"){
+          var ris = group_by_vote(data, true, false)
+          sorted_bubbles = ris[0]
+          bubbles = ris[1]
+        }
+        else{
+          var ris = group_by_all(data, true, true)
+          sorted_bubbles = ris[0]
+          bubbles = ris[1]
+        }
 
 
         //ray domain
@@ -613,10 +756,22 @@ function draw_bubbleplot_2(data){
     }
     else{
       var sorted_bubbles = null
-      
-      if(criterio == "4"){ sorted_bubbles = group_by_year(data, false, true)}
-      else if(criterio == "10"){sorted_bubbles = group_by_vote(data, false, true)}
-      else{sorted_bubbles = group_by_all(data, false, true)}
+      var bubbles = null
+      if(criterio == "4"){ 
+        var ris = group_by_year(data, false, true)
+        sorted_bubbles = ris[0]
+        bubbles = ris[1]
+      }
+      else if(criterio == "10"){
+        var ris = group_by_vote(data, false, true)
+        sorted_bubbles = ris[0]
+        bubbles = ris[1]
+      }
+      else{
+        var ris = group_by_all(data, true, true)
+        sorted_bubbles = ris[0]
+        bubbles = ris[1]
+      }
 
       //ray domain
       var ray = d3.scaleLinear().range([2, 30])
@@ -653,6 +808,8 @@ function draw_bubbleplot_2(data){
   function eliminate_groups(x_col, y_col){
 
     bubble_flag = false
+
+    d3.select("#legenda_size").remove()
     
     /// elimina bubble
     var cerchi = d3.select("#area_2_circles").selectAll(".bubble").transition().duration(800).style("opacity", "0"); // mettere transizione
@@ -718,27 +875,36 @@ function draw_bubbleplot_2(data){
     })
   }
 
+ 
+
   function groupping(criterio_update){
+
+    d3.select("#legenda_size").remove()
     criterio = criterio_update
     var sorted_bubbles = null;
+    var bubbles = null
     if(criterio == "20"){eliminate_groups(x_col, y_col); return}
-    else if( (criterio == "4") ){sorted_bubbles = group_by_year(data, true, true)}
-    else if( (criterio == "10") ){sorted_bubbles = group_by_vote(data, true, true)}
-    else{sorted_bubbles = group_by_all(data, true, true)}
-
-    if(bubble_flag == true){/*
-      console.log("UPDATE BUBBLES")
-      cerchi = d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
-      cerchi.transition().duration(1000)
-      .attr("r",function (d) { 
-        if(d.n == 0){return 0}
-        else{return (d.n/10)+2}
-      })
-      .attr("cx", function (d) {  return x(d.x) } )
-      .attr("cy", function (d) {  return y(d.y) } )*/
-      d3.select("#area_2_circles").selectAll(".bubble").remove()
-
+    else if( (criterio == "4") ){
+      var ris = group_by_year(data, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
     }
+    else if( (criterio == "10") ){
+      var ris = group_by_vote(data, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
+    }
+    else{
+      var ris = group_by_all(data, true, true)
+      sorted_bubbles = ris[0]
+      bubbles = ris[1]
+    }
+    
+
+    
+   
+
+    if(bubble_flag == true){d3.select("#area_2_circles").selectAll(".bubble").remove()}
 
     //ray domain
     var ray = d3.scaleLinear().range([2, 30])
@@ -752,9 +918,31 @@ function draw_bubbleplot_2(data){
     }
   
     var ray_domain = [minimum_not_zero, sorted_bubbles[0]["n"] ]
+    
     ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
     ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
     ray.domain(ray_domain);
+   
+    console.log("sorted_bubble: ", sorted_bubbles)
+
+
+
+    
+    var color_domain = [0, bubbles.length-1 ]
+    var myColor_base = d3.scaleLinear().domain(color_domain)
+    .range(["white", "rgb(0, 69, 52)"])
+    var myColor_brush = d3.scaleLinear().domain(color_domain)
+    .range(["white", "red"])
+    
+    var color_dizionari = {}
+    for (let i=0; i<bubbles.length; i++) {
+      color_dizionari[bubbles[i]["range"]] = i
+    }
+   
+
+    
+
+   
    
     /// END TEST
     bubble_flag = true
@@ -769,8 +957,8 @@ function draw_bubbleplot_2(data){
     .attr("r", "0")
     .style("cursor", "pointer")
     .style("fill", function (d) { 
-      if (brushed_ids.length != 0) return color_brushed
-      else return color_base
+      if (brushed_ids.length != 0) return myColor_brush(color_dizionari[d.range])
+      else return myColor_base(color_dizionari[d.range])
     })
     .attr("class", function(){
       return (checkIfDarkMode()) ? (" bubble lightstroke") : (" bubble darkstroke")
@@ -789,11 +977,11 @@ function draw_bubbleplot_2(data){
     })
     .on("click", function(d) {
       var colore = d3.select(this).style("fill")
-
+/*
       d3.selectAll(".bubble").style("fill", function (d) {  
         if (brushed_ids.length == 0) return color_base
         else return color_brushed
-      })
+      })*/
       
       if (colore == color_selected) {
         
@@ -801,8 +989,8 @@ function draw_bubbleplot_2(data){
         document.getElementById('film_counter').innerText =  selected_ids.length == 0 ? data_len: selected_ids.length
         d3.select(this).style("fill", function (d) {  
           
-          if (brushed_ids.length == 0) return color_base
-          else return color_brushed
+          if (brushed_ids.length == 0) return myColor_base(color_dizionari[d.range])
+          else return myColor_brush(color_dizionari[d.range])
           
         })
         compute_array(x_col, y_col, selected_ids, [],true, brushed_ids.length != 0)
@@ -814,20 +1002,8 @@ function draw_bubbleplot_2(data){
         compute_array(x_col, y_col, selected_ids, bubble_range,true, brushed_ids.length != 0)
       }
     });
-    bolle.transition().duration(1000)
-    .style("opacity", "0.6")
-    .attr("r", function (d) { 
-      if(d.n != 0){return  +ray(Math.sqrt((d.n/Math.PI)))}
-    }
-     
-      
-    );
-    /*
-    .attr("r",function (d) { 
-      if(d.n == 0){return 0}
-      else{return (d.n/10)+2}
-    });*/
-    //bolle.transition().duration(800)
+    
+   
     
 
 
@@ -842,7 +1018,9 @@ function draw_bubbleplot_2(data){
     d3.select("#svg_2").selectAll("path").attr("class", function(){
       return (checkIfDarkMode()) ? ("lightstroke") : ("darkstroke")
     })
-    
+
+    legenda_size(sorted_bubbles)
+
   }
 
   var menu = d3.select("#area_2").append("div")
@@ -924,7 +1102,7 @@ var svg_2 = d3.select("#area_2")
   .attr("viewBox", "0 0 300 165")
   .classed("svg-content", true)
 
-x = d3.scaleLinear().range([0, width-250])
+x = d3.scaleLinear().range([0, width-280])
 y = d3.scaleLinear().range([height-160, 0])
 
 xAxis = svg_2.append("g")
@@ -995,6 +1173,9 @@ scatter
      return tooltip.style("visibility", "hidden");
     
    });
+
+  
+    
 }
 
 
@@ -1024,7 +1205,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
   chord_ids = chord_ids_up
   document.getElementById('film_counter').innerText =  selected_ids.length
 
-
+ 
 
   d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
     chiavi = d3.keys(data[0])
