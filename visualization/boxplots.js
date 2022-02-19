@@ -24,8 +24,8 @@ var used_ids = []
 var bubble_range = []
 var isBrushed = false
 //var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-//var DATASET_PATH = "../datasets/dataset_fake.csv"
-var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+var DATASET_PATH = "../datasets/dataset_fake.csv"
+//var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 function checkIfDarkMode() {
   return document.getElementById("darkModeCheckbox").checked
@@ -74,7 +74,7 @@ export function compute_array(colonna_x, colonna_y, ids_update, bubble_update_ra
       .append("svg")
       .attr("id", "svg_area_3_x")
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", "0 0 300 252")
+      .attr("viewBox", "0 0 295 300")
       .classed("svg-content", true);
 
     draw_boxplot_x(colonna_x)
@@ -91,7 +91,7 @@ function draw_boxplot_x(colonna_x){
   var boxplot_x = svg_area_3.append("g")
     .classed("area_3_g_x", true)
     .attr("transform",
-      "translate(" + 30 + "," + 40 + "), scale(0.8)")
+      "translate(" + 30 + "," + 50 + "), scale(0.8)")
 
   boxplot_x.append("text")
     .attr("class", function(){
@@ -125,7 +125,7 @@ function draw_boxplot_x(colonna_x){
 
   var y_box = d3v6.scaleLinear()
     .domain([ min, max])
-    .range([220, 0]);
+    .range([280, 0]);
   boxplot_x.call(d3v6.axisLeft(y_box));
 
 
@@ -195,7 +195,7 @@ function draw_boxplot_y(colonna_y){
     var boxplot_y = svg_area_3.append("g")
       .classed("area_3_g_y", true)
     .attr("transform",
-          "translate(" + 180 + "," + 40 + "), scale(0.8)")
+          "translate(" + 180 + "," + 50 + "), scale(0.8)")
 
     boxplot_y.append("text")
     //.style("fill", "black")
@@ -229,7 +229,7 @@ function draw_boxplot_y(colonna_y){
   
   var y_box = d3v6.scaleLinear()
     .domain([ min, max])
-    .range([220, 0])
+    .range([280, 0])
   boxplot_y.call(d3v6.axisLeft(y_box));
   
   

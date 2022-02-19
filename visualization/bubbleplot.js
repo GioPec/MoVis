@@ -150,7 +150,7 @@ function legenda_size(sorted_bubbles){
 }
 
 function update(data_updated){
-
+  d3.selectAll(".leg_color").remove()
   d3.select("#legenda_size").remove()
   if(chord_ids == null){selected_ids = null}
   compute_array(x_col, y_col, selected_ids, [], false, brushed_ids.length != 0)
@@ -207,6 +207,11 @@ function update(data_updated){
     ray_domain[0] = Math.sqrt((ray_domain[0]/Math.PI))
     ray_domain[1] = Math.sqrt((ray_domain[1]/Math.PI))
     ray.domain(ray_domain);
+
+
+    ///
+    
+    ///
     
     /// add bubbles
     var bolle =d3.select("#area_2_circles").selectAll(".bubble").data(sorted_bubbles);
@@ -808,7 +813,7 @@ function draw_bubbleplot_2(data){
   function eliminate_groups(x_col, y_col){
 
     bubble_flag = false
-
+    d3.selectAll(".leg_color").remove()
     d3.select("#legenda_size").remove()
     
     /// elimina bubble
@@ -879,6 +884,7 @@ function draw_bubbleplot_2(data){
 
   function groupping(criterio_update){
 
+    d3.selectAll(".leg_color").remove()
     d3.select("#legenda_size").remove()
     criterio = criterio_update
     var sorted_bubbles = null;
@@ -940,8 +946,105 @@ function draw_bubbleplot_2(data){
     }
    
 
+
+    //*** */
+    var i=0
+    /// add bubbles
+    // var legenda
+
+
+    // parte da top 15%
+
+    // finisce a top 97%
+
+    var step_color = 82 / sorted_bubbles.length
+/*
+    var ciao = d3.select("#area_2")
+    .append("div")
+      .style("position", "absolute")
+      .style("top", "15%")
+      .style("left", "85%")
+      .style("width", "12%")
+      .style("height", "82%")
+      .style("border", "1px solid black")
+*/
+
+d3.select("#area_2").selectAll(".leg_color")
+        .data(bubbles)
+        .enter()
+        .append('div')
+        .attr('class', 'leg_color')
+        .style("position", "absolute")
+        .style("top", function(d){return (15+(i++)*step_color)+"%"})
+        .style("left", "85%")
+        .style("width", "3%")
+        .style("height", step_color +"%")
+        .style("border", "1px solid black")
+        .style("background", function(d){return myColor_base(color_dizionari[d.range])})
+
+
+        d3.select("#area_2").append("text")
+          .attr('class', 'leg_color')
+          .style("position", "absolute")
+          .style("top", function(d){return ("10%")})
+          .style("left", "83%")
+          .style("width", "10%")
+          .style("height", "10%")
+          .html(function(d){ return "<b>color: </b>"})
+
+        d3.select("#area_2").append("text")
+          .attr('class', 'leg_color')
+          .style("position", "absolute")
+          .style("top", function(d){return ("10%")})
+          .style("left", "90%")
+          .style("width", "10%")
+          .style("height", "10%")
+          .html(function(d){ return "<b>range: </b>"})
+
+        i = 0
+        d3.select("#area_2").selectAll(".label_legend")
+        .data(bubbles)
+        .enter()
+        .append("text")
+          .attr('class', 'leg_color')
+          .style("position", "absolute")
+          .style("top", function(d){return (17+(i++)*step_color)+"%"})
+          .style("left", "90%")
+          .style("width", "10%")
+          .style("height", "10%")
+          .text(function(d){ return d.range})
+
+      /*
+      d3.select("#area_2").selectAll(".label_legend")
+      .data(bubbles)
+      .enter()
+      .append('text')
+      .attr("class", "label_legend")
+      .style("position", "absolute")
+      .style("top", "0%")
+      .style("left", "90%")
+      .style("width", "3%")
+      .style("height", step_color +"%")
+      .text(function(d){ return d.range})
+      //.style("background", function(d){return myColor_base(color_dizionari[d.range])})*/
+    
     
 
+    
+     /*
+      .append('label')
+      // .attr('class', 'bode')
+     .style("position", "absolute")
+     .style("font-size", "15px")
+     .style("width", "15%")
+     .style("height", "90%")
+     .style("position", "absolute")
+     .style("top", function(d){return (20)+"%"})
+     .style("left", "93%")
+     .style("z-index", "0")
+     .text(function(data){ return data.range})
+*/
+    //*** */
    
    
     /// END TEST
@@ -1099,7 +1202,7 @@ var svg_2 = d3.select("#area_2")
 .append("svg")
   .attr("id", "svg_2")
   .attr("preserveAspectRatio", "xMinYMin meet")
-  .attr("viewBox", "0 0 300 165")
+  .attr("viewBox", "0 0 350 165")
   .classed("svg-content", true)
 
 x = d3.scaleLinear().range([0, width-280])
@@ -1179,9 +1282,8 @@ scatter
 }
 
 
-
 function start (ids){
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     data_len = data.length
     document.getElementById('film_counter').innerText =  data_len
@@ -1207,7 +1309,7 @@ export function chord_to_bubble(brushed_ids_up, chord_ids_up, bubble_ids_up){
 
  
 
-  d3.csv("../datasets/DATASET_MDS_NEW.csv", function(error, data) {
+  d3.csv("../datasets/dataset_fake.csv", function(error, data) {
     chiavi = d3.keys(data[0])
     
     if (error) throw error;
