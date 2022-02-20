@@ -73,7 +73,7 @@ svg_legenda.append("g")
 svg_legenda.append("g")
 .attr("id", "testo_0")
 .append('text')
-.text("Film number")  //sorted_bubbles[0].n
+.text("Film number:")  //sorted_bubbles[0].n
 // .html(function(d){ return "<b>"+parseInt(4*step_size)+1+" - "+parseInt(5*step_size)+": </b>"})
 .style("font-size", "6px" )  //font-weight
 .style("font-weight", "bold" )
@@ -237,7 +237,7 @@ function update(data_updated){
     var myColor_base = d3.scaleLinear().domain(color_domain)
     .range(["white", "rgb(0, 69, 52)"])
     var myColor_brush = d3.scaleLinear().domain(color_domain)
-    .range(["white", "red"])
+    .range(["white", "rgb(200, 20, 20)"])
     
     var color_dizionari = {}
     for (let i=0; i<bubbles.length; i++) {
@@ -278,7 +278,7 @@ d3.select("#area_2").selectAll(".leg_color")
         .style("width", "20%")
         .style("height", "10%")
         .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-        .html(function(d){ return "<b>grouping range: </b>"})
+        .html(function(d){ return "<b>Grouping range:</b>"})
 
         // d3.select("#area_2").append("label")
         //   .attr('class', 'leg_color')
@@ -298,7 +298,7 @@ d3.select("#area_2").selectAll(".leg_color")
           .attr('class', 'leg_color')
           .style("position", "absolute")
           .style("top", function(d){return (17+(i++)*step_color)+"%"})
-          .style("left", "90%")
+          .style("left", "89%")
           .style("width", "10%")
           .style("height", "10%")
           .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
@@ -313,7 +313,7 @@ d3.select("#area_2").selectAll(".leg_color")
     var myColor_base = d3.scaleLinear().domain(color_domain)
     .range(["white", "rgb(0, 69, 52)"])
     var myColor_brush = d3.scaleLinear().domain(color_domain)
-    .range(["white", "red"])
+    .range(["white", "rgb(200, 20, 20)"])
     
     var color_dizionari = {}
     for (let i=0; i<bubbles.length; i++) {
@@ -1042,7 +1042,7 @@ function draw_bubbleplot_2(data){
     var myColor_base = d3.scaleLinear().domain(color_domain)
     .range(["white", "rgb(0, 69, 52)"])
     var myColor_brush = d3.scaleLinear().domain(color_domain)
-    .range(["white", "red"])
+    .range(["white", "rgb(200, 20, 20)"])
     
     var color_dizionari = {}
     for (let i=0; i<bubbles.length; i++) {
@@ -1083,7 +1083,7 @@ d3.select("#area_2").selectAll(".leg_color")
           .style("width", "20%")
           .style("height", "10%")
           .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-          .html(function(d){ return "<b>grouping range: </b>"})
+          .html(function(d){ return "<b>Grouping range:</b>"})
 
         // d3.select("#area_2").append("label")
         //   .attr('class', 'leg_color')
@@ -1103,8 +1103,8 @@ d3.select("#area_2").selectAll(".leg_color")
           .attr('class', 'leg_color')
           .style("position", "absolute")
           .style("top", function(d){return (17+(i++)*step_color)+"%"})
-          .style("left", "90%")
-          .style("width", "10%")
+          .style("left", "89%")
+          .style("width", "20%")
           .style("height", "10%")
           .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
           .text(function(d){ return d.range})
@@ -1145,11 +1145,11 @@ d3.select("#area_2").selectAll(".leg_color")
     })
     .on("click", function(d) {
       var colore = d3.select(this).style("fill")
-/*
+
       d3.selectAll(".bubble").style("fill", function (d) {  
-        if (brushed_ids.length == 0) return color_base
-        else return color_brushed
-      })*/
+        if (brushed_ids.length == 0) return myColor_base(color_dizionari[d.range])
+        else return myColor_brush(color_dizionari[d.range])
+      })
       
       if (colore == color_selected) {
         
