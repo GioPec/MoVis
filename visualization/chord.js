@@ -6,8 +6,8 @@ function checkIfDarkMode() {
 }
 
 //var DATASET_PATH = "../datasets/DATASET_MDS_250.csv"
-var DATASET_PATH = "../datasets/dataset_fake.csv"
-//var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
+//var DATASET_PATH = "../datasets/dataset_fake.csv"
+var DATASET_PATH = "../datasets/DATASET_MDS_NEW.csv"
 
 // create the svg area
 const svg = d3v6.select("#area_5")
