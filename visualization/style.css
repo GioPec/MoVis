@@ -1,4 +1,8 @@
 
+.body {
+  font-family: "Times New Roman", Times, serif;
+}
+
 .background path {
   fill: none;
   /* stroke: #ddd; */

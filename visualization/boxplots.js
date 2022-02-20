@@ -100,7 +100,7 @@ function draw_boxplot_x(colonna_x){
     .style("font-size", "20px")
     .attr("transform",
       "translate(" + 120 + "," + -15 + "), scale(0.8)")
-    .text(colonna_x)
+    .text(colonna_x.charAt(0).toUpperCase() + colonna_x.slice(1).replace("_", " "))
 
   // Compute summary statistics used for the box:
   var data_sorted = data_used_x.sort(d3v6.ascending)
@@ -203,7 +203,7 @@ function draw_boxplot_y(colonna_y){
       return (checkIfDarkMode()) ? ("lightfill") : ("darkfill")
     })
     .style("font-size", "20px")
-    .text(colonna_y)
+    .text(colonna_y.charAt(0).toUpperCase() + colonna_y.slice(1).replace("_", " "))
     .attr("transform",
           "translate(" + 120 + "," + -15 + "), scale(0.8)")
   

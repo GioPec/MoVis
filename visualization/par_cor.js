@@ -118,7 +118,7 @@ function drawParallel(data, actual) {
         .attr("font-size", "4px")
         //.style("fill", "#000")
         .attr("class", "darkfill")
-        .text(function(d) { return d; });
+        .text(function(d) { return d.charAt(0).toUpperCase() + d.slice(1).replace("_", " "); });
     })
     // Add and store a brush for each axis.
     g.append("g")
