@@ -35,6 +35,10 @@ var selected_ids = []
 var chord_ids = []
 var brushed_ids = []
 
+var clip
+var scatter
+var spostamento= "70"
+
 var tooltip = d3.select("body")
 .append("div")
 .attr("id", "tooltip2")
@@ -57,81 +61,99 @@ function legenda_size(sorted_bubbles){
   ]
   var map_size ={"0": 4, "1": 8, "2": 12, "3": 16, "4": 20 }
 ///////////////////////////////////////////////
-  svg_legenda.append("g")
-  .attr("id", "id_test_1")
+svg_legenda.append("g")
+.attr("id", "id_test_1")
+.append("circle")
+.attr("cx", "50" )
+.attr("cy", "50" )
+.attr("r", 20)
+.style("fill", "rgb(220,220,220)")
+.attr("transform", "translate(222," + -22 + ")")
+
+svg_legenda.append("g")
+.attr("id", "testo_0")
+.append('text')
+.text("Film number")  //sorted_bubbles[0].n
+// .html(function(d){ return "<b>"+parseInt(4*step_size)+1+" - "+parseInt(5*step_size)+": </b>"})
+.style("font-size", "6px" )  //font-weight
+.style("font-weight", "bold" )
+.attr("transform", "translate(255," + 6 + ")")
+// .attr("transform", "translate(258," + 54 + ")")
+
+svg_legenda.append("g")
+.attr("id", "testo_1")
+.append('text')
+.text(parseInt(4*step_size)+1+" - "+parseInt(5*step_size))  //sorted_bubbles[0].n
+// .html(function(d){ return "<b>"+parseInt(4*step_size)+1+" - "+parseInt(5*step_size)+": </b>"})
+.style("font-size", "6px" )
+// .attr("transform", "translate(255," + 6 + ")")
+.attr("transform", "translate(258," + 54 + ")")
+///////////////////////////////////////////////
+svg_legenda.append("g")
+  .attr("id", "id_test_2")
   .append("circle")
   .attr("cx", "50" )
   .attr("cy", "50" )
-  .attr("r", 20)
+  .attr("r", 16)
   .style("fill", "rgb(220,220,220)")
-  .attr("transform", "translate(222," + -22 + ")")
+  .attr("transform", "translate(222," + 22 + ")")
 
   svg_legenda.append("g")
-  .attr("id", "testo_1")
-  .append('text').text(parseInt(4*step_size)+1+" - "+parseInt(5*step_size))  //sorted_bubbles[0].n
-  .style("font-size", "7px" )
-  .attr("transform", "translate(255," + 6 + ")")
+  .attr("id", "testo_2")
+  .append('text').text(parseInt(3*step_size)+1+" - "+parseInt(4*step_size))
+  .style("font-size", "6px" )
+  // .attr("transform", "translate(255," + 54 + ")")
+  .attr("transform", "translate(258," + 94 + ")")
 ///////////////////////////////////////////////
   svg_legenda.append("g")
-    .attr("id", "id_test_2")
-    .append("circle")
-    .attr("cx", "50" )
-    .attr("cy", "50" )
-    .attr("r", 16)
-    .style("fill", "rgb(220,220,220)")
-    .attr("transform", "translate(222," + 22 + ")")
+  .attr("id", "id_test_3")
+  .append("circle")
+  .attr("cx", "50" )
+  .attr("cy", "50" )
+  .attr("r", 12)
+  .style("fill", "rgb(220,220,220)")
+  .attr("transform", "translate(222," + 58 + ")")
 
-    svg_legenda.append("g")
-    .attr("id", "testo_2")
-    .append('text').text(parseInt(3*step_size)+1+" - "+parseInt(4*step_size))
-    .style("font-size", "7px" )
-    .attr("transform", "translate(255," + 54 + ")")
-///////////////////////////////////////////////
-    svg_legenda.append("g")
-    .attr("id", "id_test_3")
-    .append("circle")
-    .attr("cx", "50" )
-    .attr("cy", "50" )
-    .attr("r", 12)
-    .style("fill", "rgb(220,220,220)")
-    .attr("transform", "translate(222," + 58 + ")")
-
-    svg_legenda.append("g")
-    .attr("id", "testo_3")
-    .append('text').text(parseInt(2*step_size)+1+" - "+parseInt(3*step_size))
-    .style("font-size", "7px" )
-    .attr("transform", "translate(255," + 94 + ")")
+  svg_legenda.append("g")
+  .attr("id", "testo_3")
+  .append('text').text(parseInt(2*step_size)+1+" - "+parseInt(3*step_size))
+  .style("font-size", "6px" )
+  // .attr("transform", "translate(255," + 94 + ")")
+  .attr("transform", "translate(258," + 126 + ")")
 //////////////////////////////////////////////
-    svg_legenda.append("g")
-    .attr("id", "id_test_4")
-    .append("circle")
-    .attr("cx", "50" )
-    .attr("cy", "50" )
-    .attr("r", 8)
-    .style("fill", "rgb(220,220,220)")
-    .attr("transform", "translate(222," + 86 + ")")
+  svg_legenda.append("g")
+  .attr("id", "id_test_4")
+  .append("circle")
+  .attr("cx", "50" )
+  .attr("cy", "50" )
+  .attr("r", 8)
+  .style("fill", "rgb(220,220,220)")
+  .attr("transform", "translate(222," + 86 + ")")
 
-    svg_legenda.append("g")
-    .attr("id", "testo_4")
-    .append('text').text(parseInt(step_size+1)+" - "+parseInt(2*step_size))
-    .style("font-size", "7px" )
-    .attr("transform", "translate(255," + 126 + ")")
+  svg_legenda.append("g")
+  .attr("id", "testo_4")
+  .append('text')
+  .text(parseInt(step_size+1)+" - "+parseInt(2*step_size))
+  .style("font-size", "6px" )
+  // .attr("transform", "translate(255," + 126 + ")")
+  .attr("transform", "translate(261," + 150 + ")")
 //////////////////////////////////////////////
 
-    svg_legenda.append("g")
-    .attr("id", "id_test_5")
-    .append("circle")
-    .attr("cx", "50" )
-    .attr("cy", "50" )
-    .attr("r", 4)
-    .style("fill", "rgb(220,220,220)")
-    .attr("transform", "translate(222," + 106 + ")")
+  svg_legenda.append("g")
+  .attr("id", "id_test_5")
+  .append("circle")
+  .attr("cx", "50" )
+  .attr("cy", "50" )
+  .attr("r", 4)
+  .style("fill", "rgb(220,220,220)")
+  .attr("transform", "translate(222," + 106 + ")")
 
-    svg_legenda.append("g")
-    .attr("id", "testo_5")
-    .append('text').text("1 - "+parseInt(step_size))
-    .style("font-size", "7px" )
-    .attr("transform", "translate(255," + 150 + ")")
+  svg_legenda.append("g")
+  .attr("id", "testo_5")
+  .append('text').text("1 - "+parseInt(step_size))
+  .style("font-size", "6px" )
+  // .attr("transform", "translate(255," + 150 + ")")
+  .attr("transform", "translate(265," + 165 + ")")
 //////////////////////////////////////////////
 
     d3.selectAll(".bubble").transition().duration(1000)
@@ -249,24 +271,24 @@ d3.select("#area_2").selectAll(".leg_color")
 
 
         d3.select("#area_2").append("label")
-          .attr('class', 'leg_color')
-          .style("position", "absolute")
-          .style("top", function(d){return ("10%")})
-          .style("left", "83%")
-          .style("width", "10%")
-          .style("height", "10%")
-          .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-          .html(function(d){ return "<b>color: </b>"})
+        .attr('class', 'leg_color')
+        .style("position", "absolute")
+        .style("top", function(d){return ("10%")})
+        .style("left", "85%")
+        .style("width", "20%")
+        .style("height", "10%")
+        .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
+        .html(function(d){ return "<b>grouping range: </b>"})
 
-        d3.select("#area_2").append("label")
-          .attr('class', 'leg_color')
-          .style("position", "absolute")
-          .style("top", function(d){return ("10%")})
-          .style("left", "90%")
-          .style("width", "10%")
-          .style("height", "10%")
-          .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-          .html(function(d){ return "<b>range: </b>"})
+        // d3.select("#area_2").append("label")
+        //   .attr('class', 'leg_color')
+        //   .style("position", "absolute")
+        //   .style("top", function(d){return ("10%")})
+        //   .style("left", "90%")
+        //   .style("width", "10%")
+        //   .style("height", "10%")
+        //   .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
+        //   .html(function(d){ return "<b>range: </b>"})
 
         i = 0
         d3.select("#area_2").selectAll(".label_legend")
@@ -882,6 +904,11 @@ function draw_bubbleplot_2(data){
   }
 
   function eliminate_groups(x_col, y_col){
+    spostamento="70"
+    xAxis.attr("transform", "translate("+spostamento+"," + 146.5 + ")")
+    yAxis.attr("transform", "translate("+spostamento+"," + 12 + ")")
+    clip.attr("transform", "translate("+spostamento+"," + 12 + ")")
+    scatter.attr("transform", "translate("+spostamento+"," + 12 + ")")
 
     bubble_flag = false
     d3.selectAll(".leg_color").remove()
@@ -954,6 +981,12 @@ function draw_bubbleplot_2(data){
 
 
   function groupping(criterio_update){
+
+    spostamento="30"
+    xAxis.attr("transform", "translate("+spostamento+"," + 146.5 + ")")
+    yAxis.attr("transform", "translate("+spostamento+"," + 12 + ")")
+    clip.attr("transform", "translate("+spostamento+"," + 12 + ")")
+    scatter.attr("transform", "translate("+spostamento+"," + 12 + ")")
 
     d3.selectAll(".leg_color").remove()
     d3.select("#legenda_size").remove()
@@ -1046,21 +1079,21 @@ d3.select("#area_2").selectAll(".leg_color")
           .attr('class', 'leg_color')
           .style("position", "absolute")
           .style("top", function(d){return ("10%")})
-          .style("left", "83%")
-          .style("width", "10%")
+          .style("left", "85%")
+          .style("width", "20%")
           .style("height", "10%")
           .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-          .html(function(d){ return "<b>color: </b>"})
+          .html(function(d){ return "<b>grouping range: </b>"})
 
-        d3.select("#area_2").append("label")
-          .attr('class', 'leg_color')
-          .style("position", "absolute")
-          .style("top", function(d){return ("10%")})
-          .style("left", "90%")
-          .style("width", "10%")
-          .style("height", "10%")
-          .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
-          .html(function(d){ return "<b>range: </b>"})
+        // d3.select("#area_2").append("label")
+        //   .attr('class', 'leg_color')
+        //   .style("position", "absolute")
+        //   .style("top", function(d){return ("10%")})
+        //   .style("left", "85%")
+        //   .style("width", "20%")
+        //   .style("height", "10%")
+        //   .style("color", function(d){return checkIfDarkMode() ? "rgb(200, 200, 200)": "black" })
+        //   .html(function(d){ return "<b>grouping range: </b>"})
 
         i = 0
         d3.select("#area_2").selectAll(".label_legend")
@@ -1242,14 +1275,14 @@ y = d3.scaleLinear().range([height-160, 0])
 
 xAxis = svg_2.append("g")
   .attr("class", "axis axis--x")
-  .attr("transform", "translate(30," + 146.5 + ")")
+  .attr("transform", "translate("+spostamento+"," + 146.5 + ")")
   .call(d3.axisBottom(x))
   .attr("font-size", "6px")
 
   
 yAxis = svg_2.append("g")
   .attr("class", "axis axis--y")
-  .attr("transform", "translate(30," + 12 + ")")
+  .attr("transform", "translate("+spostamento+"," + 12 + ")")
   .call(d3.axisLeft(y))
   .attr("font-size", "6px")
 
@@ -1272,12 +1305,12 @@ var clip = svg_2.append("defs").append("SVG:clipPath")
   .attr("height", height-160 )
   .attr("x", 0)
   .attr("y", 0)
-  .attr("transform", "translate(30," + 12 + ")")
+  .attr("transform", "translate("+spostamento+"," + 12 + ")")
 
 var scatter = svg_2.append('g')
 .attr("id", "area_2_circles")
 .attr("clip-path", "url(#clip)")
-.attr("transform", "translate(30," + 12 + ")")
+.attr("transform", "translate("+spostamento+"," + 12 + ")")
 
 // Add circles
 scatter
