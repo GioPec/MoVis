@@ -1,4 +1,8 @@
 
+.body {
+  font-family: "Times New Roman", Times, serif;
+}
+
 .background path {
   fill: none;
   /* stroke: #ddd; */
@@ -58,6 +62,7 @@
 .active {
   /*stroke: red;*/
   stroke: #ff3e3e;
+  
 }
 
 .normal {

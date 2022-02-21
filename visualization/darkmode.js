@@ -6,6 +6,7 @@ export function darkMode() {
 
     if (isDarkChecked) {
         document.getElementById('body').setAttribute("class", "dark")
+        d3.selectAll(".leg_color").style("color", "rgb(200, 200, 200)")
         
         d3.select("#svg_area_3_x").selectAll("rect").classed("lightstroke", false).classed("lightstroke", true)
 
@@ -73,6 +74,9 @@ export function darkMode() {
 
     else {
         document.getElementById("body").setAttribute("class", "light")
+        d3.selectAll(".leg_color").style("color", "black")
+
+
 
         d3.select("#svg_area_3_x").selectAll("rect").classed("lightstroke", false).classed("darkstroke", true)
 
