@@ -5,7 +5,7 @@ Movies visualization interactive tool.
 Project made for Visual Analytics course @ Sapienza University of Rome A.Y. 2021/2022.
 ## How to run
 
-You can try it [here](https://giopec.github.io/VA_project/visualization/);
+You can try it [here](https://giopec.github.io/MoVis/visualization/);
 
 or you can clone the repository, run ```python -m http.server``` and then search for 'localhost:8000/visualization/index.html' on your browser.
 
@@ -31,6 +31,6 @@ Giacomo Venneri
 
 ## Snapshots
 
-<img src="https://raw.githubusercontent.com/GioPec/VA_project/main/img/MoVisInteractLight.png" width="100%" height="100%">
+<img src="https://raw.githubusercontent.com/GioPec/MoVis/main/img/MoVisInteractLight.png" width="100%" height="100%">
 
-<img src="https://raw.githubusercontent.com/GioPec/VA_project/main/img/MoVisInteractDark.png" width="100%" height="100%">
+<img src="https://raw.githubusercontent.com/GioPec/MoVis/main/img/MoVisInteractDark.png" width="100%" height="100%">
